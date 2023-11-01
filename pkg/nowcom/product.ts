@@ -3,8 +3,8 @@
 const BLANK_CLUSTER = '_';
 
 export function init($plugin:any, store:any) {
-  const YOUR_PRODUCT_NAME = 'Nowcom';
-  const YOUR_K8S_RESOURCE_NAME = 'provisioning.cattle.io.cluster';
+  const PRODUCT_NAME = 'NOWCOM';
+  const K8S = 'provisioning.cattle.io.cluster';
   const CUSTOM_PAGE_NAME = 'Home';
   const CREATE_NETWORK = 'Network';
 
@@ -13,25 +13,26 @@ export function init($plugin:any, store:any) {
     configureType,
     virtualType,
     basicType
-  } = $plugin.DSL(store, YOUR_PRODUCT_NAME);
+  } = $plugin.DSL(store, PRODUCT_NAME);
 
   // registering a top-level product
   product({
-    icon:    'gear',
+    icon:    'globe',
     inStore: 'management',
     weight:  100,
     to:      {
-      name:   `${ YOUR_PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
       params: {
-        product: YOUR_PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER,
+        resource: K8S
       }
     }
   });
 
   // defining a k8s resource as page
-  configureType(YOUR_K8S_RESOURCE_NAME, {
-    displayName: 'some-custom-name-you-wish-to-assign-to-this-resource',
+  configureType(K8S, {
+    displayName: 'Nowcom Cluster',
     isCreatable: true,
     isEditable:  true,
     isRemovable: true,
@@ -39,11 +40,11 @@ export function init($plugin:any, store:any) {
     showState:   true,
     canYaml:     true,
     customRoute: {
-      name:   `${ YOUR_PRODUCT_NAME }-c-cluster-resource`,
+      name:   `${ PRODUCT_NAME }-c-cluster-resource`,
       params: {
-        product:  YOUR_PRODUCT_NAME,
+        product:  PRODUCT_NAME,
         cluster:  BLANK_CLUSTER,
-        resource: YOUR_K8S_RESOURCE_NAME
+        resource: K8S
       }
     }
   });
@@ -53,9 +54,9 @@ export function init($plugin:any, store:any) {
     labelKey: 'some.translation.key',
     name:     CUSTOM_PAGE_NAME,
     route:    {
-      name:   `${ YOUR_PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
       params: {
-        product: YOUR_PRODUCT_NAME,
+        product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
       }
     }
@@ -66,13 +67,14 @@ export function init($plugin:any, store:any) {
     labelKey: 'some.translation.key',
     name:     CREATE_NETWORK,
     route:    {
-      name:   `${ YOUR_PRODUCT_NAME }-c-cluster-${ CREATE_NETWORK }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ CREATE_NETWORK }`,
       params: {
-        product: YOUR_PRODUCT_NAME,
+        product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
       }
     }
   });
   // registering the defined pages as side-menu entries
-  basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
+  //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
+  basicType([CUSTOM_PAGE_NAME, CREATE_NETWORK, K8S]);
 }
