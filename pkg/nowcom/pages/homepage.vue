@@ -1,7 +1,7 @@
 <script>
 import axios from 'axios';
 import { BASE_URL, VLAN_LIST_URL } from '../config/api.ts';
-import { CAPI, CATALOG } from '@shell/config/types';
+import { CAPI, CATALOG, type } from '@shell/config/types';
   
 export default {
     name: 'HomePage',
@@ -30,7 +30,7 @@ export default {
       
     },
     mounted() {
-      this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER })
+      this.$store.dispatch('management/findAll', { type: 'node'})
       .then(CLUSTER => {
         console.log(CLUSTER)
         // Iterate over the array and print the name and ID of each object
