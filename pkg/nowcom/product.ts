@@ -4,7 +4,8 @@ const BLANK_CLUSTER = '_';
 
 export function init($plugin:any, store:any) {
   const PRODUCT_NAME = 'NOWCOM';
-  const K8S = 'provisioning.cattle.io.cluster';
+  const NODE = 'management.cattle.io.node'
+  const CLUSTER = 'management.cattle.io.cluster'
   const CUSTOM_PAGE_NAME = 'Home';
   const CREATE_NETWORK = 'Network';
   const ROUTE_TABLE = 'Route Table';
@@ -13,7 +14,8 @@ export function init($plugin:any, store:any) {
     product,
     configureType,
     virtualType,
-    basicType
+    basicType,
+    weightGroup
   } = $plugin.DSL(store, PRODUCT_NAME);
 
   // registering a top-level product
@@ -27,14 +29,14 @@ export function init($plugin:any, store:any) {
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER,
-        resource: K8S
+        resource: NODE
       }
     }
   });
 
   // defining a k8s resource as page
-  configureType(K8S, {
-    displayName: 'Nowcom Cluster',
+  configureType(NODE, {
+    displayName: 'Node',
     isCreatable: true,
     isEditable:  true,
     isRemovable: true,
@@ -46,7 +48,26 @@ export function init($plugin:any, store:any) {
       params: {
         product:  PRODUCT_NAME,
         cluster:  BLANK_CLUSTER,
-        resource: K8S
+        resource: NODE
+      }
+    }
+  });
+
+   // defining a k8s resource as page
+   configureType(CLUSTER, {
+    displayName: 'Cluster',
+    isCreatable: true,
+    isEditable:  true,
+    isRemovable: true,
+    showAge:     true,
+    showState:   true,
+    canYaml:     true,
+    customRoute: {
+      name:   `${ PRODUCT_NAME }-c-cluster-resource`,
+      params: {
+        product:  PRODUCT_NAME,
+        cluster:  BLANK_CLUSTER,
+        resource: CLUSTER
       }
     }
   });
@@ -94,5 +115,6 @@ export function init($plugin:any, store:any) {
   //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
   basicType([CUSTOM_PAGE_NAME]);
   basicType([CREATE_NETWORK, ROUTE_TABLE], "Network");
-  // basicType([K8S], "K8S");
+  basicType([NODE, CLUSTER], "Management");
+  // weightGroup("Management", 1003, true)
 }
