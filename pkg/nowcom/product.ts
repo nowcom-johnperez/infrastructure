@@ -7,6 +7,7 @@ export function init($plugin:any, store:any) {
   const K8S = 'provisioning.cattle.io.cluster';
   const CUSTOM_PAGE_NAME = 'Home';
   const CREATE_NETWORK = 'Network';
+  const ROUTE_TABLE = 'Route Table';
 
   const {
     product,
@@ -17,7 +18,8 @@ export function init($plugin:any, store:any) {
 
   // registering a top-level product
   product({
-    icon:    'globe',
+    icon:    'storage',
+    // svg: require('@pkg/nowcom/icons/nowcom.svg'),
     inStore: 'management',
     weight:  100,
     to:      {
@@ -49,6 +51,7 @@ export function init($plugin:any, store:any) {
     }
   });
 
+
   // creating a custom page
   virtualType({
     labelKey: 'some.translation.key',
@@ -74,7 +77,22 @@ export function init($plugin:any, store:any) {
       }
     }
   });
+
+     // creating a custom page
+     virtualType({
+      labelKey: 'some.translation.key',
+      name:     ROUTE_TABLE,
+      route:    {
+        name:   `${ PRODUCT_NAME }-c-cluster-${ ROUTE_TABLE }`,
+        params: {
+          product: PRODUCT_NAME,
+          cluster: BLANK_CLUSTER
+        }
+      }
+    });
   // registering the defined pages as side-menu entries
   //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
-  basicType([CUSTOM_PAGE_NAME, CREATE_NETWORK, K8S]);
+  basicType([CUSTOM_PAGE_NAME]);
+  basicType([CREATE_NETWORK, ROUTE_TABLE], "Network");
+  // basicType([K8S], "K8S");
 }

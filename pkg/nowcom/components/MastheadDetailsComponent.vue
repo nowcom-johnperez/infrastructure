@@ -13,11 +13,10 @@ export default {
 <template>
   <div>
     <Banner
-      color="warning"
+      color="primary"
     >
-      This is a generic masthead component example...
+      Nowcom Masthead
     </Banner>
-    test
   </div>
 </template>
 

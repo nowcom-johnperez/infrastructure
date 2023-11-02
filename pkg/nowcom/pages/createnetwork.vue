@@ -25,7 +25,7 @@
   </template>
   <script>
   import axios from 'axios';
-  import { BASE_URL, VLAN_LIST_URL } from '../api.ts';
+  import { BASE_URL, VLAN_LIST_URL } from '../config/api.ts';
   
   export default {
     name: 'CreateNetwork',
