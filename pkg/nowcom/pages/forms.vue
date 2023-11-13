@@ -41,7 +41,7 @@ components: {
 
             console.log(this.value)
             //"type":"namespace","metadata":{"annotations":{"field.cattle.io/containerDefaultResourceLimit":"{}"},"name":"testing"},"disableOpenApiValidation":false}
-            this.show(false);
+            // this.show(false);
             buttonCb(true);
         } catch (err) {
             buttonCb(false);
@@ -80,16 +80,19 @@ components: {
             headers: {
                 'Content-Type': 'application/json', // Set the Content-Type header
                 'X-Api-Csrf': getCsrfTokenFromCookie(), // Include CSRF token in the headers
+                'Accept': 'application/json', // Specify that you expect JSON in the response
             },
             withCredentials: true, // Enable sending and receiving cookies
             })
             .then(response => {
-            // Handle the response here
-            console.log('Namespace created:', response.data);
+                // Handle the response here
+                console.log('Namespace created:', response.data);
+                buttonCb(true);
             })
             .catch(error => {
-            // Handle any errors here
-            console.error('Error creating namespace:', error);
+                // Handle any errors here
+                console.error('Error creating namespace:', error);
+                buttonCb(false);
             });
     }
 

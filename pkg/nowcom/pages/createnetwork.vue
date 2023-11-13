@@ -33,7 +33,7 @@ import https from 'https';
 import { LOCAL_URL, NETWORK_URL, NETWORKS } from '../config/api.ts';
 
 const INSTANCE = axios.create({
-  baseURL: LOCAL_URL,
+  baseURL: NETWORK_URL,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
@@ -55,13 +55,11 @@ export default {
       const data = {
         name: this.selectedName,
         vlan: this.selectedVlan,
-        prefix_len: this.selectedPrefixLen,
         network_address: this.selectedNetworkAddress,
-        gateway: this.selectedGateway,
       };
 
       // Make an Axios POST request to create the network
-      axios.post('your_api_endpoint', data)
+      INSTANCE.post('/network/vnets/', data) // Update the endpoint to '/network/vnets/'
         .then(response => {
           // Handle the response here
           console.log('Network created:', response.data);
