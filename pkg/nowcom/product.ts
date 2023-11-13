@@ -9,6 +9,7 @@ export function init($plugin:any, store:any) {
   const CUSTOM_PAGE_NAME = 'Home';
   const CREATE_NETWORK = 'Network';
   const ROUTE_TABLE = 'Route Table';
+  const FORMS = 'Forms';
 
   const {
     product,
@@ -111,9 +112,22 @@ export function init($plugin:any, store:any) {
         }
       }
     });
+
+    // creating a custom page
+     virtualType({
+      labelKey: 'some.translation.key',
+      name:     FORMS,
+      route:    {
+        name:   `${ PRODUCT_NAME }-c-cluster-${ FORMS }`,
+        params: {
+          product: PRODUCT_NAME,
+          cluster: BLANK_CLUSTER
+        }
+      }
+    });
   // registering the defined pages as side-menu entries
   //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
-  basicType([CUSTOM_PAGE_NAME]);
+  basicType([FORMS, CUSTOM_PAGE_NAME]);
   basicType([CREATE_NETWORK, ROUTE_TABLE], "Network");
   basicType([NODE, CLUSTER], "Management");
   // weightGroup("Management", 1003, true)

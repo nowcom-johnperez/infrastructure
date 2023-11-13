@@ -2,11 +2,22 @@
   <div>
     <h1>Route Tables</h1>
 
-    <!-- Main Route Table Button -->
-    <button class="custom-button custom-button-main" @click="viewRouteTable(1)">Main Route Table</button>
+  <!-- Your other content here -->
 
-    <!-- Custom Route Table Button -->
-    <button class="custom-button custom-button-list" @click="viewRouteTable(2)">Custom Route Table</button>
+      <!-- Grid for Buttons -->
+      <div class="button-grid">
+        <div class="button-column">
+          <!-- Main Route Table Button -->
+          <button class="custom-button custom-button-main custom-button-small" @click="viewRouteTable(1)">Main Route Table</button>
+        </div>
+
+        <div class="button-column">
+          <!-- Custom Route Table Button -->
+          <button class="custom-button custom-button-list custom-button-small" @click="viewRouteTable(2)">Custom Route Table</button>
+        </div>
+
+        <!-- You can add more buttons here within additional button-columns -->
+      </div>
 
     <!-- Display Selected Route Table -->
     <div v-if="selectedRouteTable">
@@ -20,6 +31,7 @@
             <button class="custom-button" @click="editRoute(route.id)">Edit</button>
             <button class="custom-button delete-button" @click="deleteRoute(route.id)">Delete</button>
           </div>
+          <br>
         </li>
       </ul>
 
@@ -94,12 +106,27 @@ export default {
   margin-right: 10px;
 }
 
-.custom-button-main {
-  background-color: #17a2b8; /* Change the style for the Main Route Table button */
+/* Your existing CSS styles */
+
+/* Grid for Buttons */
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Creates four equal columns */
+  grid-gap: 10px; /* Adjust the gap between columns as needed */
 }
 
-.custom-button-list {
-  background-color: #343a40; /* Change the style for the Custom Route Table button */
+/* Button Column */
+.button-column {
+  flex: 1;
+}
+
+/* Your existing CSS styles */
+
+/* Custom class for smaller buttons */
+.custom-button-small {
+  padding: 5px 10px; /* Adjust the padding to make the button smaller */
+  font-size: 12px; /* Adjust the font size to make the text smaller */
+  /* Add any other styles you want to customize the smaller buttons */
 }
 
 .delete-button {

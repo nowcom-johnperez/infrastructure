@@ -4,23 +4,22 @@
     <div class="form-container">
       <div class="form-row">
         <div class="form-column">
-          <input type="text" v-model="networkName" placeholder="Enter network name" />
-        </div>
-        <div class="form-column">
-          <select v-model="selectedVlan">
-            <option value="">Select VLAN</option>
-            <option v-for="vlan in vlanList" :value="vlan.id">{{ vlan.name }}</option>
+          <select v-model="selectedName" @change="populateFields(selectedName)">
+            <option value="">Select Network Name</option>
+            <option v-for="network in networks" :value="network.name">{{ network.name }}</option>
           </select>
         </div>
         <div class="form-column">
-          <select v-model="selectedSubnet">
-            <option value="">Select Subnet</option>
-            <option v-for="network in networks" :value="network.subnet">{{ network.subnet }}</option>
-          </select>
+          <input type="text" v-model="selectedVlan" readonly disabled placeholder="vlan" />
         </div>
         <div class="form-column">
-          <!-- Display the Gateway within an input field as read-only -->
-          <input type="text" :value="getGatewayForSubnet(selectedSubnet)" readonly disabled placeholder="Gateway"/>
+          <input type="text" v-model="selectedPrefixLen" readonly disabled placeholder="prefix_len" />
+        </div>
+        <div class="form-column">
+          <input type="text" v-model="selectedNetworkAddress" readonly disabled placeholder="network address" />
+        </div>
+        <div class="form-column">
+          <input type="text" v-model="selectedGateway" readonly disabled placeholder="gateway" />
         </div>
       </div>
       <button @click="createNetwork" class="custom-button">Create Network</button>
@@ -31,10 +30,10 @@
 <script>
 import axios from 'axios';
 import https from 'https';
-import { BASE_URL, VLAN_LIST_URL, NETWORK_URL, NETWORKS } from '../config/api.ts';
+import { LOCAL_URL, NETWORK_URL, NETWORKS } from '../config/api.ts';
 
 const INSTANCE = axios.create({
-  baseURL: NETWORK_URL,
+  baseURL: LOCAL_URL,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
@@ -42,23 +41,26 @@ export default {
   name: 'CreateNetwork',
   data() {
     return {
-      networkName: '',
-      selectedVlan: '',
-      selectedSubnet: '',
-      vlanList: [], // This will be populated with data from the API
-      networks: [],
+      selectedName: '', // Dropdown for network name
+      selectedVlan: '', // VLAN (disabled and readonly)
+      selectedPrefixLen: '', // Prefix Length (disabled and readonly)
+      selectedNetworkAddress: '', // Network Address (disabled and readonly)
+      selectedGateway: '', // Gateway (disabled and readonly)
+      networks: [], // This will be populated with data from the API
     };
   },
   methods: {
     createNetwork() {
-      // Make an Axios POST request to send the network name, selected VLAN, and selected Subnet to the server
+      // Capture the user inputs and construct the data object
       const data = {
-        name: this.networkName,
-        vlan_id: this.selectedVlan,
-        subnet: this.selectedSubnet,
-        gateway: this.getGatewayForSubnet(this.selectedSubnet), // Include the Gateway in the POST request
+        name: this.selectedName,
+        vlan: this.selectedVlan,
+        prefix_len: this.selectedPrefixLen,
+        network_address: this.selectedNetworkAddress,
+        gateway: this.selectedGateway,
       };
 
+      // Make an Axios POST request to create the network
       axios.post('your_api_endpoint', data)
         .then(response => {
           // Handle the response here
@@ -67,16 +69,6 @@ export default {
         .catch(error => {
           // Handle any errors here
           console.error('Error creating network:', error);
-        });
-    },
-    fetchVlanList() {
-      // Fetch the VLAN list from your API
-      axios.get(BASE_URL + VLAN_LIST_URL)
-        .then(response => {
-          this.vlanList = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching VLAN list:', error);
         });
     },
     fetchNetworks() {
@@ -92,13 +84,28 @@ export default {
     },
     getGatewayForSubnet(subnet) {
       // Find the network with the selected subnet and return its gateway
-      const network = this.networks.find(net => net.subnet === subnet);
+      const network = this.networks.find(net => net.network_address === subnet);
       return network ? network.gateway : '';
+    },
+    populateFields(selectedName) {
+      // Find the selected network by name and populate other fields
+      const network = this.networks.find(net => net.name === selectedName);
+      if (network) {
+        this.selectedVlan = network.vlan;
+        this.selectedPrefixLen = network.prefix_len;
+        this.selectedNetworkAddress = network.network_address;
+        this.selectedGateway = network.gateway;
+      } else {
+        // Reset other fields if the network is not found
+        this.selectedVlan = '';
+        this.selectedPrefixLen = '';
+        this.selectedNetworkAddress = '';
+        this.selectedGateway = '';
+      }
     },
   },
   mounted() {
-    // Fetch the VLAN list when the component is mounted
-    this.fetchVlanList();
+    // Fetch the VLAN list and network list when the component is mounted
     this.fetchNetworks();
   },
 };
@@ -111,7 +118,7 @@ export default {
 
  .form-row {
    display: grid;
-   grid-template-columns: repeat(4, 1fr); /* Creates four equal columns */
+   grid-template-columns: repeat(5, 1fr); /* Creates four equal columns */
    grid-gap: 10px; /* Adjust the gap between columns as needed */
  }
 

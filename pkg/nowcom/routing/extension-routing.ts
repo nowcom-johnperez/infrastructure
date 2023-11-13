@@ -6,6 +6,7 @@ import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_
 import HomePage from '../pages/homepage.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
 import RouteTable from '../pages/routetables.vue';
+import Forms from '../pages/forms.vue';
 const BLANK_CLUSTER = '_';
 // to achieve naming consistency throughout the extension
 // we recommend this to be defined on a config file and exported
@@ -14,6 +15,7 @@ const PRODUCT_NAME = 'NOWCOM';
 const CUSTOM_PAGE_NAME = 'Home';
 const CREATE_NETWORK = 'Network';
 const ROUTE_TABLE = 'Route Table';
+const FORMS = 'Forms';
 
 const routes = [
   // this covers the "custom page"
@@ -39,6 +41,15 @@ const routes = [
     name:      `${ PRODUCT_NAME }-c-cluster-${ ROUTE_TABLE }`,
     path:      `/${ PRODUCT_NAME }/c/:cluster/${ ROUTE_TABLE }`,
     component: RouteTable,
+    meta:      {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name:      `${ PRODUCT_NAME }-c-cluster-${ FORMS }`,
+    path:      `/${ PRODUCT_NAME }/c/:cluster/${ FORMS }`,
+    component: Forms,
     meta:      {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
