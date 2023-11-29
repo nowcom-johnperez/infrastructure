@@ -1,19 +1,19 @@
 <template>
   <div>
     <h1>VM Network</h1>
-
     <!-- Notification container -->
     <div class="message-row">
-            <div class="message-column"></div>
-            <div class="message-column">
-            <!-- Display API response data -->
-                <div v-if="apiResponse">
+        <div class="message-column"></div>
+        <div class="message-column">
+              <!-- Display API response data -->
+              <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
                     <pre align="center" v-if="!apiError">Deleted VLAN: {{ apiResponse.metadata.name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
-                </div>
-            </div>
+              </div>
+        </div>
     </div>    
+
     <button @click="routeCreateNetwork" class="custom-button" style="width: 70px;">Create</button>
       <br>
       <div class="form-row">
@@ -59,7 +59,6 @@
         </div>
       </div>
 
-    </div>
   </div>
 </template>
 
@@ -196,7 +195,7 @@ export default {
 
  .message-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3a, 1fr);
       grid-gap: 10px;
       padding: 10px 0; /* Add top and bottom padding */
   }
