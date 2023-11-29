@@ -1,5 +1,5 @@
 annotations:
-  catalog.cattle.io/certified: rancher # Any application we are adding as a helm chart
+  catalog.cattle.io/certified: rancher
   catalog.cattle.io/kube-version: '>= 1.16.0-0'
   catalog.cattle.io/namespace: cattle-ui-plugin-system
   catalog.cattle.io/os: linux
@@ -8,7 +8,7 @@ annotations:
   catalog.cattle.io/scope: management
   catalog.cattle.io/ui-component: plugins
 apiVersion: v2
-appVersion: "0.1.0"
+appVersion: 0.1.0
 description: Extensions Api demo extension
 name: extensions-api-demo
 type: application
