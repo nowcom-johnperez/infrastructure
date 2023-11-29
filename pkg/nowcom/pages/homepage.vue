@@ -2,6 +2,14 @@
   <div>
     <img src="../assets/img/nowcom.jpeg" />
     <h1 align=center>Home Page</h1>
+   
+    <!-- Spinner Modal -->
+    <div v-if="isLoading" class="spinner-modal">
+      <div class="spinner-content">
+        <!-- You can use an image or any other content for the spinner -->
+        <img src="../assets/img/dong.png" alt="Loading Spinner" class="spinner-image" />
+      </div>
+    </div>
 
     <div>
       <Tabs :tabs="tabs" />
@@ -24,6 +32,7 @@ export default {
     },
     data() {
       return {
+        isLoading: false,
         tabs: [
         { label: "VM", content: "VM" },
         { label: "Storage", content: "Storage" },
@@ -32,6 +41,18 @@ export default {
       };
     },
     methods: {
+      showSpinner() {
+        this.isLoading = true;
+        // Hide the spinner after 5 seconds
+        setTimeout(() => {
+          this.hideSpinner();
+        }, 3000);
+      },
+
+      hideSpinner() {
+        this.isLoading = false;
+      },
+
       testAPI() {
         // Define the request headers with the 'application/json' content type
         const headers = {
@@ -80,11 +101,42 @@ export default {
       //   console.error('Error fetching data:', error);
       // });
       this.testAPI();
+      this.showSpinner();
     },
   };
 </script>
 
 
 <style lang="scss" scoped>
+/* Your other styles */
+.spinner-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for the modal effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Make sure the spinner is on top of other elements */
+}
+
+.spinner-content {
+  text-align: center;
+}
+
+.spinner-image {
+  width: 100px; /* Adjust the size of your spinner image */
+  height: 100px;
+  animation: spin 2s linear infinite; /* Rotate the image indefinitely 
+  /* You can add more styles to customize the appearance of your spinner image */
+  border-radius: 50%; /* Make the image round */
+
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 </style>
