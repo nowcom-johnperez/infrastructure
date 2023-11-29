@@ -13,7 +13,7 @@ entries:
     apiVersion: v2
     appVersion: 0.1.0
     created: "2023-11-29T15:31:59.241796-08:00"
-    description: Extension server
+    description: Nowcom Network Automation
     digest: 0db59cd508751f3c3161b470ca64131bccb7825c8a15abe6e302897ba204cd5a
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/extension-crd/icon.svg
     name: nowcom
