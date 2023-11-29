@@ -4,6 +4,7 @@ import CreateResource from '@shell/pages/c/_cluster/_product/_resource/create.vu
 import ViewResource from '@shell/pages/c/_cluster/_product/_resource/_id.vue';
 import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_namespace/_id.vue';
 import HomePage from '../pages/homepage.vue';
+import ListNetwork from '../pages/listnetwork.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
 import RouteTable from '../pages/routetables.vue';
 import Forms from '../pages/forms.vue';
@@ -13,7 +14,8 @@ const BLANK_CLUSTER = '_';
 // so that the developer can import it wherever it needs to be used
 const PRODUCT_NAME = 'NOWCOM';
 const CUSTOM_PAGE_NAME = 'Home';
-const CREATE_NETWORK = 'Network';
+const LIST_NETWORK = 'Network';
+const CREATE_NETWORK = 'create-network';
 const ROUTE_TABLE = 'Route Table';
 const FORMS = 'Forms';
 
@@ -23,6 +25,15 @@ const routes = [
     name:      `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
     path:      `/${ PRODUCT_NAME }/c/:cluster/${ CUSTOM_PAGE_NAME }`,
     component: HomePage,
+    meta:      {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name:      `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
+    path:      `/${ PRODUCT_NAME }/c/:cluster/${ LIST_NETWORK }`,
+    component: ListNetwork,
     meta:      {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER

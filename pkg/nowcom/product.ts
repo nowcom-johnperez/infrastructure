@@ -7,7 +7,7 @@ export function init($plugin:any, store:any) {
   const NODE = 'management.cattle.io.node'
   const CLUSTER = 'management.cattle.io.cluster'
   const CUSTOM_PAGE_NAME = 'Home';
-  const CREATE_NETWORK = 'Network';
+  const LIST_NETWORK = 'Network';
   const ROUTE_TABLE = 'Route Table';
   const FORMS = 'Forms';
 
@@ -90,9 +90,9 @@ export function init($plugin:any, store:any) {
    // creating a custom page
    virtualType({
     labelKey: 'some.translation.key',
-    name:     CREATE_NETWORK,
+    name:     LIST_NETWORK,
     route:    {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ CREATE_NETWORK }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -127,8 +127,10 @@ export function init($plugin:any, store:any) {
     });
   // registering the defined pages as side-menu entries
   //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
-  basicType([FORMS, CUSTOM_PAGE_NAME]);
-  basicType([CREATE_NETWORK, ROUTE_TABLE], "Network");
-  basicType([NODE, CLUSTER], "Management");
+  //basicType([FORMS, CUSTOM_PAGE_NAME]);
+  basicType([CUSTOM_PAGE_NAME]);
+  basicType([LIST_NETWORK]);
+  // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
+  // basicType([NODE, CLUSTER], "Management");
   // weightGroup("Management", 1003, true)
 }
