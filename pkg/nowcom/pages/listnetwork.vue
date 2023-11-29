@@ -3,9 +3,17 @@
     <h1>VM Network</h1>
 
     <!-- Notification container -->
-    <div v-if="showNotification" class="notification" :class="notificationType">
-      <p>{{ notificationMessage }}</p>
-    </div>
+    <div class="message-row">
+            <div class="message-column"></div>
+            <div class="message-column">
+            <!-- Display API response data -->
+                <div v-if="apiResponse">
+                    <h2 align="center">{{ apiResponseMessage }}</h2>
+                    <pre align="center" v-if="!apiError">Deleted VLAN: {{ apiResponse.metadata.name }}</pre>
+                    <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
+                </div>
+            </div>
+    </div>    
     <button @click="routeCreateNetwork" class="custom-button" style="width: 70px;">Create</button>
       <br>
       <div class="form-row">
@@ -22,7 +30,8 @@
             <tr v-for="item in harvesterNetworks" :key="item.metadata.name">
               <td>{{ item.metadata.name }}</td>
               <td>{{ item.metadata.state?.name }}</td>
-              <td width="50"><button @click="openModal" class="delete-button">Delete</button></td>
+              <td width="50"><!-- Pass the item.metadata.name to openModal method -->
+             <button @click="openModal(item.metadata.name)" class="delete-button">Delete</button></td>
             </tr>
           </tbody>
         </table>
@@ -36,13 +45,13 @@
           <!-- Modal content -->
           <div>
             <h2>Delete?</h2>
-            <p>Are you sure that you want to delete?.</p>
+            <p>Are you sure that you want to delete VLAN "{{ selectedVlanName }}"?</p>
           </div>
 
           <!-- Buttons container with flex layout -->
         <div class="button-container">
           <!-- Yes button on the left -->
-          <button @click="closeModal" class="delete-button">Yes</button>
+          <button @click="deleteNetwork" class="delete-button">Yes</button>
           
           <!-- No button on the right -->
           <button @click="closeModal" class="ok-button">No</button>
@@ -57,7 +66,7 @@
 <script>
 import axios from 'axios';
 import https from 'https';
-import { LOCAL_URL, CREATE_NETWORKS, LIST_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
+import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
 
 // Import the notification library
 import VueNotification from 'vue-notification';
@@ -92,6 +101,7 @@ export default {
       notificationMessage: '',
       loading: false,
       isModalOpen: false,
+      apiResponse: null
     };
   },
   methods: {
@@ -99,7 +109,10 @@ export default {
     routeCreateNetwork() {
       this.$router.push(`/${ PRODUCT_NAME }/c/${BLANK_CLUSTER}/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
     },
-    openModal() {
+    openModal(vlanName) {
+      // Set the selected VLAN name
+      this.selectedVlanName = vlanName;
+      // Open the modal
       this.isModalOpen = true;
     },
     closeModal() {
@@ -108,7 +121,7 @@ export default {
 
     fetchHarvesterNetworks() {
       // Fetch the network list from your API
-      INSTANCE.get(LIST_NETWORKS)
+      INSTANCE.get(ENDPOINT_NETWORKS)
         .then(response => {
           this.harvesterNetworks = response.data.data || []; // Ensure items is an array;
           console.log(this.harvesterNetworks);
@@ -128,6 +141,34 @@ export default {
           console.error('Error fetching Network List:', error);
         });
     },
+    deleteNetwork() {
+    console.log(`Delete Network Endpoint, ${this.selectedVlanName}`)
+    // Make an Axios DELETE request to delete the network with the selected VLAN name
+    INSTANCE.delete(`${ENDPOINT_NETWORKS}/${this.selectedVlanName}`)
+      .then(response => {
+        // Handle the response here
+        console.log('Network deleted:', response.data);
+        this.loading = false;
+
+        this.apiResponse = response.data;
+        // Set the API response data in the component
+        this.apiResponseMessage = "VLAN Successfully Deleted";
+        this.apiError = null; // Reset error state
+        this.fetchHarvesterNetworks();
+        // Close the modal after deletion
+        this.closeModal();
+      })
+      .catch(error => {
+        // Handle any errors here
+        console.error('Error deleting network:', error);
+        this.loading = false;
+        this.apiResponseMessage = "Error";
+        // Set the API error in the component
+        this.apiError = error.response ? error.response.data : error.message;
+        this.apiResponse = 1; // Reset response state
+      });
+}
+
 
   },
   mounted() {
@@ -143,13 +184,24 @@ export default {
   text-align: center;
     }
 
- .form-row {
-   display: grid;
-   /* grid-template-columns: repeat(5, 1fr); /* Creates four equal columns */
-   grid-gap: 10px; /* Adjust the gap between columns as needed */
- }
+  .form-row {
+      display: grid;
+      grid-gap: 10px;
+      padding: 10px 0; /* Add top and bottom padding */
+  }
 
  .form-column {
+   flex: 1;
+ }
+
+ .message-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      padding: 10px 0; /* Add top and bottom padding */
+  }
+
+  .message-column {
    flex: 1;
  }
   

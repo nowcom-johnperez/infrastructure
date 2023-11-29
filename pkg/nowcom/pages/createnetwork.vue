@@ -34,11 +34,11 @@
         <div class="form-row">
             <div class="form-column">
             <!-- Display API response data -->
-            <div v-if="apiResponse">
-                <h2 align="center">{{ apiResponseMessage }}</h2>
-                <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.metadata.name }}</pre>
-                <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
-            </div>
+                <div v-if="apiResponse">
+                    <h2 align="center">{{ apiResponseMessage }}</h2>
+                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.metadata.name }}</pre>
+                    <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
+                </div>
             </div>
         </div>    
       </div>
@@ -48,7 +48,7 @@
   <script>
   import axios from 'axios';
   import https from 'https';
-  import { LOCAL_URL, CREATE_NETWORKS, LIST_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
+  import { LOCAL_URL, ENDPOINT_NETWORKS, LIST_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
   
   // Import the notification library
   import VueNotification from 'vue-notification';
@@ -103,7 +103,7 @@
         }  
         
         console.log(harvester_data)
-        INSTANCE.post(CREATE_NETWORKS, harvester_data)
+        INSTANCE.post(ENDPOINT_NETWORKS, harvester_data)
           .then(response => {
             // Handle the response here
             console.log('Network created:', response.data);
@@ -129,7 +129,7 @@
       },
       fetchHarvesterNetworks() {
         // Fetch the network list from your API
-        INSTANCE.get(LIST_NETWORKS)
+        INSTANCE.get(ENDPOINT_NETWORKS)
           .then(response => {
             this.harvesterNetworks = response.data.data || []; // Ensure items is an array;
             console.log(this.harvesterNetworks);
