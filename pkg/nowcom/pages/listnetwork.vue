@@ -67,8 +67,6 @@ import axios from 'axios';
 import https from 'https';
 import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
 
-// Import the notification library
-import VueNotification from 'vue-notification';
 
 const INSTANCE = axios.create({
   baseURL: LOCAL_URL,
