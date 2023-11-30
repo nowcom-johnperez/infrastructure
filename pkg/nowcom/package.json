@@ -1,6 +1,6 @@
 {
   "name": "nowcom",
-  "description": "",
+  "description": "Nowcom Infrastructure Network Automation",
   "version": "0.1.0",
   "private": false,
   "rancher": {

@@ -12,13 +12,14 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-11-29T15:31:59.241796-08:00"
-    description: Extension server
-    digest: 0db59cd508751f3c3161b470ca64131bccb7825c8a15abe6e302897ba204cd5a
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/extension-crd/icon.svg
+    created: "2023-11-29T16:01:56.296006-08:00"
+    description: Nowcom Infrastructure Network Automation
+    digest: 7aae0db91c03b2173f7f33cf23e09ed028c3ddb4635094ae6bfd814e5d26c704
     name: nowcom
     type: application
     urls:
     - assets/nowcom/nowcom-0.1.0.tgz
     version: 0.1.0
-generated: "2023-11-29T15:31:59.241501-08:00"
+generated: "2023-11-29T16:01:56.295581-08:00"
+
+
