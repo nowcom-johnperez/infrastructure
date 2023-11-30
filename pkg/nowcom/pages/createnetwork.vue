@@ -4,13 +4,35 @@
   
       <div class="form-container">
         <div class="form-row">
-          <div class="form-column">
-            <select v-model="selectedName" @change="populateFields(selectedName)">
-              <option value="">Select Network Name</option>
-              <option v-for="network in networks" :value="network.name">{{ network.name }}</option>
+            <div class="form-column">
+            <!-- Updated select input with "Create New VNET" option -->
+            <select v-model="selectedName" @change="handleSelectChange">
+                <option value="">Select Network Name</option>
+                <option v-for="network in networks" :value="network.name">{{ network.name }}</option>
+                <option value="__createNew__">Create New VNET</option>
             </select>
-          </div>
+
+                <!-- New input field that appears when "Create New VNET" is selected -->
+                <!-- Modal for creating a new network -->
+                <div v-if="creatingNewNetwork" class="modal-overlay">
+                <div class="modal">
+                    <!-- Modal content -->
+                    <div>
+                    <h2>Create New Network</h2>
+                    <input v-model="newNetworkName" @input="handleNewNetworkInput" placeholder="Enter new network name" />
+                    </div>
+                    <!-- Buttons container with flex layout -->
+                    <div class="button-container">
+                    <!-- Save button -->
+                    <button @click="saveNewNetwork" class="custom-button">Save</button>
+                    <!-- Cancel button -->
+                    <button @click="cancelNewNetwork" class="custom-button">Cancel</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
+
         <div class="form-row">
           <div class="form-column">
             <input type="text" v-model="selectedVlan" readonly disabled placeholder="vlan" />
@@ -79,9 +101,47 @@
         apiResponse: null, // New data property to store the API response
         apiResponseMessage: null, // New data property to store the API response
         apiError: null, 
+        newNetworkName: '', // New data property for the new network name
+        creatingNewNetwork: false, // New data property to track if creating a new network
       };
     },
     methods: {
+        handleSelectChange() {
+            const network = this.networks.find(net => net.name === this.selectedName);
+            if (this.selectedName === '__createNew__') {
+                this.creatingNewNetwork = true; // Show the new network input field
+                this.newNetworkName = ''; // Clear any previous input
+            } else {
+                 // If a regular network is selected, you can call populateFields as usual
+                this.populateFields(this.selectedName);
+                this.creatingNewNetwork = false; // Hide the new network input field
+            }
+        }, 
+        handleNewNetworkInput() {
+            // Handle input in the new network name field
+            // You can add additional validation or processing logic here
+        },
+        saveNewNetwork() {
+            // Handle the logic to save the new network
+            // You can add your API call or any other logic here
+            console.log('Saving new network:', this.newNetworkName);
+            
+            // Update the selectedName to the new network
+            this.selectedName = this.newNetworkName;
+
+            // Fetch and populate other fields based on the new network
+            this.populateFields(this.selectedName);
+
+
+            // Close the modal after saving
+            this.cancelNewNetwork();
+        },
+
+        cancelNewNetwork() {
+            // Reset the newNetworkName and close the modal
+            this.newNetworkName = '';
+            this.creatingNewNetwork = false;
+        },
       async createNetwork() {
   
       //loading
@@ -162,7 +222,7 @@
           this.selectedGateway = network.gateway;
         } else {
           // Reset other fields if the network is not found
-          this.selectedVlan = '';
+          this.selectedVlan = selectedName;
           this.selectedPrefixLen = '';
           this.selectedNetworkAddress = '';
           this.selectedGateway = '';
@@ -254,6 +314,27 @@
     th {
       background-color: #007bff;
     }
-  
+
+    /* Modal styles */
+    .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    }
     </style>
     
