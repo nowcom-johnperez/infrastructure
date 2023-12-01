@@ -232,7 +232,7 @@
                 this.loading = false;
                 this.apiResponseMessage = "Error";
             // Set the API error in the component
-                this.apiError = error.response ? error.response.data :"Error creating VRF";
+                this.apiError = "Error creating VRF";
                 this.apiResponse = 1; // Reset response state
             });
         

@@ -159,7 +159,7 @@ export default {
     deleteNetwork() {
     console.log(`Delete Network Endpoint, ${this.selectedVlanName}`)
     // Make an Axios DELETE request to delete the network with the selected VLAN name
-    INSTANCE.delete(`${ENDPOINT_NETWORKS}/${this.selectedVlanName}`)
+    INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/?vnet_name=${this.selectedVlanName}`)
       .then(response => {
         // Handle the response here
         console.log('Network deleted:', response.data);
@@ -169,7 +169,8 @@ export default {
         // Set the API response data in the component
         this.apiResponseMessage = "VLAN Successfully Deleted";
         this.apiError = null; // Reset error state
-        this.fetchHarvesterNetworks();
+        //this.fetchHarvesterNetworks();
+        this.fetchNetworks();
         // Close the modal after deletion
         this.closeModal();
       })
