@@ -18,7 +18,7 @@
       <br>
       <div class="form-row">
         <div class="form-column">
-        <table v-if="harvesterNetworks && harvesterNetworks.length">
+        <!-- <table v-if="harvesterNetworks && harvesterNetworks.length">
           <thead>
             <tr>
               <th>Name</th>
@@ -30,8 +30,25 @@
             <tr v-for="item in harvesterNetworks" :key="item.metadata.name">
               <td>{{ item.metadata.name }}</td>
               <td>{{ item.metadata.state?.name }}</td>
-              <td width="50"><!-- Pass the item.metadata.name to openModal method -->
+              <td width="50">
              <button @click="openModal(item.metadata.name)" class="delete-button">Delete</button></td>
+            </tr>
+          </tbody>
+        </table> -->
+        <table v-if="networks && networks.length">
+          <thead>
+            <tr>
+              <th>VNET Name</th>
+              <th>VLAN VNET</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in networks" :key="item.vnet_name">
+              <td>{{ item.vnet_name }}</td>
+              <td>{{ item.vnet_vlan}}</td>
+              <td width="50">
+             <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
             </tr>
           </tbody>
         </table>
@@ -69,7 +86,8 @@ import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMEN
 
 
 const INSTANCE = axios.create({
-  baseURL: LOCAL_URL,
+  //baseURL: LOCAL_URL,
+  baseURL: NETWORK_URL,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
@@ -132,7 +150,7 @@ export default {
       INSTANCE.get(NETWORKS)
         .then(response => {
           this.networks = response.data;
-          console.log(this.networks);
+          console.log("from CJ",this.networks);
         })
         .catch(error => {
           console.error('Error fetching Network List:', error);

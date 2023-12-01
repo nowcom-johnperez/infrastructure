@@ -7,7 +7,7 @@
     <div v-if="isLoading" class="spinner-modal">
       <div class="spinner-content">
         <!-- You can use an image or any other content for the spinner -->
-        <img src="../assets/img/dong.png" alt="Loading Spinner" class="spinner-image" />
+        <img src="../assets/img/loading.png" alt="Loading Spinner" class="spinner-image" />
       </div>
     </div>
 
