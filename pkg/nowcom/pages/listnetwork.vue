@@ -8,13 +8,16 @@
               <!-- Display API response data -->
               <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Deleted VLAN: {{ apiResponse.metadata.name }}</pre>
+                    <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
               </div>
         </div>
     </div>    
-
-    <button @click="routeCreateNetwork" class="custom-button" style="width: 70px;">Create</button>
+    <div class="message-row">
+        <div class="message-column">
+          <button @click="routeCreateNetwork" class="custom-button" style="width: 70px; margin-right: 10px;">Create</button>  
+        </div>
+    </div>
       <br>
       <div class="form-row">
         <div class="form-column">
@@ -167,7 +170,7 @@ export default {
 
         this.apiResponse = response.data;
         // Set the API response data in the component
-        this.apiResponseMessage = "VLAN Successfully Deleted";
+        this.apiResponseMessage = "VNET Successfully Deleted";
         this.apiError = null; // Reset error state
         //this.fetchHarvesterNetworks();
         this.fetchNetworks();

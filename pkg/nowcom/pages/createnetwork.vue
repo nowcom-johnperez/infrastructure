@@ -38,11 +38,11 @@
             <input type="text" v-model="selectedVnetName" readonly disabled placeholder="vnet" />
           </div>
         </div>
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="form-column">
             <input type="text" v-model="selectedVnetVlan" value="Vlan" placeholder="vnet vlan" />
           </div>
-        </div>
+        </div> -->
         <div class="form-row">
             <div class="form-column">
                 <input
@@ -106,7 +106,7 @@
     data() {
       return {
         selectedVnetName: '', // Dropdown for network name
-        selectedVnetVlan: 'Vlan', // VLAN (disabled and readonly)
+        //selectedVnetVlan: 'Vlan', // VLAN (disabled and readonly)
         // selectedPrefixLen: '', // Prefix Length (disabled and readonly)
         selectedVnetSubnet: '10.0.0.0/24', // Network Address (disabled and readonly)
         selectedVnetGateway: '', // Gateway (disabled and readonly)
@@ -208,7 +208,7 @@
 
             const vnet_data = {
                 vnet_name: this.selectedVnetName,
-                vnet_vlan: this.selectedVnetVlan,
+                //vnet_vlan: this.selectedVnetVlan,
                 vnet_subnet: this.selectedVnetSubnet
             }
             
@@ -270,13 +270,13 @@
         const network = this.networks.find(net => net.vnet_name === selectedVnetName);
         if (network) {
           this.selectedVnetName = network.vnet_name;
-          this.selectedVnetVlan = network.vnet_vlan;
+          //this.selectedVnetVlan = network.vnet_vlan;
           this.selectedVnetSubnet = network.vnet_subnet;
           this.selectedVnetGateway = network.vnet_gateway;
         } else {
           // Reset other fields if the network is not found
           this.selectedVnetName = selectedVnetName;
-          this.selectedVnetVlan = 'Vlan';
+          //this.selectedVnetVlan = 'Vlan';
           this.selectedVnetSubnet = '10.0.0.0/24';
           this.selectedVnetGateway = '';
         }
