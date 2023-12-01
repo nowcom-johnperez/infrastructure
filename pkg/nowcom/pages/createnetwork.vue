@@ -108,7 +108,7 @@
         selectedVnetName: '', // Dropdown for network name
         //selectedVnetVlan: 'Vlan', // VLAN (disabled and readonly)
         // selectedPrefixLen: '', // Prefix Length (disabled and readonly)
-        selectedVnetSubnet: '10.0.0.0/24', // Network Address (disabled and readonly)
+        selectedVnetSubnet: '10.55.0.0/24', // Network Address (disabled and readonly)
         selectedVnetGateway: '', // Gateway (disabled and readonly)
         networks: [], // This will be populated with data from the API
         harvesterNetworks: [],
@@ -207,7 +207,7 @@
         //   });
 
             const vnet_data = {
-                vnet_name: this.selectedVnetName,
+                vnet_name: this.selectedVnetName.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
                 vnet_subnet: this.selectedVnetSubnet
             }
@@ -253,7 +253,7 @@
         INSTANCE.get(NETWORKS)
           .then(response => {
             this.networks = response.data;
-            console.log('CJ API', this.networks);
+            console.log('from API', this.networks);
           })
           .catch(error => {
             console.error('Error fetching Network List:', error);
@@ -277,7 +277,7 @@
           // Reset other fields if the network is not found
           this.selectedVnetName = selectedVnetName;
           //this.selectedVnetVlan = 'Vlan';
-          this.selectedVnetSubnet = '10.0.0.0/24';
+          this.selectedVnetSubnet = '10.55.0.0/24';
           this.selectedVnetGateway = '';
         }
       },
@@ -285,7 +285,7 @@
     mounted() {
       // Fetch the VLAN list and network list when the component is mounted
       this.fetchNetworks();
-      this.fetchHarvesterNetworks();
+      //this.fetchHarvesterNetworks();
     },
   };
   </script>

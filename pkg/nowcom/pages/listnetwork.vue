@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>VM Network</h1>
+    <h1>VNET Network</h1>
     <!-- Notification container -->
     <div class="message-row">
         <div class="message-column"></div>
@@ -42,7 +42,8 @@
           <thead>
             <tr>
               <th>VNET Name</th>
-              <th>VLAN VNET</th>
+              <th>VNET VLAN</th>
+              <th>VNET Subnet</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -50,6 +51,7 @@
             <tr v-for="item in networks" :key="item.vnet_name">
               <td>{{ item.vnet_name }}</td>
               <td>{{ item.vnet_vlan}}</td>
+              <td>{{ item.vnet_subnet}}</td>
               <td width="50">
              <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
             </tr>
@@ -153,7 +155,7 @@ export default {
       INSTANCE.get(NETWORKS)
         .then(response => {
           this.networks = response.data;
-          console.log("from CJ",this.networks);
+          console.log("from API",this.networks);
         })
         .catch(error => {
           console.error('Error fetching Network List:', error);
@@ -193,7 +195,7 @@ export default {
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
     this.fetchNetworks();
-    this.fetchHarvesterNetworks();
+    //this.fetchHarvesterNetworks();
   },
 };
 </script>
