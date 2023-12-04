@@ -1,6 +1,6 @@
 {
-  "name": "test",
-  "description": "Francis Test",
+  "name": "nowcom",
+  "description": "Nowcom Infrastructure Network Automation",
   "icon": "https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg",
   "version": "0.1.0",
   "private": false,
@@ -16,5 +16,5 @@
   "files": [
     "**/*"
   ],
-  "main": "test-0.1.0.umd.min.js"
+  "main": "nowcom-0.1.0.umd.min.js"
 }
