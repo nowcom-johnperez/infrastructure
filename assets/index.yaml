@@ -1,26 +1,5 @@
 apiVersion: v1
 entries:
-  francis-test:
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/kube-version: '>= 1.16.0-0'
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-    apiVersion: v2
-    appVersion: 0.1.0
-    created: "2023-12-04T11:17:40.481945-08:00"
-    description: francis-test plugin
-    digest: 64ec620fd303e3c77ac6ffcb1a356fd5fc29fb86be085c064a8eff7b4f999cfa
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
-    name: francis-test
-    type: application
-    urls:
-    - assets/francis-test/francis-test-0.1.0.tgz
-    version: 0.1.0
   nowcom:
   - annotations:
       catalog.cattle.io/certified: rancher
@@ -33,7 +12,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-04T11:17:40.482075-08:00"
+    created: "2023-12-04T11:25:23.439495-08:00"
     description: Nowcom Infrastructure Network Automation
     digest: c32703da196ea475819e9930eb6e145b9924ec6f730672c972e95fd647044ed3
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -42,4 +21,45 @@ entries:
     urls:
     - assets/nowcom/nowcom-0.1.0.tgz
     version: 0.1.0
-generated: "2023-12-04T11:17:40.481549-08:00"
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/kube-version: '>= 1.16.0-0'
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-12-04T11:25:23.439753-08:00"
+    description: Nowcom Infrastructure Network Automation
+    digest: df6458333eb2c649e03e7d297a8462c5e98575afdaa8bb2412e82a2100ece1a6
+    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
+    name: nowcom
+    type: application
+    urls:
+    - assets/test/nowcom-0.1.0.tgz
+    version: 0.1.0
+  test:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/kube-version: '>= 1.16.0-0'
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-12-04T11:25:23.439619-08:00"
+    description: Francis Test
+    digest: 13090a18f44db8288f21bcfcbfb5a8bfae4bdac45faada9125e206d92ecc721a
+    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
+    name: test
+    type: application
+    urls:
+    - assets/nowcom/test-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-12-04T11:25:23.439238-08:00"
