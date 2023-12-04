@@ -1,5 +1,26 @@
 apiVersion: v1
 entries:
+  clock-francis:
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/kube-version: '>= 1.16.0-0'
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2023-12-04T11:34:32.8896-08:00"
+    description: Adds a new feature to the top-level menu that shows a full-page clock
+    digest: b323d8220a44c88000f840ad66bb0d37226503e9d2be56a21ab62a90fdbbf65e
+    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
+    name: clock-francis
+    type: application
+    urls:
+    - assets/clock-francis/clock-francis-0.2.0.tgz
+    version: 0.2.0
   nowcom:
   - annotations:
       catalog.cattle.io/certified: rancher
@@ -12,34 +33,14 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-04T11:25:23.439495-08:00"
+    created: "2023-12-04T11:34:32.889728-08:00"
     description: Nowcom Infrastructure Network Automation
-    digest: c32703da196ea475819e9930eb6e145b9924ec6f730672c972e95fd647044ed3
+    digest: 41409979a910ced21b01cee6df6ef701fc4b8a6187147ef09bf3fea06a01aa32
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
     name: nowcom
     type: application
     urls:
     - assets/nowcom/nowcom-0.1.0.tgz
-    version: 0.1.0
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/kube-version: '>= 1.16.0-0'
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-    apiVersion: v2
-    appVersion: 0.1.0
-    created: "2023-12-04T11:25:23.439753-08:00"
-    description: Nowcom Infrastructure Network Automation
-    digest: df6458333eb2c649e03e7d297a8462c5e98575afdaa8bb2412e82a2100ece1a6
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
-    name: nowcom
-    type: application
-    urls:
-    - assets/test/nowcom-0.1.0.tgz
     version: 0.1.0
   test:
   - annotations:
@@ -53,7 +54,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-04T11:25:23.439619-08:00"
+    created: "2023-12-04T11:34:32.88985-08:00"
     description: Francis Test
     digest: 13090a18f44db8288f21bcfcbfb5a8bfae4bdac45faada9125e206d92ecc721a
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -62,4 +63,4 @@ entries:
     urls:
     - assets/nowcom/test-0.1.0.tgz
     version: 0.1.0
-generated: "2023-12-04T11:25:23.439238-08:00"
+generated: "2023-12-04T11:34:32.889349-08:00"
