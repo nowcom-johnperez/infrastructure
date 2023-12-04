@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>VM Network</h1>
+    <h1>VNET Network</h1>
     <!-- Notification container -->
     <div class="message-row">
         <div class="message-column"></div>
@@ -8,17 +8,20 @@
               <!-- Display API response data -->
               <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Deleted VLAN: {{ apiResponse.metadata.name }}</pre>
+                    <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
               </div>
         </div>
     </div>    
-
-    <button @click="routeCreateNetwork" class="custom-button" style="width: 70px;">Create</button>
+    <div class="message-row">
+        <div class="message-column">
+          <button @click="routeCreateNetwork" class="custom-button" style="width: 70px; margin-right: 10px;">Create</button>  
+        </div>
+    </div>
       <br>
       <div class="form-row">
         <div class="form-column">
-        <table v-if="harvesterNetworks && harvesterNetworks.length">
+        <!-- <table v-if="harvesterNetworks && harvesterNetworks.length">
           <thead>
             <tr>
               <th>Name</th>
@@ -30,8 +33,27 @@
             <tr v-for="item in harvesterNetworks" :key="item.metadata.name">
               <td>{{ item.metadata.name }}</td>
               <td>{{ item.metadata.state?.name }}</td>
-              <td width="50"><!-- Pass the item.metadata.name to openModal method -->
+              <td width="50">
              <button @click="openModal(item.metadata.name)" class="delete-button">Delete</button></td>
+            </tr>
+          </tbody>
+        </table> -->
+        <table v-if="networks && networks.length">
+          <thead>
+            <tr>
+              <th>VNET Name</th>
+              <th>VNET VLAN</th>
+              <th>VNET Subnet</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in networks" :key="item.vnet_name">
+              <td>{{ item.vnet_name }}</td>
+              <td>{{ item.vnet_vlan}}</td>
+              <td>{{ item.vnet_subnet}}</td>
+              <td width="50">
+             <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
             </tr>
           </tbody>
         </table>
@@ -69,7 +91,8 @@ import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMEN
 
 
 const INSTANCE = axios.create({
-  baseURL: LOCAL_URL,
+  //baseURL: LOCAL_URL,
+  baseURL: NETWORK_URL,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
@@ -132,7 +155,7 @@ export default {
       INSTANCE.get(NETWORKS)
         .then(response => {
           this.networks = response.data;
-          console.log(this.networks);
+          console.log("from API",this.networks);
         })
         .catch(error => {
           console.error('Error fetching Network List:', error);
@@ -141,7 +164,7 @@ export default {
     deleteNetwork() {
     console.log(`Delete Network Endpoint, ${this.selectedVlanName}`)
     // Make an Axios DELETE request to delete the network with the selected VLAN name
-    INSTANCE.delete(`${ENDPOINT_NETWORKS}/${this.selectedVlanName}`)
+    INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/?vnet_name=${this.selectedVlanName}`)
       .then(response => {
         // Handle the response here
         console.log('Network deleted:', response.data);
@@ -149,9 +172,10 @@ export default {
 
         this.apiResponse = response.data;
         // Set the API response data in the component
-        this.apiResponseMessage = "VLAN Successfully Deleted";
+        this.apiResponseMessage = "VNET Successfully Deleted";
         this.apiError = null; // Reset error state
-        this.fetchHarvesterNetworks();
+        //this.fetchHarvesterNetworks();
+        this.fetchNetworks();
         // Close the modal after deletion
         this.closeModal();
       })
@@ -171,7 +195,7 @@ export default {
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
     this.fetchNetworks();
-    this.fetchHarvesterNetworks();
+    //this.fetchHarvesterNetworks();
   },
 };
 </script>
