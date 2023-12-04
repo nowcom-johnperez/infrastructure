@@ -1,4 +1,4 @@
-plugin/img/dong.318b73a9.png
+plugin/img/loading.f6ba3a8a.png
 plugin/img/nowcom.76f13062.jpeg
 plugin/nowcom-0.1.0.umd.min.1.js
 plugin/nowcom-0.1.0.umd.min.1.js.map
