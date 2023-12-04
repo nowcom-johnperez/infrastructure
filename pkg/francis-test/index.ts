@@ -11,8 +11,8 @@ export default function(plugin: IPlugin) {
   plugin.metadata = require('./package.json');
 
   plugin.addRoute({
-    name:      'homeRoute',
-    path:      '/home',
+    name:      'test',
+    path:      '/test',
     component: NewHomeComponent
   });
 }
