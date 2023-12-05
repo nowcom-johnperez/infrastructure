@@ -126,8 +126,8 @@ export function init($plugin:any, store:any) {
       }
     });
   // registering the defined pages as side-menu entries
-  //basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
-  //basicType([FORMS, CUSTOM_PAGE_NAME]);
+  // basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
+  // basicType([FORMS, CUSTOM_PAGE_NAME]);
   basicType([CUSTOM_PAGE_NAME]);
   basicType([LIST_NETWORK]);
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");

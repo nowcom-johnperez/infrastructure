@@ -9,7 +9,7 @@
             <select v-model="selectedVnetName" @change="handleSelectChange">
                 <option value="">Select Network Name</option>
                 <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
-                <option value="__createNew__">Create New VNET</option>
+                <option value="Create VNET">Create New VNET</option>
             </select>
 
                 <!-- New input field that appears when "Create New VNET" is selected -->
@@ -35,32 +35,33 @@
 
         <div class="form-row">
           <div class="form-column">
+            <h5 align="left">VNET Name</h5>
             <input type="text" v-model="selectedVnetName" readonly disabled placeholder="vnet" />
           </div>
         </div>
-        <!-- <div class="form-row">
-          <div class="form-column">
-            <input type="text" v-model="selectedVnetVlan" value="Vlan" placeholder="vnet vlan" />
-          </div>
-        </div> -->
-        <div class="form-row">
-            <div class="form-column">
-                <input
-                    type="text"
-                    v-model="selectedVnetSubnet"
-                    @input="handleSubnetInput"
-                    placeholder="Enter subnet (e.g., 10.0.0.0)"
-                    pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-                    title="Please enter a valid IP address"
-                />
-            </div>
+      </br>
+        <!-- Dynamic rows for subnets -->
+      <h5 align="left">Subnet</h5>  
+      <div v-for="(subnet, index) in selectedVnetSubnets" :key="index" class="form-row">
+        <div class="form-column">
+          <input
+            type="text"
+            v-model="selectedVnetSubnets[index]"
+            @input="handleSubnetInput(index)"
+            placeholder="Enter subnet (e.g., 10.0.0.0)"
+            pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+            title="Please enter a valid IP address"
+          />
         </div>
-        <!-- <div class="form-row">
-          <div class="form-column">
-            <input type="text" v-model="selectedPrefixLen" readonly disabled placeholder="prefix_len" />
+        <div class="form-column">
+            <button @click="removeSubnet(index)" class="row-button">Remove</button>
           </div>
+      </div>
+      <div class="form-row">
+        <div class="form-column" align="left">
+          <button @click="addSubnet" class="row-button"> + Add Subnet</button>
         </div>
-        </div> -->
+      </div>
         <div class="form-row">
             <div class="form-column">
             <button @click="createNetwork" class="custom-button" :disabled="loading" :class="{ 'disable-hover': loading }" >Create Network</button>
@@ -108,7 +109,7 @@
         selectedVnetName: '', // Dropdown for network name
         //selectedVnetVlan: 'Vlan', // VLAN (disabled and readonly)
         // selectedPrefixLen: '', // Prefix Length (disabled and readonly)
-        selectedVnetSubnet: '10.55.0.0/24', // Network Address (disabled and readonly)
+        selectedVnetSubnets: ['10.55.0.0/24'], // Network Address (disabled and readonly)
         selectedVnetGateway: '', // Gateway (disabled and readonly)
         networks: [], // This will be populated with data from the API
         harvesterNetworks: [],
@@ -126,7 +127,7 @@
     methods: {
         handleSelectChange() {
             const network = this.networks.find(net => net.vnet_name === this.selectedVnetName);
-            if (this.selectedVnetName === '__createNew__') {
+            if (this.selectedVnetName === 'Create VNET') {
                 this.creatingNewNetwork = true; // Show the new network input field
                 this.newNetworkName = ''; // Clear any previous input
             } else {
@@ -164,6 +165,20 @@
             // Handle input in the subnet field
             // You can add additional validation or processing logic here
         },
+        handleSubnetInput(index) {
+          // Handle input in the specified subnet field
+          // You can access the subnet value using this.selectedVnetSubnets[index]
+        },
+
+        addSubnet() {
+          // Add a new empty subnet field
+          this.$set(this.selectedVnetSubnets, this.selectedVnetSubnets.length, '10.55.0.0/24');
+        },
+
+        removeSubnet(index) {
+          // Remove the subnet at the specified index
+          this.selectedVnetSubnets.splice(index, 1);
+        },
       async createNetwork() {
   
       //loading
@@ -176,40 +191,10 @@
         },
       }
 
-  
-        // const harvester_data = {
-        //    name: this.selectedVnetName,
-        //    vlanId: this.selectedVnetVlan
-        //  }  
-        
-        // console.log(harvester_data)
-        // INSTANCE.post(ENDPOINT_NETWORKS, harvester_data)
-        //   .then(response => {
-        //     // Handle the response here
-        //     console.log('Network created:', response.data);
-        //     this.loading = false;
-        //     // Set the API response data in the component
-        //     this.apiResponse = JSON.parse(response.data.content);
-        //     this.apiResponseMessage = response.data.message;
-
-        //     console.log("response from create networks",this.apiResponse)
-        //     this.apiError = null; // Reset error state
-        //     this.fetchHarvesterNetworks();
-        //   })
-        //   .catch(error => {
-        //     // Handle any errors here
-        //     console.error('Error creating network:', error);
-        //     this.loading = false;
-        //     this.apiResponseMessage = "Error";
-        //    // Set the API error in the component
-        //     this.apiError = error.response ? error.response.data : error.message;
-        //     this.apiResponse = 1; // Reset response state
-        //   });
-
             const vnet_data = {
                 vnet_name: this.selectedVnetName.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
-                vnet_subnet: this.selectedVnetSubnet
+                vnet_subnet: this.selectedVnetSubnets.toString()
             }
             
             console.log(vnet_data)
@@ -271,13 +256,13 @@
         if (network) {
           this.selectedVnetName = network.vnet_name;
           //this.selectedVnetVlan = network.vnet_vlan;
-          this.selectedVnetSubnet = network.vnet_subnet;
+          this.selectedVnetSubnets = [network.vnet_subnet];
           this.selectedVnetGateway = network.vnet_gateway;
         } else {
           // Reset other fields if the network is not found
           this.selectedVnetName = selectedVnetName;
           //this.selectedVnetVlan = 'Vlan';
-          this.selectedVnetSubnet = '10.55.0.0/24';
+          this.selectedVnetSubnets = ['10.55.0.0/24'];
           this.selectedVnetGateway = '';
         }
       },
@@ -319,6 +304,16 @@
       cursor: pointer;
       margin-top: 10px;
     }
+
+    .row-button {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: left;	
+    }
+    
     
     .custom-button:hover {
       background-color: #0056b3;
