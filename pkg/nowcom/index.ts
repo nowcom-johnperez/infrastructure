@@ -9,6 +9,7 @@ import {
   ActionOpts,
 } from '@shell/core/types';
 import extensionRouting from './routing/extension-routing';
+import HomePage from './pages/homepage.vue';
 
 // Init the package
 export default function(plugin: IPlugin) {
@@ -19,7 +20,7 @@ export default function(plugin: IPlugin) {
   plugin.metadata = require('./package.json');
   // Load a product
   plugin.addProduct(require('./product'));
-  
+
   // Add Vue Routes
   plugin.addRoutes(extensionRouting);
 }

@@ -13,7 +13,7 @@ const BLANK_CLUSTER = '_';
 // we recommend this to be defined on a config file and exported
 // so that the developer can import it wherever it needs to be used
 const PRODUCT_NAME = 'NOWCOM';
-const CUSTOM_PAGE_NAME = 'Home';
+const PAGE_NAME = 'Home';
 const LIST_NETWORK = 'Network';
 const CREATE_NETWORK = 'create-network';
 const ROUTE_TABLE = 'Route Table';
@@ -22,14 +22,24 @@ const FORMS = 'Forms';
 const routes = [
   // this covers the "custom page"
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ CUSTOM_PAGE_NAME }`,
+    name:      `home`,
+    path:      `/home`,
     component: HomePage,
     meta:      {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
+  // this covers the "custom page"
+  {
+    name:      `${ PRODUCT_NAME }-c-cluster-${ PAGE_NAME }`,
+    path:      `/${ PRODUCT_NAME }/c/:cluster/${ PAGE_NAME }`,
+    component: HomePage,
+      meta:      {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      },
+    },
   {
     name:      `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
     path:      `/${ PRODUCT_NAME }/c/:cluster/${ LIST_NETWORK }`,
@@ -103,7 +113,7 @@ const routes = [
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
-  }
+  },
 ];
 
 export default routes;

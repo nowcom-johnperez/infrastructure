@@ -1,12 +1,13 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
 const BLANK_CLUSTER = '_';
+import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 
 export function init($plugin:any, store:any) {
   const PRODUCT_NAME = 'NOWCOM';
   const NODE = 'management.cattle.io.node'
   const CLUSTER = 'management.cattle.io.cluster'
-  const CUSTOM_PAGE_NAME = 'Home';
+  const HOME = 'Home';
   const LIST_NETWORK = 'Network';
   const ROUTE_TABLE = 'Route Table';
   const FORMS = 'Forms';
@@ -16,17 +17,19 @@ export function init($plugin:any, store:any) {
     configureType,
     virtualType,
     basicType,
-    weightGroup
+    weightGroup,
+    mapGroup,
+    headers
   } = $plugin.DSL(store, PRODUCT_NAME);
 
   // registering a top-level product
   product({
-    icon:    'storage',
+    icon:    'apps',
     // svg: require('@pkg/nowcom/icons/nowcom.svg'),
     inStore: 'management',
     weight:  100,
     to:      {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ HOME }`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER,
@@ -77,9 +80,9 @@ export function init($plugin:any, store:any) {
   // creating a custom page
   virtualType({
     labelKey: 'some.translation.key',
-    name:     CUSTOM_PAGE_NAME,
+    name:     HOME,
     route:    {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ CUSTOM_PAGE_NAME }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ HOME }`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -125,11 +128,35 @@ export function init($plugin:any, store:any) {
         }
       }
     });
+  // const REPO = 'catalog.cattle.io.clusterrepo';
+
+  // mapGroup('HOME', 'Repositories');  
   // registering the defined pages as side-menu entries
   // basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
-  basicType([CUSTOM_PAGE_NAME]);
+  basicType([HOME]);
   basicType([LIST_NETWORK]);
+  // basicType([
+  //   REPO,
+  // ], 'HOME');
+
+  // headers(REPO, [
+  //   STATE,
+  //   NAME_COL,
+  //   {
+  //     name:     'version',
+  //     label:    'Version',
+  //     value:    'version',
+  //     getValue: row => row.version
+  //   },
+  //   {
+  //     name:     'cacheState',
+  //     label:    'Cache State',
+  //     value:    'status.cacheState',
+  //     getValue: row => row.status?.cacheState
+  //   },
+  //   AGE,
+  // ]);
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
   // basicType([NODE, CLUSTER], "Management");
   // weightGroup("Management", 1003, true)

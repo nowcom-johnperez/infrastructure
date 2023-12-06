@@ -1,17 +1,20 @@
 <template>
     <div>
-      <h1>VM Network</h1>
+      <h1>VNET Network</h1>
+      <p>This is page is for the creation of VNET</p>
+    </br>
   
       <div class="form-container">
         <div class="form-row">
             <div class="form-column">
+            <h5 align="left">VNET Name</h5>
             <!-- Updated select input with "Create New VNET" option -->
             <select v-model="selectedVnetName" @change="handleSelectChange">
                 <option value="">Select Network Name</option>
                 <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
                 <option value="Create VNET">Create New VNET</option>
             </select>
-
+            
                 <!-- New input field that appears when "Create New VNET" is selected -->
                 <!-- Modal for creating a new network -->
                 <div v-if="creatingNewNetwork" class="modal-overlay">
@@ -35,7 +38,7 @@
 
         <div class="form-row">
           <div class="form-column">
-            <h5 align="left">VNET Name</h5>
+            <!-- <h5 align="left">VNET Name</h5> -->
             <input type="text" v-model="selectedVnetName" readonly disabled placeholder="vnet" />
           </div>
         </div>
@@ -43,6 +46,13 @@
         <!-- Dynamic rows for subnets -->
       <h5 align="left">Subnet</h5>  
       <div v-for="(subnet, index) in selectedVnetSubnets" :key="index" class="form-row">
+        <input
+            type="text"
+            v-model="selectedSubnetName[index]"
+            @input="handleSubnetInput(index)"
+            placeholder="Subnet Name"
+            title="Please enter a valid IP address"
+          />
         <div class="form-column">
           <input
             type="text"
@@ -53,7 +63,7 @@
             title="Please enter a valid IP address"
           />
         </div>
-        <div class="form-column">
+        <div class="form-column" align="left">
             <button @click="removeSubnet(index)" class="row-button">Remove</button>
           </div>
       </div>
@@ -107,9 +117,8 @@
     data() {
       return {
         selectedVnetName: '', // Dropdown for network name
-        //selectedVnetVlan: 'Vlan', // VLAN (disabled and readonly)
-        // selectedPrefixLen: '', // Prefix Length (disabled and readonly)
         selectedVnetSubnets: ['10.55.0.0/24'], // Network Address (disabled and readonly)
+        selectedSubnetName: ['subnet'],
         selectedVnetGateway: '', // Gateway (disabled and readonly)
         networks: [], // This will be populated with data from the API
         harvesterNetworks: [],
@@ -173,11 +182,31 @@
         addSubnet() {
           // Add a new empty subnet field
           this.$set(this.selectedVnetSubnets, this.selectedVnetSubnets.length, '10.55.0.0/24');
+          this.$set(this.selectedSubnetName, this.selectedSubnetName.length, 'subnet');
         },
 
         removeSubnet(index) {
           // Remove the subnet at the specified index
           this.selectedVnetSubnets.splice(index, 1);
+          this.selectedSubnetName.splice(index, 1);
+        },
+
+        combineArraysIntoObjects(subnets, subnetNames) {
+          // Check if both arrays have the same length
+          if (subnets.length !== subnetNames.length) {
+            console.error('Arrays must have the same length');
+            return [];
+          }
+
+          // Use map to combine the arrays into an array of objects
+          const combinedArray = subnets.map((subnet, index) => {
+            return {
+              vnet_subnet: subnet,
+              subnet_name: subnetNames[index],
+            };
+          });
+
+          return combinedArray;
         },
       async createNetwork() {
   
@@ -191,13 +220,15 @@
         },
       }
 
+            const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
             const vnet_data = {
                 vnet_name: this.selectedVnetName.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
-                vnet_subnet: this.selectedVnetSubnets.toString()
+                vnet_subnet: combinedObjects
             }
-            
-            console.log(vnet_data)
+            // const vnet_data_string = JSON.stringify(vnet_data);
+            console.log("send to API",vnet_data)
+
             INSTANCE.post(NETWORKS, vnet_data)
             .then(response => {
                 // Handle the response here
