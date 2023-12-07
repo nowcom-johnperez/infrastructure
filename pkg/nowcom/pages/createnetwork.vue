@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="base">
       <h1>VNET Network</h1>
       <p>This is page is for the creation of VNET</p>
     </br>
@@ -11,7 +11,7 @@
             <!-- Updated select input with "Create New VNET" option -->
             <select v-model="selectedVnetName" @change="handleSelectChange">
                 <option value="">Select Network Name</option>
-                <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
+                <option v-for="network in networks" :value="network.name">{{ network.name }}</option>
                 <option value="Create VNET">Create New VNET</option>
             </select>
             
@@ -86,7 +86,7 @@
             <!-- Display API response data -->
                 <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.vnet_name }}</pre>
+                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedVnetName  }}</pre>
                 </div>
             </div>
@@ -114,10 +114,11 @@
   
   export default {
     name: 'CreateNetwork',
+    // layout: 'home',
     data() {
       return {
         selectedVnetName: '', // Dropdown for network name
-        selectedVnetSubnets: ['10.55.0.0/24'], // Network Address (disabled and readonly)
+        selectedVnetSubnets: ['10.55.0.0'], // Network Address (disabled and readonly)
         selectedSubnetName: ['subnet'],
         selectedVnetGateway: '', // Gateway (disabled and readonly)
         networks: [], // This will be populated with data from the API
@@ -135,7 +136,7 @@
     },
     methods: {
         handleSelectChange() {
-            const network = this.networks.find(net => net.vnet_name === this.selectedVnetName);
+            const network = this.networks.find(net => net.name === this.selectedVnetName);
             if (this.selectedVnetName === 'Create VNET') {
                 this.creatingNewNetwork = true; // Show the new network input field
                 this.newNetworkName = ''; // Clear any previous input
@@ -181,7 +182,7 @@
 
         addSubnet() {
           // Add a new empty subnet field
-          this.$set(this.selectedVnetSubnets, this.selectedVnetSubnets.length, '10.55.0.0/24');
+          this.$set(this.selectedVnetSubnets, this.selectedVnetSubnets.length, '10.55.0.0');
           this.$set(this.selectedSubnetName, this.selectedSubnetName.length, 'subnet');
         },
 
@@ -201,8 +202,8 @@
           // Use map to combine the arrays into an array of objects
           const combinedArray = subnets.map((subnet, index) => {
             return {
-              vnet_subnet: subnet,
-              subnet_name: subnetNames[index],
+              network: subnet,
+              name: subnetNames[index],
             };
           });
 
@@ -222,9 +223,9 @@
 
             const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
             const vnet_data = {
-                vnet_name: this.selectedVnetName.toLowerCase(),
+                name: this.selectedVnetName.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
-                vnet_subnet: combinedObjects
+                subnets: combinedObjects
             }
             // const vnet_data_string = JSON.stringify(vnet_data);
             console.log("send to API",vnet_data)
@@ -283,9 +284,9 @@
       populateFields(selectedVnetName) {
         this.apiResponse = '';
         // Find the selected network by name and populate other fields
-        const network = this.networks.find(net => net.vnet_name === selectedVnetName);
+        const network = this.networks.find(net => net.name === selectedVnetName);
         if (network) {
-          this.selectedVnetName = network.vnet_name;
+          this.selectedVnetName = network.name;
           //this.selectedVnetVlan = network.vnet_vlan;
           this.selectedVnetSubnets = [network.vnet_subnet];
           this.selectedVnetGateway = network.vnet_gateway;
@@ -293,7 +294,7 @@
           // Reset other fields if the network is not found
           this.selectedVnetName = selectedVnetName;
           //this.selectedVnetVlan = 'Vlan';
-          this.selectedVnetSubnets = ['10.55.0.0/24'];
+          this.selectedVnetSubnets = ['10.55.0.0'];
           this.selectedVnetGateway = '';
         }
       },
@@ -307,6 +308,9 @@
   </script>
     
     <style scoped>
+    .base{
+      margin-left: 10px;
+    }
    .form-container {
     text-align: center;
       }
@@ -396,24 +400,26 @@
 
     /* Modal styles */
     .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100; /* Add a higher z-index value */
     }
 
     .modal {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      z-index: 101; /* Make sure it has a higher z-index than the overlay */
     }
     </style>
     

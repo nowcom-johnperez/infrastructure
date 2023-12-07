@@ -4,11 +4,11 @@ const BLANK_CLUSTER = '_';
 import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 
 export function init($plugin:any, store:any) {
-  const PRODUCT_NAME = 'NOWCOM';
+  const PRODUCT_NAME = 'Network';
   const NODE = 'management.cattle.io.node'
   const CLUSTER = 'management.cattle.io.cluster'
-  const HOME = 'Home';
-  const LIST_NETWORK = 'Network';
+  const HOME = 'Network';
+  const LIST_NETWORK = 'VNET';
   const ROUTE_TABLE = 'Route Table';
   const FORMS = 'Forms';
 
@@ -27,9 +27,11 @@ export function init($plugin:any, store:any) {
     icon:    'apps',
     // svg: require('@pkg/nowcom/icons/nowcom.svg'),
     inStore: 'management',
+    removable: false,
+    showClusterSwitcher: false,
     weight:  100,
     to:      {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ HOME }`,
+      name:   `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER,
@@ -134,7 +136,7 @@ export function init($plugin:any, store:any) {
   // registering the defined pages as side-menu entries
   // basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
-  basicType([HOME]);
+  //basicType([HOME]);
   basicType([LIST_NETWORK]);
   // basicType([
   //   REPO,

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>VNET Network</h1>
+  <div class="base">
+    <h1>Network</h1>
     <!-- Notification container -->
     <div class="message-row">
         <div class="message-column"></div>
@@ -21,43 +21,54 @@
       <br>
       <div class="form-row">
         <div class="form-column">
-        <!-- <table v-if="harvesterNetworks && harvesterNetworks.length">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>State</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in harvesterNetworks" :key="item.metadata.name">
-              <td>{{ item.metadata.name }}</td>
-              <td>{{ item.metadata.state?.name }}</td>
-              <td width="50">
-             <button @click="openModal(item.metadata.name)" class="delete-button">Delete</button></td>
-            </tr>
-          </tbody>
-        </table> -->
         <table v-if="networks && networks.length">
           <thead>
             <tr>
-              <th>VNET Name</th>
-              <th>VNET VLAN</th>
-              <th>VNET Subnet</th>
+              <th>Name</th>
+              <th>VLAN</th>
+              <th>Subnet</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in networks" :key="item.vnet_name">
-              <td>{{ item.vnet_name }}</td>
-              <td>{{ item.vnet_vlan}}</td>
-              <td>{{ item.vnet_subnet}}</td>
+            <tr v-for="item in networks" :key="item.name">
+              <td>{{ item.name }}</td>
+              <td>
+                  <ul>
+                    <li v-for="subnet in item.subnets">
+                      {{ subnet.name }}
+                    </li>
+                  </ul>
+              </td>
+              <td>
+                  <ul>
+                    <li v-for="subnet in item.subnets">
+                      {{ subnet.network_prefix }}
+                      <button @click="openModalSubnet(item.name,subnet.name)" class="list-delete-button">Delete</button>
+                    </li>
+                  </ul>
+                </td>
               <td width="50">
-             <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
+             <button @click="openModal(item.name)" class="delete-button">Delete</button></td>
             </tr>
           </tbody>
         </table>
-        <p v-else>No items available</p>
+        <!-- <p v-else>No items available</p> -->
+        <table  v-else>
+          <thead>
+            <tr>
+              <th>VNET</th>
+              <th>VLAN</th>
+              <th>Subnet</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="4" style="text-align: center;">No items available</td>
+            </tr>
+          </tbody>
+        </table>
         </div>
       </div>
 
@@ -77,6 +88,27 @@
           
           <!-- No button on the right -->
           <button @click="closeModal" class="ok-button">No</button>
+        </div>
+        </div>
+      </div>
+
+
+       <!-- Modal -->
+       <div v-if="isModalSubnetOpen" class="modal-overlay">
+        <div class="modal">
+          <!-- Modal content -->
+          <div>
+            <h2>Are you sure that you want to delete:</h2>
+            <p>Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
+          </div>
+
+          <!-- Buttons container with flex layout -->
+        <div class="button-container">
+          <!-- Yes button on the left -->
+          <button @click="deleteNetwork" class="delete-button">Yes</button>
+          
+          <!-- No button on the right -->
+          <button @click="closeModalSubnet" class="ok-button">No</button>
         </div>
         </div>
       </div>
@@ -101,12 +133,13 @@ const HARVESTER = axios.create({
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
-const PRODUCT_NAME = 'NOWCOM';
+const PRODUCT_NAME = 'Network';
 const LIST_NETWORK = 'create-network';
 const BLANK_CLUSTER = '_';
 
 export default {
   name: 'ListNetwork',
+  // layout: 'home',
   data() {
     return {
       selectedName: '', // Dropdown for network name
@@ -121,7 +154,10 @@ export default {
       notificationMessage: '',
       loading: false,
       isModalOpen: false,
-      apiResponse: null
+      apiResponse: null,
+      isModalSubnetOpen: false,
+      vrf_name: '',
+      subnet_name: ''
     };
   },
   methods: {
@@ -137,6 +173,20 @@ export default {
     },
     closeModal() {
       this.isModalOpen = false;
+    },
+
+    openModalSubnet(vrf_name,subnet_name) {
+      // Set the selected VLAN name
+      console.log(vrf_name, subnet_name)
+      this.vnet_name = vrf_name;
+      this.subnet_name = subnet_name;
+
+      // Open the modal
+      this.isModalSubnetOpen = true;
+    },
+
+    closeModalSubnet() {
+      this.isModalSubnetOpen = false;
     },
 
     fetchHarvesterNetworks() {
@@ -201,6 +251,10 @@ export default {
 </script>
   
   <style scoped>
+  .base{
+      margin-left: 10px;
+  }
+
  .form-container {
   text-align: center;
     }
@@ -220,6 +274,7 @@ export default {
       grid-template-columns: repeat(3a, 1fr);
       grid-gap: 10px;
       padding: 10px 0; /* Add top and bottom padding */
+      margin-left: 10px;
   }
 
   .message-column {
@@ -248,6 +303,21 @@ export default {
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px; /* Add margin for spacing */
+  }
+
+  .list-delete-button {
+    background-color: #0e5c98;
+    color: #fff;
+    border: none;
+    padding: 0 2px; /* Adjust top and bottom padding */
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 10px;
+  }
+
+  /* Add margin to the top and bottom of the list */
+  li {
+    margin: 5px 0; /* Adjust top and bottom margin */
   }
 
   .ok-button {
