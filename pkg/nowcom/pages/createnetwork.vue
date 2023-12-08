@@ -11,7 +11,7 @@
             <!-- Updated select input with "Create New VNET" option -->
             <select v-model="selectedVnetName" @change="handleSelectChange">
                 <option value="">Select Network Name</option>
-                <option v-for="network in networks" :value="network.name">{{ network.name }}</option>
+                <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
                 <option value="Create VNET">Create New VNET</option>
             </select>
             
@@ -86,7 +86,7 @@
             <!-- Display API response data -->
                 <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.name }}</pre>
+                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.vnet.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedVnetName  }}</pre>
                 </div>
             </div>
@@ -136,7 +136,7 @@
     },
     methods: {
         handleSelectChange() {
-            const network = this.networks.find(net => net.name === this.selectedVnetName);
+            const network = this.networks.find(net => net.vnet_name === this.selectedVnetName);
             if (this.selectedVnetName === 'Create VNET') {
                 this.creatingNewNetwork = true; // Show the new network input field
                 this.newNetworkName = ''; // Clear any previous input
@@ -203,7 +203,7 @@
           const combinedArray = subnets.map((subnet, index) => {
             return {
               network: subnet,
-              name: subnetNames[index],
+              subnet_name: subnetNames[index],
             };
           });
 
@@ -223,7 +223,7 @@
 
             const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
             const vnet_data = {
-                name: this.selectedVnetName.toLowerCase(),
+                vnet_name: this.selectedVnetName.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
                 subnets: combinedObjects
             }
@@ -284,9 +284,9 @@
       populateFields(selectedVnetName) {
         this.apiResponse = '';
         // Find the selected network by name and populate other fields
-        const network = this.networks.find(net => net.name === selectedVnetName);
+        const network = this.networks.find(net => net.vnet_name === selectedVnetName);
         if (network) {
-          this.selectedVnetName = network.name;
+          this.selectedVnetName = network.vnet_name;
           //this.selectedVnetVlan = network.vnet_vlan;
           this.selectedVnetSubnets = [network.vnet_subnet];
           this.selectedVnetGateway = network.vnet_gateway;

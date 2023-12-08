@@ -11,6 +11,11 @@
                     <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
               </div>
+              <div v-else-if="deleteSubnetResponse">
+                    <h2 align="center">{{ apiResponseMessage }}</h2>
+                    <pre align="center" v-if="!apiError">Deleted SUBNET: {{ subnet_id }}</pre>
+                    <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
+              </div>
         </div>
     </div>    
     <div class="message-row">
@@ -31,12 +36,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in networks" :key="item.name">
-              <td>{{ item.name }}</td>
+            <tr v-for="item in networks" :key="item.vnet_name">
+              <td>{{ item.vnet_name }}</td>
               <td>
                   <ul>
                     <li v-for="subnet in item.subnets">
-                      {{ subnet.name }}
+                      {{ subnet.subnet_name }}
                     </li>
                   </ul>
               </td>
@@ -44,12 +49,12 @@
                   <ul>
                     <li v-for="subnet in item.subnets">
                       {{ subnet.network_prefix }}
-                      <button @click="openModalSubnet(item.name,subnet.name)" class="list-delete-button">Delete</button>
+                      <button @click="openModalSubnet(item.vnet_name,subnet.subnet_id)" class="list-delete-button">Delete</button>
                     </li>
                   </ul>
                 </td>
               <td width="50">
-             <button @click="openModal(item.name)" class="delete-button">Delete</button></td>
+             <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
             </tr>
           </tbody>
         </table>
@@ -78,7 +83,7 @@
           <!-- Modal content -->
           <div>
             <h2>Delete?</h2>
-            <p>Are you sure that you want to delete VLAN "{{ selectedVlanName }}"?</p>
+            <p>Are you sure that you want to delete VLAN "{{ selectedVnetName }}"?</p>
           </div>
 
           <!-- Buttons container with flex layout -->
@@ -99,13 +104,13 @@
           <!-- Modal content -->
           <div>
             <h2>Are you sure that you want to delete:</h2>
-            <p>Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
+            <p>Subnet "{{ subnet_id }}" under VNET "{{ vnet_name }}"?</p>
           </div>
 
           <!-- Buttons container with flex layout -->
         <div class="button-container">
           <!-- Yes button on the left -->
-          <button @click="deleteNetwork" class="delete-button">Yes</button>
+          <button @click="deleteSubnet" class="delete-button">Yes</button>
           
           <!-- No button on the right -->
           <button @click="closeModalSubnet" class="ok-button">No</button>
@@ -147,6 +152,7 @@ export default {
       selectedPrefixLen: '', // Prefix Length (disabled and readonly)
       selectedNetworkAddress: '', // Network Address (disabled and readonly)
       selectedGateway: '', // Gateway (disabled and readonly)
+      selectedVnetName: '',
       networks: [], // This will be populated with data from the API
       harvesterNetworks: [],
       showNotification: false,
@@ -155,9 +161,11 @@ export default {
       loading: false,
       isModalOpen: false,
       apiResponse: null,
+      deleteSubnetResponse: null,
       isModalSubnetOpen: false,
       vrf_name: '',
-      subnet_name: ''
+      subnet_name: '',
+      subnet_id: ''
     };
   },
   methods: {
@@ -167,7 +175,7 @@ export default {
     },
     openModal(vlanName) {
       // Set the selected VLAN name
-      this.selectedVlanName = vlanName;
+      this.selectedVnetName = vlanName;
       // Open the modal
       this.isModalOpen = true;
     },
@@ -175,11 +183,11 @@ export default {
       this.isModalOpen = false;
     },
 
-    openModalSubnet(vrf_name,subnet_name) {
+    openModalSubnet(vrf_name,subnet_id) {
       // Set the selected VLAN name
-      console.log(vrf_name, subnet_name)
+      console.log(vrf_name, subnet_id)
       this.vnet_name = vrf_name;
-      this.subnet_name = subnet_name;
+      this.subnet_id = subnet_id;
 
       // Open the modal
       this.isModalSubnetOpen = true;
@@ -212,33 +220,62 @@ export default {
         });
     },
     deleteNetwork() {
-    console.log(`Delete Network Endpoint, ${this.selectedVlanName}`)
-    // Make an Axios DELETE request to delete the network with the selected VLAN name
-    INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/?vnet_name=${this.selectedVlanName}`)
-      .then(response => {
-        // Handle the response here
-        console.log('Network deleted:', response.data);
-        this.loading = false;
+      console.log(`Delete Network Endpoint, ${this.selectedVnetName}`)
+      // Make an Axios DELETE request to delete the network with the selected VLAN name
+      INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/${this.selectedVnetName}`)
+        .then(response => {
+          // Handle the response here
+          console.log('Network deleted:', response.data);
+          this.loading = false;
 
-        this.apiResponse = response.data;
-        // Set the API response data in the component
-        this.apiResponseMessage = "VNET Successfully Deleted";
-        this.apiError = null; // Reset error state
-        //this.fetchHarvesterNetworks();
-        this.fetchNetworks();
-        // Close the modal after deletion
-        this.closeModal();
-      })
-      .catch(error => {
-        // Handle any errors here
-        console.error('Error deleting network:', error);
-        this.loading = false;
-        this.apiResponseMessage = "Error";
-        // Set the API error in the component
-        this.apiError = error.response ? error.response.data : error.message;
-        this.apiResponse = 1; // Reset response state
-      });
-}
+          this.apiResponse = response.data;
+          // Set the API response data in the component
+          this.apiResponseMessage = "VNET Successfully Deleted";
+          this.apiError = null; // Reset error state
+          //this.fetchHarvesterNetworks();
+          this.fetchNetworks();
+          // Close the modal after deletion
+          this.closeModal();
+        })
+        .catch(error => {
+          // Handle any errors here
+          console.error('Error deleting network:', error);
+          this.loading = false;
+          this.apiResponseMessage = "Error";
+          // Set the API error in the component
+          this.apiError = error.response ? error.response.data : error.message;
+          this.apiResponse = 1; // Reset response state
+        });
+    },
+
+    deleteSubnet() {
+      console.log(`Delete Network Endpoint, ${this.vnet_name}, ${this.subnet_id}`)
+      // Make an Axios DELETE request to delete the network with the selected VLAN name
+      INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/${this.vnet_name}/subnet/${this.subnet_id}`)
+        .then(response => {
+          // Handle the response here
+          console.log('Network deleted:', response.data);
+          this.loading = false;
+
+          this.deleteSubnetResponse = response.data;
+          // Set the API response data in the component
+          this.apiResponseMessage = "Subnet Successfully Deleted";
+          this.apiError = null; // Reset error state
+          //this.fetchHarvesterNetworks();
+          this.fetchNetworks();
+          // Close the modal after deletion
+          this.closeModalSubnet();
+        })
+        .catch(error => {
+          // Handle any errors here
+          console.error('Error deleting network:', error);
+          this.loading = false;
+          this.apiResponseMessage = "Error";
+          // Set the API error in the component
+          this.apiError = error.response ? error.response.data : error.message;
+          this.deleteSubnetResponse = 1; // Reset response state
+        });
+    }
 
 
   },
