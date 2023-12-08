@@ -29,9 +29,9 @@
         <table v-if="networks && networks.length">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>VLAN</th>
+              <th>VNET</th>
               <th>Subnet</th>
+              <th>Network</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -63,8 +63,8 @@
           <thead>
             <tr>
               <th>VNET</th>
-              <th>VLAN</th>
               <th>Subnet</th>
+              <th>Network</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -343,7 +343,7 @@ export default {
   }
 
   .list-delete-button {
-    background-color: #0e5c98;
+    background-color: #266d0a;
     color: #fff;
     border: none;
     padding: 0 2px; /* Adjust top and bottom padding */

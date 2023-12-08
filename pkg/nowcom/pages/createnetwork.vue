@@ -89,6 +89,9 @@
                     <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.vnet.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedVnetName  }}</pre>
                 </div>
+                <div v-else-if="apiResponseUpdate">
+                  <h2 align="center">{{ apiResponseMessage }}</h2>
+                </div>
             </div>
         </div>    
       </div>
@@ -132,6 +135,7 @@
         apiError: null, 
         newNetworkName: '', // New data property for the new network name
         creatingNewNetwork: false, // New data property to track if creating a new network
+        apiResponseUpdate: '' //response for update
       };
     },
     methods: {
@@ -237,8 +241,14 @@
                 this.loading = false;
                 // Set the API response data in the component
                 this.apiResponse = response.data;
-                this.apiResponseMessage = response.data.message;
-
+                if(this.creatingNewNetwork == false){
+                  this.apiResponse = null;
+                  this.apiResponseUpdate = true;
+                  this.apiResponseMessage = "Subnet Successfully added"
+                }else{
+                  this.apiResponseMessage = response.data.message;
+                }
+              
                 console.log("response from create networks",this.apiResponse)
                 this.apiError = null; // Reset error state
                 this.fetchNetworks();
@@ -288,7 +298,7 @@
         if (network) {
           this.selectedVnetName = network.vnet_name;
           //this.selectedVnetVlan = network.vnet_vlan;
-          this.selectedVnetSubnets = [network.vnet_subnet];
+          this.selectedVnetSubnets = ['10.55.0.0'];
           this.selectedVnetGateway = network.vnet_gateway;
         } else {
           // Reset other fields if the network is not found
