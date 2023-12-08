@@ -122,7 +122,7 @@
       return {
         selectedVnetName: '', // Dropdown for network name
         selectedVnetSubnets: ['10.55.0.0'], // Network Address (disabled and readonly)
-        selectedSubnetName: ['subnet'],
+        selectedSubnetName: ['default'],
         selectedVnetGateway: '', // Gateway (disabled and readonly)
         networks: [], // This will be populated with data from the API
         harvesterNetworks: [],
@@ -187,7 +187,7 @@
         addSubnet() {
           // Add a new empty subnet field
           this.$set(this.selectedVnetSubnets, this.selectedVnetSubnets.length, '10.55.0.0');
-          this.$set(this.selectedSubnetName, this.selectedSubnetName.length, 'subnet');
+          this.$set(this.selectedSubnetName, this.selectedSubnetName.length, 'default');
         },
 
         removeSubnet(index) {
