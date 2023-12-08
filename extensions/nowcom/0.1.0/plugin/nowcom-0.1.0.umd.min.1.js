@@ -1,2 +1,0 @@
-(("undefined"!==typeof self?self:this)["webpackJsonpnowcom_0_1_0"]=("undefined"!==typeof self?self:this)["webpackJsonpnowcom_0_1_0"]||[]).push([[1],{bcba:function(e,n,a){"use strict";a.r(n);var t=function(){var e=this,n=e._self._c;return n("div",[n("Banner",{attrs:{color:"primary"}},[e._v(" Nowcom Masthead ")])],1)},s=[],o=a("eb32"),r={name:"MastheadDetailsComponent",components:{Banner:o["a"]},data(){return{key:"asdasd"}}},c=r,d=a("d802"),f=Object(d["a"])(c,t,s,!1,null,"541e9167",null);n["default"]=f.exports}}]);
-//# sourceMappingURL=nowcom-0.1.0.umd.min.1.js.map

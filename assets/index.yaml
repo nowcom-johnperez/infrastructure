@@ -12,7 +12,27 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.0
-    created: "2023-12-04T11:34:32.8896-08:00"
+    created: "2023-12-08T09:58:46.291357-08:00"
+    description: Adds a new feature to the top-level menu that shows a full-page clock
+    digest: e3e93403e49fab274327cdb2b8a2665950d54a6e37e56c8c5cf3a695b5ace771
+    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
+    name: clock-francis
+    type: application
+    urls:
+    - assets/clock/clock-francis-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/kube-version: '>= 1.16.0-0'
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2023-12-08T09:58:46.291481-08:00"
     description: Adds a new feature to the top-level menu that shows a full-page clock
     digest: b323d8220a44c88000f840ad66bb0d37226503e9d2be56a21ab62a90fdbbf65e
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
@@ -33,9 +53,9 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-04T11:34:32.889728-08:00"
+    created: "2023-12-08T09:58:46.291587-08:00"
     description: Nowcom Infrastructure Network Automation
-    digest: 41409979a910ced21b01cee6df6ef701fc4b8a6187147ef09bf3fea06a01aa32
+    digest: d7957509ed26610ab9588bd8bc70dcec3652757e1a84d6ae66533a346c765804
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
     name: nowcom
     type: application
@@ -54,7 +74,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-04T11:34:32.88985-08:00"
+    created: "2023-12-08T09:58:46.291695-08:00"
     description: Francis Test
     digest: 13090a18f44db8288f21bcfcbfb5a8bfae4bdac45faada9125e206d92ecc721a
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -63,4 +83,4 @@ entries:
     urls:
     - assets/nowcom/test-0.1.0.tgz
     version: 0.1.0
-generated: "2023-12-04T11:34:32.889349-08:00"
+generated: "2023-12-08T09:58:46.291132-08:00"
