@@ -124,7 +124,7 @@
 <script>
 import axios from 'axios';
 import https from 'https';
-import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
+import { LOCAL_URL, ENDPOINT_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL } from '../config/api.ts';
 
 
 const INSTANCE = axios.create({

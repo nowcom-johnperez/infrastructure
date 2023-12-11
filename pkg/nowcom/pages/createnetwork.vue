@@ -101,7 +101,7 @@
   <script>
   import axios from 'axios';
   import https from 'https';
-  import { LOCAL_URL, ENDPOINT_NETWORKS, LIST_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL, TOKEN } from '../config/api.ts';
+  import { LOCAL_URL, ENDPOINT_NETWORKS, LIST_NETWORKS,  NETWORK_URL, NETWORKS, NETWORK_ATTACHMENTS, HARVESTER_URL } from '../config/api.ts';
   
   
   const INSTANCE = axios.create({
@@ -217,13 +217,7 @@
   
       //loading
       this.loading = true;  
-      
-      const HEADER = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${TOKEN}`,
-        },
-      }
+    
 
             const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
             const vnet_data = {
