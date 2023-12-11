@@ -12,9 +12,9 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.0
-    created: "2023-12-11T09:39:14.540935-08:00"
+    created: "2023-12-11T09:43:16.93459-08:00"
     description: Adds a new feature to the top-level menu that shows a full-page clock
-    digest: b1a6695d0a9f3e7d81a8b24e3f9f50ccbb5155a20b87ee10eef15603f7929a72
+    digest: b44d4c82cd2a14fde124b54f9307f269fc13b06dd1090deb1f1b8fc0b6653055
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
     name: clock-francis
     type: application
@@ -32,7 +32,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.0
-    created: "2023-12-11T09:39:14.541058-08:00"
+    created: "2023-12-11T09:43:16.934713-08:00"
     description: Adds a new feature to the top-level menu that shows a full-page clock
     digest: b323d8220a44c88000f840ad66bb0d37226503e9d2be56a21ab62a90fdbbf65e
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
@@ -53,9 +53,9 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-11T09:39:14.541177-08:00"
+    created: "2023-12-11T09:43:16.934822-08:00"
     description: Nowcom Infrastructure Network Automation
-    digest: eb81ef38a699c24ccc38a7cdb9224fcf770fe2dc7f2836b32309edaba1407626
+    digest: 8ef26d51555ce5398843afc28a92eb5cb56f089c39698502e8949670abd646bc
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
     name: nowcom
     type: application
@@ -74,7 +74,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-12-11T09:39:14.541289-08:00"
+    created: "2023-12-11T09:43:16.93493-08:00"
     description: Francis Test
     digest: 13090a18f44db8288f21bcfcbfb5a8bfae4bdac45faada9125e206d92ecc721a
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -83,4 +83,4 @@ entries:
     urls:
     - assets/nowcom/test-0.1.0.tgz
     version: 0.1.0
-generated: "2023-12-11T09:39:14.540701-08:00"
+generated: "2023-12-11T09:43:16.934371-08:00"
