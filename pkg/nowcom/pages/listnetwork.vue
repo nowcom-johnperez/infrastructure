@@ -21,6 +21,7 @@
     <div class="message-row">
         <div class="message-column">
           <button @click="routeCreateNetwork" class="custom-button" style="width: 70px; margin-right: 10px;">Create</button>  
+          <button @click="refreshList" class="custom-button" style="width: 70px; margin-right: 10px;">Refresh</button>  
         </div>
     </div>
       <br>
@@ -275,6 +276,9 @@ export default {
           this.apiError = error.response ? error.response.data : error.message;
           this.deleteSubnetResponse = 1; // Reset response state
         });
+    },
+    refreshList(){
+      this.fetchNetworks();
     }
 
 
@@ -323,7 +327,7 @@ export default {
   }
   
   .custom-button {
-    background-color: #007bff;
+    background-color: #3b7498;
     color: #fff;
     border: none;
     padding: 5px 10px;
@@ -358,7 +362,7 @@ export default {
   }
 
   .ok-button {
-    background-color: #007bff;
+    background-color: #3b7498;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -371,9 +375,9 @@ export default {
   }
 
   .disable-hover:hover {
-  background-color: #007bff; /* Change this to the non-hover background color */
-  cursor: not-allowed;
- }
+    background-color: #007bff; /* Change this to the non-hover background color */
+    cursor: not-allowed;
+  }
 
 
   /* notif */
@@ -411,7 +415,7 @@ export default {
   }
 
   th {
-    background-color: #007bff;
+    background-color: #3b7498;
   }
 
   .modal-overlay {

@@ -1,80 +1,135 @@
 <template>
     <div class="base">
-      <h1>VNET Network</h1>
-      <p>This is page is for the creation of VNET</p>
-    </br>
-  
-      <div class="form-container">
-        <div class="form-row">
-            <div class="form-column">
-            <h5 align="left">VNET Name</h5>
-            <!-- Updated select input with "Create New VNET" option -->
-            <select v-model="selectedVnetName" @change="handleSelectChange">
-                <option value="">Select Network Name</option>
-                <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
-                <option value="Create VNET">Create New VNET</option>
-            </select>
-            
-                <!-- New input field that appears when "Create New VNET" is selected -->
-                <!-- Modal for creating a new network -->
-                <div v-if="creatingNewNetwork" class="modal-overlay">
-                <div class="modal">
-                    <!-- Modal content -->
-                    <div>
-                    <h2>Create New Network</h2>
-                    <input v-model="newNetworkName" @input="handleNewNetworkInput" value="Vrf-" placeholder="Enter new network name" />
-                    </div>
-                    <!-- Buttons container with flex layout -->
-                    <div class="button-container">
-                    <!-- Save button -->
-                    <button @click="saveNewNetwork" class="custom-button">Save</button>
-                    <!-- Cancel button -->
-                    <button @click="cancelNewNetwork" class="custom-button">Cancel</button>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
+      <h1>Create VNET Network</h1>
+      <!-- <p>This is page is for the creation of VNET</p> -->
+      </br>
+      <!-- Tab buttons -->
+      <div class="tab-buttons">
+         <button @click="changeTab('tab1')" :class="{ 'active': currentTab === 'tab1' }">Basics</button>
+         <button @click="changeTab('tab2')" :class="{ 'active': currentTab === 'tab2' }">IP Addresses</button>
+         <button @click="changeTab('tab3')" :class="{ 'active': currentTab === 'tab3' }">Tags</button>
+         <button @click="changeTab('tab4')" :class="{ 'active': currentTab === 'tab4' }">Review + Create</button>
+      </div>
 
-        <div class="form-row">
-          <div class="form-column">
-            <!-- <h5 align="left">VNET Name</h5> -->
-            <input type="text" v-model="selectedVnetName" readonly disabled placeholder="vnet" />
-          </div>
-        </div>
+    
+      <div class="form-container">
+        <div class="form-row-2">
+            <div class="form-column">
+               <!-- Tab content -->
+               <div v-if="currentTab === 'tab1'">
+                    <p>
+                      Nowcom Virtual Network (VNet) is the fundamental building block for your private network in Nowcom Cloud. 
+                      VNet enables many types of Nowcom resources, such as Nowcom Virtual Machines (VM), 
+                      to securely communicate with each other, the internet, and on-premises networks. 
+                      VNet is similar to a traditional network that you'd operate in your own data center, 
+                      but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and isolation.
+                    </p>
+                  </br>  
+                  <h5 align="left">VNET Name</h5>
+                  <!-- Updated select input with "Create New VNET" option -->
+                  <!-- <select v-model="selectedVnetName" @change="handleSelectChange">
+                      <option value="">Select Network Name</option>
+                      <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
+                      <option value="Create VNET">Create New VNET</option>
+                  </select> -->
+                  <!-- <h5 align="left">VNET Name</h5> -->
+                  <input type="text" v-model="selectedVnetName" placeholder="vnet" required/>
+
+                      <!-- New input field that appears when "Create New VNET" is selected -->
+                      <!-- Modal for creating a new network -->
+                      <div v-if="creatingNewNetwork" class="modal-overlay">
+                        <div class="modal">
+                            <!-- Modal content -->
+                            <div>
+                              <h2>Create New Network</h2>
+                              <input v-model="newNetworkName" @input="handleNewNetworkInput" value="Vrf-" placeholder="Enter new network name" />
+                            </div>
+                            <!-- Buttons container with flex layout -->
+                            <div class="button-container">
+                              <!-- Save button -->
+                              <button @click="saveNewNetwork" class="custom-button">Save</button>
+                              <!-- Cancel button -->
+                              <button @click="cancelNewNetwork" class="custom-button">Cancel</button>
+                            </div>
+                        </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+          <div class="form-container">
+            <div class="form-row-2">
+                <div v-if="currentTab === 'tab2'">
+                      <!-- <h5 align="left">Subnet</h5>   -->
+                      <p>Configure your virtual network address space with the IPv4 and IPv6 addresses and subnets you need. </br></br>
+                          Define the address space of your virtual network with one or more IPv4 or IPv6 address ranges. 
+                          Create subnets to segment the virtual network address space into smaller ranges for use by your applications. 
+                          When you deploy resources into a subnet, Nowcom assigns the resource an IP address from the subnet.</p></br>
+                          <div v-for="(subnet, index) in selectedVnetSubnets" :key="index" class="form-row-3">
+                            <input
+                                type="text"
+                                v-model="selectedSubnetName[index]"
+                                @input="handleSubnetInput(index)"
+                                placeholder="Subnet Name"
+                                title="Please enter a valid IP address"
+                              />
+                            <div >
+                              <input
+                                type="text"
+                                v-model="selectedVnetSubnets[index]"
+                                @input="handleSubnetInput(index)"
+                                placeholder="Enter subnet (e.g., 10.0.0.0)"
+                                pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+                                title="Please enter a valid IP address"
+                              />
+                            </div>
+                            <div class="form-column" align="left">
+                                <button @click="removeSubnet(index)" class="row-button">Remove</button>
+                              </div>
+                          </div>
+                          <div class="form-row">
+                            <div class="form-column" align="left">
+                              <button @click="addSubnet" class="row-button"> + Add Subnet</button>
+                            </div>
+                          </div>
+                    </div>
+
+                </div>
+              </div>    
+          <div class="form-container">
+            <div class="form-row-2">
+              <div class="form-column">
+                  <div v-if="currentTab === 'tab3'">
+                    <h2>Tags</h2>
+                    <p>Tags</p>
+                  </div>   
+              </div>       
+            </div>
+           </div>
+
+           <div class="form-container">
+            <div class="form-row-2">
+              <div class="form-column">
+                  <div v-if="currentTab === 'tab4'">
+                    <h2>Review + Create</h2>
+                    <p>VLAN : {{ selectedVnetName }}</p>
+                    
+                    </br>
+                    <h2>Subnet</h2>
+                    <p v-for="(name, index) in selectedSubnetName" :key="index">
+                      Subnet:  {{ name }} - {{ selectedVnetSubnets[index] }}
+                    </p>
+                  </div>   
+              </div>       
+            </div>
+           </div>
+
+        
       </br>
         <!-- Dynamic rows for subnets -->
-      <h5 align="left">Subnet</h5>  
-      <div v-for="(subnet, index) in selectedVnetSubnets" :key="index" class="form-row">
-        <input
-            type="text"
-            v-model="selectedSubnetName[index]"
-            @input="handleSubnetInput(index)"
-            placeholder="Subnet Name"
-            title="Please enter a valid IP address"
-          />
-        <div class="form-column">
-          <input
-            type="text"
-            v-model="selectedVnetSubnets[index]"
-            @input="handleSubnetInput(index)"
-            placeholder="Enter subnet (e.g., 10.0.0.0)"
-            pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-            title="Please enter a valid IP address"
-          />
-        </div>
-        <div class="form-column" align="left">
-            <button @click="removeSubnet(index)" class="row-button">Remove</button>
-          </div>
-      </div>
-      <div class="form-row">
-        <div class="form-column" align="left">
-          <button @click="addSubnet" class="row-button"> + Add Subnet</button>
-        </div>
-      </div>
+      
         <div class="form-row">
             <div class="form-column">
-            <button @click="createNetwork" class="custom-button" :disabled="loading" :class="{ 'disable-hover': loading }" >Create Network</button>
+            <button @click="createNetwork" class="custom-button" :disabled="loading" :class="{ 'disable-hover': loading }" >Review + Create</button>
             </div>
         </div>    
         <!-- Loading indicator -->
@@ -93,8 +148,8 @@
                   <h2 align="center">{{ apiResponseMessage }}</h2>
                 </div>
             </div>
-        </div>    
-      </div>
+          </div>  
+    </div>
     </div>
   </template>
   
@@ -135,10 +190,14 @@
         apiError: null, 
         newNetworkName: '', // New data property for the new network name
         creatingNewNetwork: false, // New data property to track if creating a new network
-        apiResponseUpdate: '' //response for update
+        apiResponseUpdate: '', //response for update
+        currentTab: 'tab1', // Initial tab
       };
     },
     methods: {
+        changeTab(tabName) {
+            this.currentTab = tabName;
+        },
         handleSelectChange() {
             const network = this.networks.find(net => net.vnet_name === this.selectedVnetName);
             if (this.selectedVnetName === 'Create VNET') {
@@ -316,12 +375,18 @@
       margin-left: 10px;
     }
    .form-container {
-    text-align: center;
-      }
+      text-align: left;
+    }
   
-    .form-row {
+    .form-row-3 {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        padding: 10px 0; /* Add top and bottom padding */
+    }
+    .form-row-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         grid-gap: 10px;
         padding: 10px 0; /* Add top and bottom padding */
     }
@@ -335,7 +400,7 @@
     }
     
     .custom-button {
-      background-color: #007bff;
+      background-color: #3b7498;
       color: #fff;
       border: none;
       padding: 5px 10px;
@@ -425,5 +490,28 @@
       text-align: center;
       z-index: 101; /* Make sure it has a higher z-index than the overlay */
     }
+    /* Add your styling here */
+    .tab-buttons {
+        display: flex;
+        /*margin: 0 16px; /* Add margin to the buttons */
+      }
+      
+      .tab-buttons button {
+        padding: 5px 16px; /* Adjust padding for smaller buttons */
+        border: none;
+        background-color: #3b7498;
+        cursor: pointer;
+        margin-right: 8px; /* Add margin between buttons */
+        border-radius: 4px; /* Add rounded corners */
+      }
+      
+      .tab-buttons button.active {
+        background-color: #cdd7e2;
+        color: #3b7498;
+      }
+      /* Style for tab content */
+      h2 {
+        color: #007bff;
+      }
     </style>
     
