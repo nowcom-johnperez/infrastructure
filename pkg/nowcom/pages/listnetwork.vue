@@ -334,6 +334,8 @@ export default {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
+    justify-content: center;
+    align-items: center; /* Add this line for vertical alignment if needed */
   }
 
   .delete-button {

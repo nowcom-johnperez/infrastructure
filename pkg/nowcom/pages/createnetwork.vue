@@ -99,8 +99,19 @@
             <div class="form-row-2">
               <div class="form-column">
                   <div v-if="currentTab === 'tab3'">
-                    <h2>Tags</h2>
-                    <p>Tags</p>
+                    <div>
+                        <input
+                          v-model="newTag"
+                          @keydown.enter.prevent="addTag"
+                          placeholder="Type and press Enter to add tags"
+                        />
+                      </div>
+                      <div>
+                        <span v-for="(tag, index) in tags" :key="index" class="tag">
+                          {{ tag }}
+                          <button @click="removeTag(index)">X</button>
+                        </span>
+                      </div>
                   </div>   
               </div>       
             </div>
@@ -206,9 +217,21 @@
         creatingNewNetwork: false, // New data property to track if creating a new network
         apiResponseUpdate: '', //response for update
         currentTab: 'tab1', // Initial tab
+        newTag: '',
+        tags: [],
       };
     },
     methods: {
+      addTag() {
+        const trimmedTag = this.newTag.trim();
+        if (trimmedTag) {
+          this.tags.push(trimmedTag);
+          this.newTag = ''; // Clear the input field after adding a tag
+        }
+      },
+      removeTag(index) {
+        this.tags.splice(index, 1);
+      },
       showSpinner() {
         this.isLoading = true;
         // Hide the spinner after 5 seconds
@@ -607,6 +630,21 @@
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+      }
+      .tag {
+        display: inline-block;
+        margin: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .tag button {
+        margin-left: 0.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: red;
       }
     </style>
     
