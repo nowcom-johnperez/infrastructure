@@ -109,16 +109,16 @@
            <div class="form-container">
             <div class="form-row-2">
               <div class="form-column">
-                  <div v-if="currentTab === 'tab4'">
-                    <h2>Review + Create</h2>
-                    <p>VLAN : {{ selectedVnetName }}</p>
-                    
-                    </br>
-                    <h2>Subnet</h2>
-                    <p v-for="(name, index) in selectedSubnetName" :key="index">
-                      Subnet:  {{ name }} - {{ selectedVnetSubnets[index] }}
-                    </p>
-                  </div>   
+                <div v-if="currentTab === 'tab4'">
+                  <h2>Basics</h2>
+                  <p :style="{ color: selectedVnetName ? '' : 'red' }">Name : {{ selectedVnetName || 'empty' }}</p>
+
+                  </br>
+                  <h2>Subnet</h2>
+                  <p v-for="(name, index) in selectedSubnetName" :key="index">
+                    Subnet:  {{ name }} - {{ selectedVnetSubnets[index] || 'empty' }}
+                  </p>
+                </div>
               </div>       
             </div>
            </div>
@@ -129,24 +129,34 @@
       
         <div class="form-row">
             <div class="form-column">
-            <button @click="createNetwork" class="custom-button" :disabled="loading" :class="{ 'disable-hover': loading }" >Review + Create</button>
+              <button @click="previousTab" class="custom-button" :disabled="currentTab === 'tab1'">Previous</button>
+              <button @click="nextTab" class="custom-button" :disabled="currentTab === 'tab4'">Next</button>
+              <!-- Conditionally render the button based on the current tab -->
+              <button v-if="currentTab === 'tab4'" @click="createNetwork" class="custom-button" :disabled="loading || !selectedVnetName">
+                {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
+              </button>
             </div>
         </div>    
         <!-- Loading indicator -->
   
-        <div v-if="loading" class="loading-indicator">Loading...</div>  
+        <div v-if="isLoading" class="spinner-modal">
+        <div class="spinner-content">
+            <!-- You can use an image or any other content for the spinner -->
+            <img src="../assets/img/loading.png" alt="Loading Spinner" class="spinner-image" />
+          </div>
+       </div>
         </br></br></br>
         <div class="form-row">
             <div class="form-column">
             <!-- Display API response data -->
                 <div v-if="apiResponse">
                     <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Created VLAN: {{ apiResponse.vnet.vnet_name }}</pre>
+                    <pre align="center" v-if="!apiError">Created VNET: {{ apiResponse.vnet.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedVnetName  }}</pre>
                 </div>
-                <div v-else-if="apiResponseUpdate">
+                <!-- <div v-else-if="apiResponseUpdate">
                   <h2 align="center">{{ apiResponseMessage }}</h2>
-                </div>
+                </div> -->
             </div>
           </div>  
     </div>
@@ -169,6 +179,10 @@
     baseURL: HARVESTER_URL,
     httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
   });
+
+  const PRODUCT_NAME = 'Network';
+  const LIST_NETWORK = 'VNET';
+  const BLANK_CLUSTER = '_';
   
   export default {
     name: 'CreateNetwork',
@@ -184,7 +198,7 @@
         showNotification: false,
         notificationType: '', // 'success' or 'error'
         notificationMessage: '',
-        loading: false,
+        isLoading: false,
         apiResponse: null, // New data property to store the API response
         apiResponseMessage: null, // New data property to store the API response
         apiError: null, 
@@ -195,8 +209,49 @@
       };
     },
     methods: {
+      showSpinner() {
+        this.isLoading = true;
+        // Hide the spinner after 5 seconds
+        setTimeout(() => {
+          this.hideSpinner();
+        }, 2000);
+      },
+      hideSpinner() {
+        this.isLoading = false;
+      },
+      routeListNetwork() {
+        this.$router.push(`/${ PRODUCT_NAME }/c/${BLANK_CLUSTER}/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
+      },
         changeTab(tabName) {
             this.currentTab = tabName;
+        },
+        previousTab() {
+          switch (this.currentTab) {
+            case 'tab2':
+              this.currentTab = 'tab1';
+              break;
+            case 'tab3':
+              this.currentTab = 'tab2';
+              break;
+            case 'tab4':
+              this.currentTab = 'tab3';
+              break;  
+            // Add more cases for additional tabs if needed
+          }
+        },
+        nextTab() {
+          switch (this.currentTab) {
+            case 'tab1':
+              this.currentTab = 'tab2';
+              break;
+            case 'tab2':
+              this.currentTab = 'tab3';
+              break;
+            case 'tab3':
+              this.currentTab = 'tab4';
+              break;
+            // Add more cases for additional tabs if needed
+          }
         },
         handleSelectChange() {
             const network = this.networks.find(net => net.vnet_name === this.selectedVnetName);
@@ -275,7 +330,7 @@
       async createNetwork() {
   
       //loading
-      this.loading = true;  
+      this.isLoading = true;  
     
 
             const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
@@ -291,25 +346,24 @@
             .then(response => {
                 // Handle the response here
                 console.log('Network created:', response.data);
-                this.loading = false;
+                this.isLoading = false;
                 // Set the API response data in the component
                 this.apiResponse = response.data;
-                if(this.creatingNewNetwork == false){
-                  this.apiResponse = null;
-                  this.apiResponseUpdate = true;
-                  this.apiResponseMessage = "Subnet Successfully added"
-                }else{
-                  this.apiResponseMessage = response.data.message;
-                }
-              
                 console.log("response from create networks",this.apiResponse)
+
+                this.apiResponseMessage = "VNET Successfully Added"
+
                 this.apiError = null; // Reset error state
                 this.fetchNetworks();
+
+                setTimeout(() => {
+                  this.routeListNetwork();
+                }, 2000);
             })
             .catch(error => {
                 // Handle any errors here
                 console.error('Error creating network:', error);
-                this.loading = false;
+                this.isLoading = false;
                 this.apiResponseMessage = "Error";
             // Set the API error in the component
                 this.apiError = "Error creating VRF";
@@ -403,10 +457,14 @@
       background-color: #3b7498;
       color: #fff;
       border: none;
-      padding: 5px 10px;
       border-radius: 5px;
       cursor: pointer;
       margin-top: 10px;
+      margin-left: 5px;
+      width: 100px;
+      /* display: grid; */
+      justify-content: center;
+      align-items: center; /* Add this line for vertical alignment if needed */
     }
 
     .row-button {
@@ -421,6 +479,11 @@
     
     .custom-button:hover {
       background-color: #0056b3;
+    }
+    .custom-button:disabled {
+      background-color: #cccccc; /* Grey */
+      color: #666666; /* Dark grey */
+      cursor: not-allowed;
     }
   
     .disable-hover:hover {
@@ -512,6 +575,38 @@
       /* Style for tab content */
       h2 {
         color: #007bff;
+      }
+
+
+      /* Your other styles */
+      .spinner-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for the modal effect */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Make sure the spinner is on top of other elements */
+      }
+
+      .spinner-content {
+        text-align: center;
+      }
+
+      .spinner-image {
+        width: 100px; /* Adjust the size of your spinner image */
+        height: 100px;
+        animation: spin 2s linear infinite; /* Rotate the image indefinitely 
+        /* You can add more styles to customize the appearance of your spinner image */
+        border-radius: 50%; /* Make the image round */
+
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
     </style>
     
