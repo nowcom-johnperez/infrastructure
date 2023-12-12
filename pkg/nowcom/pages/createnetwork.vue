@@ -124,7 +124,13 @@
                   <h2>Basics</h2>
                   <p :style="{ color: selectedVnetName ? '' : 'red' }">Name : {{ selectedVnetName || 'empty' }}</p>
 
-                  </br>
+                  </br> </br> </br>
+                  <h2>Tag</h2>
+                  <span v-for="(tag, index) in tags" :key="index" class="tag">
+                        {{ tag }}
+                  </span>
+                  
+                  </br> </br> </br>
                   <h2>Subnet</h2>
                   <p v-for="(name, index) in selectedSubnetName" :key="index">
                     Subnet:  {{ name }} - {{ selectedVnetSubnets[index] || 'empty' }}
@@ -133,29 +139,14 @@
               </div>       
             </div>
            </div>
-
-        
-      </br>
-        <!-- Dynamic rows for subnets -->
-      
-        <div class="form-row">
-            <div class="form-column">
-              <button @click="previousTab" class="custom-button" :disabled="currentTab === 'tab1'">Previous</button>
-              <button @click="nextTab" class="custom-button" :disabled="currentTab === 'tab4'">Next</button>
-              <!-- Conditionally render the button based on the current tab -->
-              <button v-if="currentTab === 'tab4'" @click="createNetwork" class="custom-button" :disabled="loading || !selectedVnetName">
-                {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
-              </button>
-            </div>
-        </div>    
+        </br>
         <!-- Loading indicator -->
-  
         <div v-if="isLoading" class="spinner-modal">
-        <div class="spinner-content">
+          <div class="spinner-content">
             <!-- You can use an image or any other content for the spinner -->
             <img src="../assets/img/loading.png" alt="Loading Spinner" class="spinner-image" />
           </div>
-       </div>
+        </div>
         </br></br></br>
         <div class="form-row">
             <div class="form-column">
@@ -169,7 +160,19 @@
                   <h2 align="center">{{ apiResponseMessage }}</h2>
                 </div> -->
             </div>
-          </div>  
+         </div>  
+        <!-- Dynamic rows for subnets -->
+        <div class="form-row-bottom">
+          <div class="form-column-bottom">
+              <button @click="previousTab" class="custom-button" :disabled="currentTab === 'tab1'">Previous</button>
+              <button @click="nextTab" class="custom-button" :disabled="currentTab === 'tab4'">Next</button>
+              <!-- Conditionally render the button based on the current tab -->
+              <button v-if="currentTab === 'tab4'" @click="createNetwork" class="custom-button" :disabled="isLoading || !selectedVnetName">
+                {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
+              </button>
+            </div>
+        </div>    
+
     </div>
     </div>
   </template>
@@ -646,5 +649,18 @@
         cursor: pointer;
         color: red;
       }
+      /* Add this style to position the buttons at the bottom */
+      .form-row-bottom {
+        position: fixed;
+        bottom: 50px;
+        margin-left: 10%;
+        transform: translateX(-50%);
+      }
+
+      .form-column-bottom {
+        display: flex;
+        justify-content: space-between;
+      }
+
     </style>
     
