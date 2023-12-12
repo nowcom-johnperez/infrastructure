@@ -83,8 +83,8 @@
                               />
                             </div>
                             <div class="form-column" align="left">
-                                <button @click="removeSubnet(index)" class="row-button">Remove</button>
-                              </div>
+                              <button @click="removeSubnet(index)" class="row-button" v-if="index > 0">Remove</button>
+                            </div>
                           </div>
                           <div class="form-row">
                             <div class="form-column" align="left">
