@@ -32,13 +32,13 @@
             <tr>
               <th>VNET</th>
               <th>Subnet</th>
-              <th>Network</th>
+              <!-- <th>Network</th> -->
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in networks" :key="item.vnet_name">
-              <td>{{ item.vnet_name }}</td>
+              <td><a @click.prevent="openSidebar(item)">{{ item.vnet_name }}</a></td>
               <td>
                   <ul>
                     <li v-for="subnet in item.subnets">
@@ -46,14 +46,14 @@
                     </li>
                   </ul>
               </td>
-              <td>
+              <!-- <td>
                   <ul>
                     <li v-for="subnet in item.subnets">
                       {{ subnet.network_prefix }}
-                      <button @click="openModalSubnet(item.vnet_name,subnet.subnet_id)" class="list-delete-button">Delete</button>
+                   
                     </li>
                   </ul>
-                </td>
+                </td> -->
               <td width="50">
              <button @click="openModal(item.vnet_name)" class="delete-button">Delete</button></td>
             </tr>
@@ -65,16 +65,50 @@
             <tr>
               <th>VNET</th>
               <th>Subnet</th>
-              <th>Network</th>
+              <!-- <th>Network</th> -->
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colspan="4" style="text-align: center;">No items available</td>
+              <td colspan="3" style="text-align: center;">No items available</td>
             </tr>
           </tbody>
         </table>
+        </div>
+      </div>
+
+      <div class="sidebar" :class="{ 'sidebar-visible': sidebarVisible }">
+        <div class="sidebar-content">
+          <h2>{{ selectedNetwork ? selectedNetwork.vnet_name : 'No Network Selected' }}</h2>
+            <div class="form-row">
+                  <div class="form-column" align="left">
+                      <button @click.prevent="addSubnetModal" class="custom-button"> + Add Subnet</button>
+                   </div>
+            </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Subnet Name</th>
+                <th>Network Prefix</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody>
+              <tr v-for="subnet in selectedNetwork ? selectedNetwork.subnets : []" :key="subnet.subnet_id">
+                <!-- Subnet Name -->
+                <td>{{ subnet ? subnet.subnet_name : 'No Subnet Name' }}</td>
+                <!-- Network Prefix -->
+                <td>{{ subnet ? subnet.network_prefix : 'No Network Prefix' }}</td>
+                <!-- Action -->
+                <td>
+                  <button @click="openModalSubnet(selectedNetwork.vnet_name,subnet.subnet_id)" class="list-delete-button">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button @click="closeSidebar" class="close-button">×</button>
         </div>
       </div>
 
@@ -166,10 +200,24 @@ export default {
       isModalSubnetOpen: false,
       vrf_name: '',
       subnet_name: '',
-      subnet_id: ''
+      subnet_id: '',
+      selectedNetwork: null,
+      sidebarVisible: false,
     };
   },
   methods: {
+    addSubnetModal() {
+    
+    },
+    async openSidebar(item) {
+      // Update the item with the fetched data
+      this.selectedNetwork = item;
+      this.sidebarVisible = true;
+    },
+    closeSidebar() {
+      this.selectedNetwork = null;
+      this.sidebarVisible = false;
+    },
     // Method to route to the Create Network page
     routeCreateNetwork() {
       this.$router.push(`/${ PRODUCT_NAME }/c/${BLANK_CLUSTER}/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
@@ -235,6 +283,7 @@ export default {
           this.apiError = null; // Reset error state
           //this.fetchHarvesterNetworks();
           this.fetchNetworks();
+          
           // Close the modal after deletion
           this.closeModal();
         })
@@ -250,10 +299,10 @@ export default {
     },
 
     deleteSubnet() {
-      console.log(`Delete Network Endpoint, ${this.vnet_name}, ${this.subnet_id}`)
+      console.log(`Delete Subnet Endpoint, ${this.vnet_name}, ${this.subnet_id}`)
       // Make an Axios DELETE request to delete the network with the selected VLAN name
       INSTANCE.delete(`${ENDPOINT_NETWORKS}/vnet/${this.vnet_name}/subnet/${this.subnet_id}`)
-        .then(response => {
+        .then(async response => {
           // Handle the response here
           console.log('Network deleted:', response.data);
           this.loading = false;
@@ -263,7 +312,23 @@ export default {
           this.apiResponseMessage = "Subnet Successfully Deleted";
           this.apiError = null; // Reset error state
           //this.fetchHarvesterNetworks();
-          this.fetchNetworks();
+          await this.fetchNetworks();
+
+          const foundItem = this.networks.find(dataItem => dataItem.vnet_name === this.vnet_name);
+
+          console.log(foundItem)
+          if (foundItem) {
+              // Remove the subnet object with the specified subnet_id
+              foundItem.subnets = foundItem.subnets.filter(subnet => subnet.subnet_id !== this.subnet_id);
+
+              // Update the selectedNetwork with the modified found item
+              this.selectedNetwork = foundItem;
+              console.log('Selected Network:', this.selectedNetwork);
+          } else {
+              // Handle the case where the item is not found in the updated data
+              console.error('Item not found in the updated data.');
+          }
+        
           // Close the modal after deletion
           this.closeModalSubnet();
         })
@@ -407,7 +472,7 @@ export default {
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 25px;
   }
 
   th, td {
@@ -443,6 +508,40 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-top: 20px; /* Add margin for spacing */
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background-color: #736f6f; /* Set a default background color */
+    overflow-x: hidden;
+    transition: 0.5s; /* Adjust the duration of the animation */
+  }
+
+  .sidebar-content {
+    padding: 20px;
+    margin-top: 60px;
+  }
+
+  .sidebar-visible {
+    width: 65%; /* Adjust the width of the sidebar */
+  }
+
+  .close-button {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    color: #f90c0c; /* Set a default color */
+  }
+
+  .dark-theme .sidebar {
+    background-color: #333; /* Dark theme background color */
+    color: #fff; /* Dark theme text color */
   }
   </style>
   

@@ -48,7 +48,8 @@ import Home from '@shell/pages/home.vue';
 
 import axios from 'axios';
 import { BASE_URL, VLAN_LIST_URL } from '../config/api.ts';
-import { CAPI, CATALOG, type } from '@shell/config/types';
+import { CAPI, CATALOG, type, NODE, POD  } from '@shell/config/types';
+
 
 export default {
     name: 'HomePage',
@@ -183,9 +184,9 @@ export default {
     background-color: #cdd7e2;
     color: #3b7498;
   }
-/* Style for tab content */
-h2 {
-  color: #007bff;
-}
+  /* Style for tab content */
+  h2 {
+    color: #007bff;
+  }
 
 </style>
