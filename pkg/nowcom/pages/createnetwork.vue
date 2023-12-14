@@ -354,11 +354,8 @@
           return combinedArray;
         },
       async createNetwork() {
-  
-      //loading
-      this.isLoading = true;  
-    
-
+            //loading
+            this.isLoading = true;  
             const combinedObjects = this.combineArraysIntoObjects(this.selectedVnetSubnets, this.selectedSubnetName);
             const vnet_data = {
                 vnet_name: this.selectedVnetName.toLowerCase(),

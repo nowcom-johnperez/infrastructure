@@ -83,7 +83,7 @@
           <h2>{{ selectedNetwork ? selectedNetwork.vnet_name : 'No Network Selected' }}</h2>
             <div class="form-row">
                   <div class="form-column" align="left">
-                      <button @click.prevent="addSubnetModal" class="custom-button"> + Add Subnet</button>
+                      <button @click.prevent="addSubnetSidebar" class="custom-button"> + Add Subnet</button>
                    </div>
             </div>
           <table>
@@ -112,6 +112,31 @@
         </div>
       </div>
 
+      <!-- Second sidebar -->
+      <div class="add-subnet-sidebar" :class="{ 'add-subnet-sidebar-visible': addSubnetSidebarVisible }">
+          <!-- Second sidebar content -->
+          <div class="add-subnet-sidebar-content">
+            <h2>Add Subnet</h2>
+            <!-- ... your content for adding subnet -->
+            <div class="add-form-row">
+              <input type="text"
+                v-model="selectedSubnetName"
+                placeholder="Subnet Name"
+                title="Subnet Name"/>
+            </div>
+            <div class="add-form-row">
+              <input type="text"
+                v-model="selectedVnetSubnets"
+                placeholder="Enter subnet (e.g., 10.0.0.0)"
+                pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+                title="Please enter a valid IP address"/>
+            </div>
+            <div class="add-form-row">
+                <button @click="addSubnet" class="row-button"> + Add Subnet</button>
+            </div>
+          </div>
+          <button @click="closeSubnetSidebar" class="close-subnet-button">×</button>
+        </div>
        <!-- Modal -->
       <div v-if="isModalOpen" class="modal-overlay">
         <div class="modal">
@@ -188,6 +213,8 @@ export default {
       selectedNetworkAddress: '', // Network Address (disabled and readonly)
       selectedGateway: '', // Gateway (disabled and readonly)
       selectedVnetName: '',
+      selectedSubnetName: '',
+      selectedVnetSubnets: '10.55.0.0',
       networks: [], // This will be populated with data from the API
       harvesterNetworks: [],
       showNotification: false,
@@ -203,11 +230,53 @@ export default {
       subnet_id: '',
       selectedNetwork: null,
       sidebarVisible: false,
+      addSubnetSidebarVisible: false,
     };
   },
   methods: {
-    addSubnetModal() {
-    
+    addSubnet() {
+          const vnet_data = {
+                vnet_name: this.selectedNetwork.vnet_name.toLowerCase(),
+                //vnet_vlan: this.selectedVnetVlan,
+                subnets: [{network: this.selectedVnetSubnets,
+                          subnet_name: this.selectedSubnetName}]
+            }
+            // const vnet_data_string = JSON.stringify(vnet_data);
+            console.log("send to API",vnet_data)
+
+            INSTANCE.put(`${ENDPOINT_NETWORKS}/vnet/${this.selectedNetwork.vnet_name}/subnet`, vnet_data)
+            .then(response => {
+                // Handle the response here
+                console.log('Network created:', response.data);
+                this.isLoading = false;
+                // Set the API response data in the component
+                this.apiResponse = null;
+                console.log("response from create networks",this.apiResponse)
+
+                this.apiResponseMessage = null
+
+                this.apiError = null; // Reset error state
+                this.fetchNetworks();
+                this.selectedNetwork.push(vnet_data.subnets)
+                setTimeout(() => {
+                  this.routeListNetwork();
+                }, 2000);
+            })
+            .catch(error => {
+                // Handle any errors here
+                console.error('Error creating network:', error);
+                this.isLoading = false;
+                this.apiResponseMessage = "Error";
+            // Set the API error in the component
+                this.apiError = "Error creating VRF";
+                this.apiResponse = 1; // Reset response state
+            });
+    },
+    addSubnetSidebar() {
+      this.addSubnetSidebarVisible = true;
+    },
+    closeSubnetSidebar() {
+      this.addSubnetSidebarVisible = false;
     },
     async openSidebar(item) {
       // Update the item with the fetched data
@@ -258,6 +327,7 @@ export default {
         });
     },
     fetchNetworks() {
+      console.log("fetching networks")
       // Fetch the network list from your API
       INSTANCE.get(NETWORKS)
         .then(response => {
@@ -342,6 +412,8 @@ export default {
           this.deleteSubnetResponse = 1; // Reset response state
         });
     },
+
+    
     refreshList(){
       this.fetchNetworks();
     }
@@ -539,9 +611,75 @@ export default {
     color: #f90c0c; /* Set a default color */
   }
 
+  /* .close-subnet-button {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    color: #25bbb4; 
+  } /* Set a default color */
+
   .dark-theme .sidebar {
     background-color: #333; /* Dark theme background color */
     color: #fff; /* Dark theme text color */
+  }
+
+  /* Styles for the second sidebar */
+  .add-subnet-sidebar {
+    position: fixed;
+    top: 0;
+    right: -40%; /* Initially off-screen */
+    width: 40%;
+    height: 100%;
+    background-color: #9c9393;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease-out;
+    z-index: 2;
+  }
+
+  /* Make the second sidebar visible */
+  .add-subnet-sidebar.add-subnet-sidebar-visible {
+    right: 0;
+  }
+
+  /* Your existing styles for the second sidebar content */
+  .add-subnet-sidebar-content {
+    /* ... */
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding: 20px 10px 10px 10px; /* Add top and bottom padding */
+  }
+
+  /* Your existing styles for the close button of the second sidebar */
+  .close-subnet-button {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #25bbb4; 
+  }
+
+
+  .row-button {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: left;	
+    }
+
+  .add-form-row {
+    width: 300px;
+      /* display: grid; */
+    justify-content: center;
+    align-items: center; /* Add this line for vertical alignment if needed */
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
   </style>
   
