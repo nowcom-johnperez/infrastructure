@@ -1,6 +1,6 @@
 <template>
   <div class="base">
-    <h1>Network</h1>
+    <h1>VNET</h1>
     <!-- Notification container -->
     <div class="message-row">
         <div class="message-column"></div>
