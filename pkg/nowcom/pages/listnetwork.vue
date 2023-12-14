@@ -11,11 +11,6 @@
                     <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.vnet_name }}</pre>
                     <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
               </div>
-              <div v-else-if="deleteSubnetResponse">
-                    <h2 align="center">{{ apiResponseMessage }}</h2>
-                    <pre align="center" v-if="!apiError">Deleted SUBNET: {{ subnet_id }}</pre>
-                    <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
-              </div>
         </div>
     </div>    
     <div class="message-row">
@@ -31,6 +26,7 @@
           <thead>
             <tr>
               <th>VNET</th>
+              <th>Cluster</th>
               <th>Subnet</th>
               <!-- <th>Network</th> -->
               <th>Action</th>
@@ -40,12 +36,16 @@
             <tr v-for="item in networks" :key="item.vnet_name">
               <td><a @click.prevent="openSidebar(item)">{{ item.vnet_name }}</a></td>
               <td>
-                  <ul>
+                  <!-- <ul>
                     <li v-for="subnet in item.subnets">
                       {{ subnet.subnet_name }}
                     </li>
-                  </ul>
+                  </ul> -->
+                  local
               </td>
+              <td>
+                Total Subnet :{{ item.subnets.length }}
+             </td>
               <!-- <td>
                   <ul>
                     <li v-for="subnet in item.subnets">
@@ -108,6 +108,13 @@
               </tr>
             </tbody>
           </table>
+            
+            </br>
+            <div v-if="subnetResponse">
+                      <h2 align="center">{{ subnetResponseMessage }}</h2>
+                      <pre align="center" v-if="!apiError">SUBNET: {{ subnet_id }}</pre>
+                      <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName  }}</pre>
+            </div>
           <button @click="closeSidebar" class="close-button">×</button>
         </div>
       </div>
@@ -223,7 +230,7 @@ export default {
       loading: false,
       isModalOpen: false,
       apiResponse: null,
-      deleteSubnetResponse: null,
+      subnetResponse: null,
       isModalSubnetOpen: false,
       vrf_name: '',
       subnet_name: '',
@@ -231,44 +238,51 @@ export default {
       selectedNetwork: null,
       sidebarVisible: false,
       addSubnetSidebarVisible: false,
+      apiError: null
     };
   },
   methods: {
     addSubnet() {
-          const vnet_data = {
+      
+            const newSubnet = {
+                network: this.selectedVnetSubnets,
+                subnet_name: this.selectedSubnetName
+            };
+
+            const vnet_data = {
                 vnet_name: this.selectedNetwork.vnet_name.toLowerCase(),
                 //vnet_vlan: this.selectedVnetVlan,
-                subnets: [{network: this.selectedVnetSubnets,
-                          subnet_name: this.selectedSubnetName}]
+                subnets: [newSubnet]
             }
             // const vnet_data_string = JSON.stringify(vnet_data);
             console.log("send to API",vnet_data)
-
+            console.log("log", this.selectedNetwork)
             INSTANCE.put(`${ENDPOINT_NETWORKS}/vnet/${this.selectedNetwork.vnet_name}/subnet`, vnet_data)
             .then(response => {
                 // Handle the response here
-                console.log('Network created:', response.data);
+                console.log('Subnet Network created:', response.data);
                 this.isLoading = false;
-                // Set the API response data in the component
-                this.apiResponse = null;
-                console.log("response from create networks",this.apiResponse)
 
-                this.apiResponseMessage = null
-
-                this.apiError = null; // Reset error state
+                //use results from response
+                let newSubnetFromResponse = response.data.vnet.subnets[0];
+                this.subnet_id = response.data.vnet.subnets[0].subnet_id;
                 this.fetchNetworks();
-                this.selectedNetwork.push(vnet_data.subnets)
-                setTimeout(() => {
-                  this.routeListNetwork();
-                }, 2000);
+                this.selectedNetwork.subnets.push(newSubnetFromResponse)
+
+                // Set the API response data in the component
+                this.subnetResponse = response.data;
+                this.apiError = null; // Reset error state
+                this.subnetResponseMessage = "Subnet Added Successfully"
+
+                this.addSubnetSidebarVisible = false;
             })
             .catch(error => {
                 // Handle any errors here
                 console.error('Error creating network:', error);
                 this.isLoading = false;
-                this.apiResponseMessage = "Error";
+                this.subnetResponseMessage = "Error";
             // Set the API error in the component
-                this.apiError = "Error creating VRF";
+                this.apiError = "Error creating Subnet";
                 this.apiResponse = 1; // Reset response state
             });
     },
@@ -280,6 +294,7 @@ export default {
     },
     async openSidebar(item) {
       // Update the item with the fetched data
+      this.subnetResponse = false;
       this.selectedNetwork = item;
       this.sidebarVisible = true;
     },
@@ -294,6 +309,7 @@ export default {
     openModal(vlanName) {
       // Set the selected VLAN name
       this.selectedVnetName = vlanName;
+      this.subnetResponse = false;
       // Open the modal
       this.isModalOpen = true;
     },
@@ -377,16 +393,17 @@ export default {
           console.log('Network deleted:', response.data);
           this.loading = false;
 
-          this.deleteSubnetResponse = response.data;
+          this.subnetResponse = response.data;
           // Set the API response data in the component
-          this.apiResponseMessage = "Subnet Successfully Deleted";
+          this.subnetResponseMessage = "Subnet Successfully Deleted";
           this.apiError = null; // Reset error state
           //this.fetchHarvesterNetworks();
-          await this.fetchNetworks();
+          this.fetchNetworks();
 
           const foundItem = this.networks.find(dataItem => dataItem.vnet_name === this.vnet_name);
 
-          console.log(foundItem)
+          console.log("found on deletesubnet",foundItem)
+
           if (foundItem) {
               // Remove the subnet object with the specified subnet_id
               foundItem.subnets = foundItem.subnets.filter(subnet => subnet.subnet_id !== this.subnet_id);
@@ -406,10 +423,10 @@ export default {
           // Handle any errors here
           console.error('Error deleting network:', error);
           this.loading = false;
-          this.apiResponseMessage = "Error";
+          this.subnetResponseMessage = "Error";
           // Set the API error in the component
           this.apiError = error.response ? error.response.data : error.message;
-          this.deleteSubnetResponse = 1; // Reset response state
+          this.subnetResponse = 1; // Reset response state
         });
     },
 
@@ -486,7 +503,7 @@ export default {
   }
 
   .list-delete-button {
-    background-color: #266d0a;
+    background-color: #ff001e;
     color: #fff;
     border: none;
     padding: 0 2px; /* Adjust top and bottom padding */
