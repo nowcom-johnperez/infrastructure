@@ -413,38 +413,18 @@ export default {
           // Set the API response data in the component
           this.subnetResponseMessage = "Subnet Successfully Deleted";
           this.apiError = null; // Reset error state
-          //this.fetchHarvesterNetworks();
-          const networkData = await this.fetchNetworks();
 
+          //call of subnets
           INSTANCE_V2.get(
             `/subnets/${this.vnet_id}`
           ).then(async (response) => {
             this.selectedNetwork.subnets = response.data;
           }).catch((error) => {
-
+            this.subnetResponseMessage = "Error";
           });
-
-
-          // const foundItem = networkData.find(
-          //   (dataItem) => dataItem.vnet_id === this.vnet_id
-          // );
-
-          // console.log("found on deletesubnet", foundItem);
-
-          // if (foundItem) {
-          //   // Remove the subnet object with the specified subnet_id
-          //   foundItem.subnets = foundItem.subnets.filter(
-          //     (subnet) => subnet.id !== this.subnet_id
-          //   );
-
-          // Update the selectedNetwork with the modified found item
+          // Update the selectedNetwork with the selected vnet_name
           this.selectedNetwork.vnet_name = this.vnet_name;
           console.log("Selected Network:", this.selectedNetwork);
-          // } else {
-          //   // Handle the case where the item is not found in the updated data
-          //   console.error("Item not found in the updated data.");
-          // }
-
           // Close the modal after deletion
           this.closeModalSubnet();
         })
@@ -526,7 +506,7 @@ export default {
   background-color: #ff001e;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 0px 10px;
   /* Adjust padding */
   border-radius: 5px;
   cursor: pointer;
