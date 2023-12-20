@@ -129,10 +129,11 @@
               <br /><br /><br />
               <h2>Subnet</h2>
               <p v-for="(name, index) in selectedSubnetName" :key="index">
-                {{ name }} - 
+                {{ name }} -
                 <span :class="{ 'invalid-ip': !isValidIPAddress(selectedVnetSubnets[index]) }">
                   {{ selectedVnetSubnets[index] || 'empty' }}
-                  <span v-if="!isValidIPAddress(selectedVnetSubnets[index])" class="invalid-message"> (Invalid IP Address)</span>
+                  <span v-if="!isValidIPAddress(selectedVnetSubnets[index])" class="invalid-message"> (Invalid IP
+                    Address)</span>
                 </span>
               </p>
             </div>
@@ -155,7 +156,7 @@
             <h2 align="center">
               {{ apiResponseMessage }}
             </h2>
-            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.vnet.vnet_name }}</pre>
+            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.vnet_name }}</pre>
             <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedVnetName }}</pre>
           </div>
         </div>
@@ -166,8 +167,8 @@
           <button class="custom-button" :disabled="currentTab === 'tab1'" @click="previousTab">Previous</button>
           <button class="custom-button" :disabled="currentTab === 'tab4'" @click="nextTab">Next</button>
           <!-- Conditionally render the button based on the current tab -->
-          <button v-if="currentTab === 'tab4'" class="custom-button" :disabled="isLoading || !selectedVnetName || hasInvalidIPAddress"
-            @click="createNetwork">
+          <button v-if="currentTab === 'tab4'" class="custom-button"
+            :disabled="isLoading || !selectedVnetName || hasInvalidIPAddress" @click="createNetwork">
             {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
           </button>
         </div>
@@ -178,15 +179,15 @@
 <script>
 import https from "https";
 import axios from "axios";
-import { NETWORK_URL, NETWORKS, HARVESTER_URL } from "../config/api.ts";
+import { NETWORK_URL, NETWORKS, NETWORK_URL_V2 } from "../config/api.ts";
 
 const INSTANCE = axios.create({
   baseURL: NETWORK_URL,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
-const HARVESTER = axios.create({
-  baseURL: HARVESTER_URL,
+const INSTANCE_V2 = axios.create({
+  baseURL: NETWORK_URL_V2,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
 });
 
@@ -389,7 +390,7 @@ export default {
       // const vnet_data_string = JSON.stringify(vnet_data);
       console.log("send to API", vnet_data);
 
-      INSTANCE.post(NETWORKS, vnet_data)
+      INSTANCE_V2.post(`/vnets/`, vnet_data)
         .then((response) => {
           // Handle the response here
           console.log("Network created:", response.data);
@@ -463,7 +464,7 @@ export default {
     this.fetchNetworks();
     //this.fetchHarvesterNetworks();
   },
-  
+
 };
 </script>
     
@@ -710,7 +711,8 @@ h2 {
 
 .subnet-suffix {
   display: inline-block;
-  margin-left: 5px; /* Adjust margin as needed for spacing */
+  margin-left: 5px;
+  /* Adjust margin as needed for spacing */
   margin-top: 10px;
 }
 
