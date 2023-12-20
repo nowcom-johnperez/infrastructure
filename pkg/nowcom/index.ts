@@ -1,15 +1,6 @@
 import { importTypes } from '@rancher/auto-import';
-import {
-  IPlugin,
-  ActionLocation,
-  PanelLocation,
-  TabLocation,
-  CardLocation,
-  TableColumnLocation,
-  ActionOpts,
-} from '@shell/core/types';
+import { IPlugin } from '@shell/core/types';
 import extensionRouting from './routing/extension-routing';
-import HomePage from './pages/homepage.vue';
 
 // Init the package
 export default function(plugin: IPlugin) {
