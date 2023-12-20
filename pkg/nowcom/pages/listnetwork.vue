@@ -216,18 +216,10 @@ export default {
   data() {
     return {
       selectedName: "", // Dropdown for network name
-      selectedVlan: "", // VLAN (disabled and readonly)
-      selectedPrefixLen: "", // Prefix Length (disabled and readonly)
-      selectedNetworkAddress: "", // Network Address (disabled and readonly)
-      selectedGateway: "", // Gateway (disabled and readonly)
       selectedVnetName: "",
       selectedSubnetName: "",
       selectedVnetSubnets: "10.55.0.0",
       networks: [], // This will be populated with data from the API
-      harvesterNetworks: [],
-      showNotification: false,
-      notificationType: "", // 'success' or 'error'
-      notificationMessage: "",
       loading: false,
       isModalOpen: false,
       apiResponse: null,
@@ -246,28 +238,14 @@ export default {
   },
   methods: {
     addSubnet() {
-      // const newSubnet = {
-      //   network: this.selectedVnetSubnets,
-      //   subnet_name: this.selectedSubnetName,
-      // };
-
-      // const vnet_data = {
-      //   vnet_name: this.selectedNetwork.vnet_name.toLowerCase(),
-      //   //vnet_vlan: this.selectedVnetVlan,
-      //   subnets: [newSubnet],
-      // };
-
       //v0.2
-
       const subnet_data = {
         subnet_name: this.selectedSubnetName.toLowerCase(),
         network: this.selectedVnetSubnets,
       };
 
-      console.log(this.selectedNetwork)
       let vnet = this.selectedNetwork.id
 
-      // const vnet_data_string = JSON.stringify(vnet_data);
       console.log("send to API", subnet_data);
       console.log("log", this.selectedNetwork);
 
@@ -604,7 +582,7 @@ th {
 }
 
 .modal {
-  background: #281784;
+  background: #452bda;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);

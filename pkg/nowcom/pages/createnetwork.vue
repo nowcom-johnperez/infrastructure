@@ -203,12 +203,7 @@ export default {
       selectedVnetName: "", // Dropdown for network name
       selectedVnetSubnets: ["10.55.0.0"], // Network Address (disabled and readonly)
       selectedSubnetName: ["default"],
-      selectedVnetGateway: "", // Gateway (disabled and readonly)
       networks: [], // This will be populated with data from the API
-      harvesterNetworks: [],
-      showNotification: false,
-      notificationType: "", // 'success' or 'error'
-      notificationMessage: "",
       isLoading: false,
       apiResponse: null, // New data property to store the API response
       apiResponseMessage: null, // New data property to store the API response
@@ -421,7 +416,7 @@ export default {
 
     fetchNetworks() {
       // Fetch the network list from your API
-      INSTANCE.get(NETWORKS)
+      INSTANCE_V2.get(`/vnets/`)
         .then((response) => {
           this.networks = response.data;
           console.log("from API", this.networks);
@@ -449,13 +444,11 @@ export default {
         this.selectedVnetName = network.vnet_name;
         //this.selectedVnetVlan = network.vnet_vlan;
         this.selectedVnetSubnets = ["10.55.0.0"];
-        this.selectedVnetGateway = network.vnet_gateway;
       } else {
         // Reset other fields if the network is not found
         this.selectedVnetName = selectedVnetName;
         //this.selectedVnetVlan = 'Vlan';
         this.selectedVnetSubnets = ["10.55.0.0"];
-        this.selectedVnetGateway = "";
       }
     },
   },
