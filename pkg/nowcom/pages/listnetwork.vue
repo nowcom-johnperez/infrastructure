@@ -484,7 +484,7 @@ export default {
   background-color: #ff001e;
   color: #fff;
   border: none;
-  padding: 0px 10px;
+  padding: 5px 15px;
   /* Adjust padding */
   border-radius: 5px;
   cursor: pointer;
@@ -582,7 +582,7 @@ th {
 }
 
 .modal {
-  background: #452bda;
+  background: #4e94b0;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);

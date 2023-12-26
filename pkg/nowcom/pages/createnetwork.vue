@@ -134,6 +134,7 @@
                   {{ selectedVnetSubnets[index] || 'empty' }}
                   <span v-if="!isValidIPAddress(selectedVnetSubnets[index])" class="invalid-message"> (Invalid IP
                     Address)</span>
+                  <span v-if="isDuplicateIPAddress(index)" class="invalid-message"> (Duplicate IP Address)</span>
                 </span>
               </p>
             </div>
@@ -168,7 +169,8 @@
           <button class="custom-button" :disabled="currentTab === 'tab4'" @click="nextTab">Next</button>
           <!-- Conditionally render the button based on the current tab -->
           <button v-if="currentTab === 'tab4'" class="custom-button"
-            :disabled="isLoading || !selectedVnetName || hasInvalidIPAddress" @click="createNetwork">
+            :disabled="isLoading || !selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress"
+            @click="createNetwork">
             {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
           </button>
         </div>
@@ -224,6 +226,10 @@ export default {
         return ipRegex.test(ip);
       };
     },
+    hasDuplicateIPAddress() {
+      const uniqueIPAddresses = new Set(this.selectedVnetSubnets);
+      return this.selectedVnetSubnets.length !== uniqueIPAddresses.size;
+    },
   },
   watch: {
     selectedVnetSubnets: {
@@ -235,6 +241,10 @@ export default {
     },
   },
   methods: {
+    isDuplicateIPAddress(index) {
+      const currentIPAddress = this.selectedVnetSubnets[index];
+      return this.selectedVnetSubnets.indexOf(currentIPAddress) !== index;
+    },
     addTag() {
       const trimmedTag = this.newTag.trim();
       if (trimmedTag) {
