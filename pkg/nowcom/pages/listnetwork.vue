@@ -278,12 +278,13 @@ export default {
       })
         .catch((error) => {
           // Handle any errors here
-          console.error("Error creating network:", error);
+          // console.error("Error creating network:", error);
+          console.log(error.response)
           this.isLoading = false;
+          alert(error.response.data.detail)
           this.subnetResponseMessage = "Error";
           // Set the API error in the component
           this.apiError = "Error creating Subnet";
-          this.apiResponse = 1; // Reset response state
         });
     },
     addSubnetSidebar() {
