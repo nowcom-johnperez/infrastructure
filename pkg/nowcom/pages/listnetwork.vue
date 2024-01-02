@@ -136,7 +136,7 @@
             pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address" />
         </div>
         <div class="add-form-row">
-          <button @click="addSubnet" class="row-button"> + Add Subnet</button>
+          <button @click="addSubnet" class="row-button" :disabled="isAddSubnetDisabled"> + Add Subnet</button>
         </div>
       </div>
       <button @click="closeSubnetSidebar" class="close-subnet-button">×</button>
@@ -236,6 +236,12 @@ export default {
       network: []
     };
   },
+  computed: {
+    isAddSubnetDisabled() {
+      // Check conditions to disable the button
+      return !this.selectedSubnetName || !this.selectedVnetSubnets;
+    },
+  },
   methods: {
     addSubnet() {
       //v0.2
@@ -272,12 +278,13 @@ export default {
       })
         .catch((error) => {
           // Handle any errors here
-          console.error("Error creating network:", error);
+          // console.error("Error creating network:", error);
+          console.log(error.response)
           this.isLoading = false;
+          alert(error.response.data.detail)
           this.subnetResponseMessage = "Error";
           // Set the API error in the component
           this.apiError = "Error creating Subnet";
-          this.apiResponse = 1; // Reset response state
         });
     },
     addSubnetSidebar() {
@@ -702,6 +709,14 @@ th {
   /* Add this line for vertical alignment if needed */
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.row-button:disabled {
+  background-color: #cccccc;
+  /* Grey */
+  color: #666666;
+  /* Dark grey */
+  cursor: not-allowed;
 }
 </style>
   

@@ -1,46 +1,5 @@
 apiVersion: v1
 entries:
-  clock-francis:
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/kube-version: '>= 1.16.0-0'
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-    apiVersion: v2
-    appVersion: 0.2.0
-    created: "2024-01-02T09:24:22.085409-08:00"
-    description: Adds a new feature to the top-level menu that shows a full-page clock
-    digest: 7b77a82c3a5205c102bc90983872ed0313d6099daac8d7d502fde0fdfe18049b
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
-    name: clock-francis
-    type: application
-    urls:
-    - assets/clock/clock-francis-0.2.0.tgz
-    version: 0.2.0
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/kube-version: '>= 1.16.0-0'
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-    apiVersion: v2
-    appVersion: 0.2.0
-    created: "2024-01-02T09:24:22.085541-08:00"
-    description: Adds a new feature to the top-level menu that shows a full-page clock
-    digest: b323d8220a44c88000f840ad66bb0d37226503e9d2be56a21ab62a90fdbbf65e
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/clock/clock.svg
-    name: clock-francis
-    type: application
-    urls:
-    - assets/clock-francis/clock-francis-0.2.0.tgz
-    version: 0.2.0
   nowcom:
   - annotations:
       catalog.cattle.io/certified: rancher
@@ -52,10 +11,30 @@ entries:
       catalog.cattle.io/scope: management
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
-    appVersion: 0.2.0
-    created: "2024-01-02T09:24:22.085809-08:00"
+    appVersion: 0.2.1
+    created: "2024-01-02T15:49:34.565209-08:00"
     description: Nowcom Infrastructure Network Automation
-    digest: a14d4977e5a1104f5587c0ade9ebe1b33805fc6778481176158445c2f5875dee
+    digest: 058770ed5c6417a9b34d5cb27d367b43aa8a66467c0e4b4b1c5d366f4f5fef7b
+    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
+    name: nowcom
+    type: application
+    urls:
+    - assets/nowcom/nowcom-0.2.1.tgz
+    version: 0.2.1
+  - annotations:
+      catalog.cattle.io/certified: rancher
+      catalog.cattle.io/kube-version: '>= 1.16.0-0'
+      catalog.cattle.io/namespace: cattle-ui-plugin-system
+      catalog.cattle.io/os: linux
+      catalog.cattle.io/permits-os: linux, windows
+      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
+      catalog.cattle.io/scope: management
+      catalog.cattle.io/ui-component: plugins
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2024-01-02T15:49:34.565094-08:00"
+    description: Nowcom Infrastructure Network Automation
+    digest: 40961275f46a3dd863eb617177448012ae320234d52112962b44b740fc079b3b
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
     name: nowcom
     type: application
@@ -73,7 +52,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-01-02T09:24:22.085679-08:00"
+    created: "2024-01-02T15:49:34.564969-08:00"
     description: Nowcom Infrastructure Network Automation
     digest: da4c0e75f3fdccc9c3081843db9415c307962e797a399b4e940451cc785335f5
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -82,25 +61,4 @@ entries:
     urls:
     - assets/nowcom/nowcom-0.1.0.tgz
     version: 0.1.0
-  test:
-  - annotations:
-      catalog.cattle.io/certified: rancher
-      catalog.cattle.io/kube-version: '>= 1.16.0-0'
-      catalog.cattle.io/namespace: cattle-ui-plugin-system
-      catalog.cattle.io/os: linux
-      catalog.cattle.io/permits-os: linux, windows
-      catalog.cattle.io/rancher-version: '>= 2.7.0-0'
-      catalog.cattle.io/scope: management
-      catalog.cattle.io/ui-component: plugins
-    apiVersion: v2
-    appVersion: 0.1.0
-    created: "2023-12-04T11:34:32.88985-08:00"
-    description: Francis Test
-    digest: 13090a18f44db8288f21bcfcbfb5a8bfae4bdac45faada9125e206d92ecc721a
-    icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
-    name: test
-    type: application
-    urls:
-    - assets/nowcom/test-0.1.0.tgz
-    version: 0.1.0
-generated: "2024-01-02T09:24:22.085173-08:00"
+generated: "2024-01-02T15:49:34.564704-08:00"
