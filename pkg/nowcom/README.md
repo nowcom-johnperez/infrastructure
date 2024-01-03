@@ -7,3 +7,6 @@ Release v0.2.0
 
 Release v0.2.1
 -  Fixed Bug: Add validation on add subnet 
+
+Release v0.2.2
+-  Pointed to New VM IP
