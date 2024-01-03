@@ -2,7 +2,7 @@
   "name": "nowcom",
   "description": "Nowcom Infrastructure Network Automation",
   "icon": "https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "rancher": {
     "annotations": {
