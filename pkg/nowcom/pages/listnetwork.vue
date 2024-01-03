@@ -90,6 +90,7 @@
         <table>
           <thead>
             <tr>
+              <th>Network Name</th>
               <th>Subnet Name</th>
               <th>Network Prefix</th>
               <th>Action</th>
@@ -99,11 +100,13 @@
           <tbody>
             <tr v-for="subnet in selectedNetwork ? selectedNetwork.subnets : []" :key="subnet.id">
               <!-- Subnet Name -->
+              <td>{{ subnet ? subnet.identifier : 'No Identifier' }}</td>
+              <!-- Identifier -->
               <td>{{ subnet ? subnet.subnet_name : 'No Subnet Name' }}</td>
               <!-- Network Prefix -->
               <td>{{ subnet ? subnet.network_prefix : 'No Network Prefix' }}</td>
               <!-- Action -->
-              <td>
+              <td width="30">
                 <button
                   @click="openModalSubnet(selectedNetwork.id, selectedNetwork.vnet_name, subnet.subnet_name, subnet.id)"
                   class="list-delete-button">Delete</button>
