@@ -1,5 +1,5 @@
 # nowcom-rancher-plugins
-Example Extensions for the Rancher Dashboard UI.
+Nowcom Rancher Dashboard UI.
 
 
 The extensions should then appear on the 'Extenssions' page in Rancher Manager.
