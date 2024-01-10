@@ -353,7 +353,7 @@ export default {
       this.$set(
         this.selectedSubnetName,
         this.selectedSubnetName.length,
-        "default"
+        ""
       );
     },
 
