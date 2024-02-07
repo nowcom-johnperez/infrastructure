@@ -34,7 +34,7 @@
           </thead>
           <tbody>
             <tr v-for="item in networks" :key="item.id">
-              <td><a @click.prevent="openSidebar(item)">{{ item.vnet_name }}</a></td>
+              <td><a @click.prevent="openSidebar(item)">{{ item.name }}</a></td>
               <td>
                 <!-- <ul>
                     <li v-for="subnet in item.subnets">
@@ -90,8 +90,8 @@
         <table>
           <thead>
             <tr>
-              <th>Network Name</th>
               <th>Subnet Name</th>
+              <th>IP Address</th>
               <th>Network Prefix</th>
               <th>Action</th>
             </tr>
@@ -100,11 +100,11 @@
           <tbody>
             <tr v-for="subnet in selectedNetwork ? selectedNetwork.subnets : []" :key="subnet.id">
               <!-- Subnet Name -->
-              <td>{{ subnet ? subnet.identifier : 'No Identifier' }}</td>
+              <td>{{ subnet ? subnet.name : 'No Identifier' }}</td>
               <!-- Identifier -->
-              <td>{{ subnet ? subnet.subnet_name : 'No Subnet Name' }}</td>
+              <td>{{ subnet ? subnet.address : 'No Subnet Name' }}</td>
               <!-- Network Prefix -->
-              <td>{{ subnet ? subnet.network_prefix : 'No Network Prefix' }}</td>
+              <td>{{ subnet ? subnet.prefix_len : 'No Network Prefix' }}</td>
               <!-- Action -->
               <td width="30">
                 <button
@@ -192,21 +192,16 @@
 import axios from "axios";
 import https from "https";
 import {
-  ENDPOINT_NETWORKS,
-  NETWORK_URL,
-  NETWORKS,
   NETWORK_URL_V2,
+  BEARERTOKEN
 } from "../config/api.ts";
-
-const INSTANCE = axios.create({
-  //baseURL: LOCAL_URL,
-  baseURL: NETWORK_URL,
-  httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
-});
 
 const INSTANCE_V2 = axios.create({
   baseURL: NETWORK_URL_V2,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
+  headers: {
+    'Authorization': `Bearer ${BEARERTOKEN}`
+  }
 });
 
 const PRODUCT_NAME = "Network";
@@ -341,12 +336,27 @@ export default {
 
     fetchNetworks() {
       console.log("fetching networks");
+
       // Fetch the network list from your API
-      INSTANCE_V2.get(`/vnets/`)
+      INSTANCE_V2.get(`/apis/packetlifter.dev/v1/vnets`)
         .then((response) => {
           this.networks = response.data;
-          this.network = this.networks;
-          console.log("from API", this.networks);
+
+          // Parse the "name" and "subnets" under the "spec" section
+          const parsedData = response.data.items.map(item => ({
+            name: item.spec.name,
+            subnets: item.spec.subnets.map(subnet => ({
+              address: subnet.address,
+              name: subnet.name,
+              prefix_len: subnet.prefix_len
+            }))
+          }));
+
+          this.networks = parsedData;
+
+          console.log("from API", parsedData);
+
+
         })
         .catch((error) => {
           console.error("Error fetching Network List:", error);
