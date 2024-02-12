@@ -8,7 +8,7 @@
         <!-- Display API response data -->
         <div v-if="apiResponse">
           <h2 align="center">{{ apiResponseMessage }}</h2>
-          <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.vnet_name }}</pre>
+          <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.details.name }}</pre>
           <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName }}</pre>
         </div>
       </div>
@@ -55,7 +55,7 @@
                   </ul>
                 </td> -->
               <td width="50">
-                <button @click="openModal(item.id, item.vnet_name)" class="delete-button">Delete</button>
+                <button @click="openModal(item.name)" class="delete-button">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -81,7 +81,7 @@
 
     <div class="sidebar" :class="{ 'sidebar-visible': sidebarVisible }">
       <div class="sidebar-content">
-        <h2>{{ selectedNetwork ? selectedNetwork.vnet_name : 'No Network Selected' }}</h2>
+        <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
             <button @click.prevent="addSubnetSidebar" class="custom-button"> + Add Subnet</button>
@@ -107,8 +107,7 @@
               <td>{{ subnet ? subnet.prefix_len : 'No Network Prefix' }}</td>
               <!-- Action -->
               <td width="30">
-                <button
-                  @click="openModalSubnet(selectedNetwork.id, selectedNetwork.vnet_name, subnet.subnet_name, subnet.id)"
+                <button @click="openModalSubnet(selectedNetwork.name, subnet.name, subnet.address, subnet.prefix_len)"
                   class="list-delete-button">Delete</button>
               </td>
             </tr>
@@ -225,6 +224,8 @@ export default {
       isModalSubnetOpen: false,
       vnet_name: "",
       subnet_name: "",
+      subnet_address: "",
+      subnet_prefix_len: "",
       subnet_id: "",
       selectedNetwork: null,
       sidebarVisible: false,
@@ -306,9 +307,8 @@ export default {
     routeCreateNetwork() {
       this.$router.push(`/${PRODUCT_NAME}/c/${BLANK_CLUSTER}/${LIST_NETWORK}`); // Assuming '/create-network' is the route for the Create Network page
     },
-    openModal(vnetId, vnetName) {
+    openModal(vnetName) {
       // Set the selected VLAN name
-      this.selectedVnetId = vnetId;
       this.selectedVnetName = vnetName;
       this.subnetResponse = false;
       // Open the modal
@@ -318,13 +318,13 @@ export default {
       this.isModalOpen = false;
     },
 
-    openModalSubnet(vnet_id, vnet_name, subnet_name, subnet_id) {
+    openModalSubnet(vnet_name, subnet_name, address, prefix_len) {
       // Set the selected VLAN name
-      console.log(vnet_id, vnet_name, subnet_name, subnet_id);
-      this.vnet_id = vnet_id;
+      console.log(vnet_name, subnet_name, address, prefix_len);
       this.vnet_name = vnet_name;
       this.subnet_name = subnet_name;
-      this.subnet_id = subnet_id;
+      this.subnet_address = address;
+      this.subnet_prefix_len = prefix_len;
 
       // Open the modal
       this.isModalSubnetOpen = true;
@@ -365,9 +365,9 @@ export default {
       return this.network;
     },
     deleteNetwork() {
-      console.log(`Delete Network Endpoint, ${this.selectedVnetName},${this.selectedVnetId} `);
+      console.log(`Delete Network Endpoint, ${this.selectedVnetName}`);
       // Make an Axios DELETE request to delete the network with the selected VLAN name
-      INSTANCE_V2.delete(`/vnets/${this.selectedVnetId}`)
+      INSTANCE_V2.delete(`/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedVnetName}`)
         .then((response) => {
           // Handle the response here
           console.log("Network deleted:", response.data);
@@ -396,11 +396,13 @@ export default {
 
     async deleteSubnet() {
       console.log(
-        `Delete Subnet Endpoint, ${this.vnet_id}, ${this.vnet_name}, ${this.subnet_name}, ${this.subnet_id}`
+        `Delete Subnet Endpoint, ${this.vnet_name}, ${this.subnet_name}, ${this.subnet_id}`
       );
+
+      var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
       // Make an Axios DELETE request to delete the network with the selected VLAN name
       INSTANCE_V2.delete(
-        `/subnets/${this.subnet_id}`
+        `/apis/packetlifter.dev/v1/namespaces/default/subnets/${vnet_subnet}`
       )
         .then(async (response) => {
           // Handle the response here
@@ -414,9 +416,12 @@ export default {
 
           //call of subnets
           INSTANCE_V2.get(
-            `/subnets/${this.vnet_id}`
+            `/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
           ).then(async (response) => {
-            this.selectedNetwork.subnets = response.data;
+            console.log('response from vnet subnet', response);
+            console.log('sub', response.data.spec.subnets);
+            this.selectedNetwork.subnets = response.data.spec.subnets;
+            console.log('subnets', this.selectedNetwork.subnets)
           }).catch((error) => {
             this.subnetResponseMessage = "Error";
           });
@@ -439,6 +444,7 @@ export default {
 
     refreshList() {
       this.fetchNetworks();
+
     },
   },
   mounted() {

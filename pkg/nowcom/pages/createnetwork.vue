@@ -157,7 +157,7 @@
             <h2 align="center">
               {{ apiResponseMessage }}
             </h2>
-            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.vnet_name }}</pre>
+            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.metadata.name }}</pre>
             <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedVnetName }}</pre>
           </div>
         </div>
