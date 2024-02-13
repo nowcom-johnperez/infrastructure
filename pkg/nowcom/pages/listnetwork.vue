@@ -245,31 +245,56 @@ export default {
     addSubnet() {
       //v0.2
       const subnet_data = {
-        subnet_name: this.selectedSubnetName.toLowerCase(),
-        network: this.selectedVnetSubnets,
+        name: this.selectedSubnetName.toLowerCase(),
+        address: this.selectedVnetSubnets,
+        prefix_len: 24
       };
 
-      let vnet = this.selectedNetwork.id
+      this.selectedNetwork.subnets.push(subnet_data);
+
+      const vnet_data = {
+        apiVersion: "packetlifter.dev/v1",
+        kind: "Vnet",
+        // vnet_vlan: this.selectedVnetVlan,
+        metadata: {
+          name: this.selectedNetwork.name.toLowerCase(),
+          namespace: "default"
+        },
+        spec: {
+          name: this.selectedNetwork.name.toLowerCase(),
+          subnets: this.selectedNetwork.subnets,
+        }
+      };
 
       console.log("send to API", subnet_data);
       console.log("log", this.selectedNetwork);
 
-      INSTANCE_V2.post(
-        `/vnets/${vnet}/subnets/`,
-        subnet_data
+      INSTANCE_V2.patch(
+        `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedNetwork.name}`,
+        vnet_data,
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
       ).then((response) => {
         // Handle the response here
         console.log("Subnet Network created:", response.data);
         this.isLoading = false;
 
-        //use results from response
-        let newSubnetFromResponse = response.data;
-        this.subnet_name = response.data.subnet_name;
-        this.fetchNetworks();
-        this.selectedNetwork.subnets.push(newSubnetFromResponse);
+        //call of subnets
+        INSTANCE_V2.get(
+          `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
+        ).then(async (response) => {
+          console.log('response from vnet subnet', response);
 
-        // Set the API response data in the component
-        this.subnetResponse = response.data;
+          this.selectedNetwork.subnets = response.data.spec.subnets;
+          console.log('subnets', this.selectedNetwork.subnets)
+
+        }).catch((error) => {
+          this.subnetResponseMessage = "Error";
+        });
+
         this.apiError = null; // Reset error state
         this.subnetResponseMessage = "Subnet Added Successfully";
 
@@ -398,7 +423,7 @@ export default {
       console.log(
         `Delete Subnet Endpoint, ${this.vnet_name}, ${this.subnet_name}, ${this.subnet_id}`
       );
-      this.selectedNetwork.subnet = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
+      this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
       console.log("new subnet", this.selectedNetwork.subnet)
 
       const vnet_data = {
@@ -411,7 +436,7 @@ export default {
         },
         spec: {
           name: this.vnet_name.toLowerCase(),
-          subnets: this.selectedNetwork.subnet,
+          subnets: this.selectedNetwork.subnets,
         }
       };
       //var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
