@@ -398,11 +398,32 @@ export default {
       console.log(
         `Delete Subnet Endpoint, ${this.vnet_name}, ${this.subnet_name}, ${this.subnet_id}`
       );
+      this.selectedNetwork.subnet = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
+      console.log("new subnet", this.selectedNetwork.subnet)
 
-      var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
+      const vnet_data = {
+        apiVersion: "packetlifter.dev/v1",
+        kind: "Vnet",
+        // vnet_vlan: this.selectedVnetVlan,
+        metadata: {
+          name: this.vnet_name.toLowerCase(),
+          namespace: "default"
+        },
+        spec: {
+          name: this.vnet_name.toLowerCase(),
+          subnets: this.selectedNetwork.subnet,
+        }
+      };
+      //var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
       // Make an Axios DELETE request to delete the network with the selected VLAN name
-      INSTANCE_V2.delete(
-        `/apis/packetlifter.dev/v1/namespaces/default/subnets/${vnet_subnet}`
+      INSTANCE_V2.patch(
+        `/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`,
+        vnet_data,
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        }
       )
         .then(async (response) => {
           // Handle the response here
@@ -416,12 +437,17 @@ export default {
 
           //call of subnets
           INSTANCE_V2.get(
-            `/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
+            `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
           ).then(async (response) => {
             console.log('response from vnet subnet', response);
-            console.log('sub', response.data.spec.subnets);
+
+            //vnet api are separate to subnet
+            //apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}
+            //console.log('sub', response.data.spec.subnets);
+
             this.selectedNetwork.subnets = response.data.spec.subnets;
             console.log('subnets', this.selectedNetwork.subnets)
+
           }).catch((error) => {
             this.subnetResponseMessage = "Error";
           });
