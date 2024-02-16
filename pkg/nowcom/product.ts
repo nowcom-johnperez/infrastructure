@@ -3,12 +3,13 @@
 const BLANK_CLUSTER = '_';
 import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 
-export function init($plugin:any, store:any) {
+export function init($plugin: any, store: any) {
   const PRODUCT_NAME = 'Network';
   const NODE = 'management.cattle.io.node'
   const CLUSTER = 'management.cattle.io.cluster'
   const HOME = 'Home';
-  const LIST_NETWORK = 'VNET';
+  const LIST_NETWORK = 'vnet';
+  const LIST_NAT_GATEWAY = 'nat.gateway';
   const ROUTE_TABLE = 'Route Table';
   const FORMS = 'Forms';
 
@@ -24,14 +25,14 @@ export function init($plugin:any, store:any) {
 
   // registering a top-level product
   product({
-    icon:    'apps',
+    icon: 'apps',
     // svg: require('@pkg/nowcom/icons/nowcom.svg'),
     inStore: 'management',
     removable: false,
     showClusterSwitcher: false,
-    weight:  100,
-    to:      {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
+    weight: 100,
+    to: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER,
@@ -44,35 +45,35 @@ export function init($plugin:any, store:any) {
   configureType(NODE, {
     displayName: 'Node',
     isCreatable: true,
-    isEditable:  true,
+    isEditable: true,
     isRemovable: true,
-    showAge:     true,
-    showState:   true,
-    canYaml:     true,
+    showAge: true,
+    showState: true,
+    canYaml: true,
     customRoute: {
-      name:   `${ PRODUCT_NAME }-c-cluster-resource`,
+      name: `${PRODUCT_NAME}-c-cluster-resource`,
       params: {
-        product:  PRODUCT_NAME,
-        cluster:  BLANK_CLUSTER,
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER,
         resource: NODE
       }
     }
   });
 
-   // defining a k8s resource as page
-   configureType(CLUSTER, {
+  // defining a k8s resource as page
+  configureType(CLUSTER, {
     displayName: 'Cluster',
     isCreatable: true,
-    isEditable:  true,
+    isEditable: true,
     isRemovable: true,
-    showAge:     true,
-    showState:   true,
-    canYaml:     true,
+    showAge: true,
+    showState: true,
+    canYaml: true,
     customRoute: {
-      name:   `${ PRODUCT_NAME }-c-cluster-resource`,
+      name: `${PRODUCT_NAME}-c-cluster-resource`,
       params: {
-        product:  PRODUCT_NAME,
-        cluster:  BLANK_CLUSTER,
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER,
         resource: CLUSTER
       }
     }
@@ -82,9 +83,9 @@ export function init($plugin:any, store:any) {
   // creating a custom page
   virtualType({
     labelKey: 'some.translation.key',
-    name:     HOME,
-    route:    {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ HOME }`,
+    name: HOME,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -92,12 +93,42 @@ export function init($plugin:any, store:any) {
     }
   });
 
-   // creating a custom page
-   virtualType({
+  // creating a custom page
+  virtualType({
+    label: 'Virtual Network',
+    labelKey: 'Virtual Network',
+    displayName: 'Virtual Network',
+    name: LIST_NETWORK,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  // creating a custom page
+  virtualType({
+    label: 'NAT Gateway',
+    labelKey: 'NAT Gateway',
+    displayName: 'NAT Gateway',
+    name: LIST_NAT_GATEWAY,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_NAT_GATEWAY}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  // creating a custom page
+  virtualType({
     labelKey: 'some.translation.key',
-    name:     LIST_NETWORK,
-    route:    {
-      name:   `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
+    name: ROUTE_TABLE,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${ROUTE_TABLE}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -105,31 +136,18 @@ export function init($plugin:any, store:any) {
     }
   });
 
-     // creating a custom page
-     virtualType({
-      labelKey: 'some.translation.key',
-      name:     ROUTE_TABLE,
-      route:    {
-        name:   `${ PRODUCT_NAME }-c-cluster-${ ROUTE_TABLE }`,
-        params: {
-          product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
-        }
+  // creating a custom page
+  virtualType({
+    labelKey: 'some.translation.key',
+    name: FORMS,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
       }
-    });
-
-    // creating a custom page
-     virtualType({
-      labelKey: 'some.translation.key',
-      name:     FORMS,
-      route:    {
-        name:   `${ PRODUCT_NAME }-c-cluster-${ FORMS }`,
-        params: {
-          product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
-        }
-      }
-    });
+    }
+  });
   // const REPO = 'catalog.cattle.io.clusterrepo';
 
   // mapGroup('HOME', 'Repositories');  
@@ -137,7 +155,7 @@ export function init($plugin:any, store:any) {
   // basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
   // basicType([HOME]);
-  basicType([LIST_NETWORK]);
+  basicType([LIST_NAT_GATEWAY, LIST_NETWORK]);
   // basicType([
   //   REPO,
   // ], 'HOME');
