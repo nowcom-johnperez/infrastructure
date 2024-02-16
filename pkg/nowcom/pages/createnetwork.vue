@@ -157,7 +157,7 @@
             <h2 align="center">
               {{ apiResponseMessage }}
             </h2>
-            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.vnet_name }}</pre>
+            <pre v-if="!apiError" align="center"> Created VNET: {{ apiResponse.metadata.name }}</pre>
             <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedVnetName }}</pre>
           </div>
         </div>
@@ -181,16 +181,17 @@
 <script>
 import https from "https";
 import axios from "axios";
-import { NETWORK_URL, NETWORKS, NETWORK_URL_V2 } from "../config/api.ts";
-
-const INSTANCE = axios.create({
-  baseURL: NETWORK_URL,
-  httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
-});
+import {
+  NETWORK_URL_V2,
+  BEARERTOKEN
+} from "../config/api.ts";
 
 const INSTANCE_V2 = axios.create({
   baseURL: NETWORK_URL_V2,
   httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
+  headers: {
+    'Authorization': `Bearer ${BEARERTOKEN}`
+  }
 });
 
 const PRODUCT_NAME = "Network";
@@ -373,8 +374,9 @@ export default {
       // Use map to combine the arrays into an array of objects
       const combinedArray = subnets.map((subnet, index) => {
         return {
-          network: subnet,
-          subnet_name: subnetNames[index],
+          address: subnet,
+          name: subnetNames[index],
+          prefix_len: 24
         };
       });
 
@@ -387,15 +389,24 @@ export default {
         this.selectedVnetSubnets,
         this.selectedSubnetName
       );
+
       const vnet_data = {
-        vnet_name: this.selectedVnetName.toLowerCase(),
+        apiVersion: "packetlifter.dev/v1",
+        kind: "Vnet",
         // vnet_vlan: this.selectedVnetVlan,
-        subnets: combinedObjects,
+        metadata: {
+          name: this.selectedVnetName.toLowerCase(),
+          namespace: "default"
+        },
+        spec: {
+          name: this.selectedVnetName.toLowerCase(),
+          subnets: combinedObjects,
+        }
       };
       // const vnet_data_string = JSON.stringify(vnet_data);
       console.log("send to API", vnet_data);
 
-      INSTANCE_V2.post(`/vnets/`, vnet_data)
+      INSTANCE_V2.post(`/apis/packetlifter.dev/v1/namespaces/default/vnets`, vnet_data)
         .then((response) => {
           // Handle the response here
           console.log("Network created:", response.data);
@@ -426,10 +437,23 @@ export default {
 
     fetchNetworks() {
       // Fetch the network list from your API
-      INSTANCE_V2.get(`/vnets/`)
+      INSTANCE_V2.get(`/apis/packetlifter.dev/v1/vnets`)
         .then((response) => {
           this.networks = response.data;
-          console.log("from API", this.networks);
+
+          // Parse the "name" and "subnets" under the "spec" section
+          const parsedData = response.data.items.map(item => ({
+            name: item.spec.name,
+            subnets: item.spec.subnets.map(subnet => ({
+              address: subnet.address,
+              name: subnet.name,
+              prefix_len: subnet.prefix_len
+            }))
+          }));
+
+          this.networks = parsedData;
+
+          console.log("from API", parsedData);
         })
         .catch((error) => {
           console.error("Error fetching Network List:", error);

@@ -6,6 +6,10 @@ import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_
 import HomePage from '../pages/homepage.vue';
 import ListNetwork from '../pages/listnetwork.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
+
+import ListNatGateway from '../pages/list-natgateway.vue';
+import CreateNatGateway from '../pages/create-natgateway.vue';
+
 import RouteTable from '../pages/routetables.vue';
 import Forms from '../pages/forms.vue';
 const BLANK_CLUSTER = '_';
@@ -15,7 +19,9 @@ const BLANK_CLUSTER = '_';
 const PRODUCT_NAME = 'Network';
 const PAGE_NAME = 'Home';
 const NETWORK_HOME = 'Network';
-const LIST_NETWORK = 'VNET';
+const LIST_NETWORK = 'vnet';
+const LIST_NAT_GATEWAY = 'nat.gateway';
+const CREATE_NAT_GATEWAY = 'create.nat.gateway';
 const CREATE_NETWORK = 'create-network';
 const ROUTE_TABLE = 'Route Table';
 const FORMS = 'Forms';
@@ -33,56 +39,76 @@ const routes = [
   // },
   // this covers the "custom page"
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ PAGE_NAME }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ PAGE_NAME }`,
+    name: `${PRODUCT_NAME}-c-cluster-${PAGE_NAME}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${PAGE_NAME}`,
     component: HomePage,
-      meta:      {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      },
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
     },
-    // this covers the "custom page"
-    // {
-    //   name:      `${ PRODUCT_NAME }-c-cluster-${ NETWORK_HOME }`,
-    //   path:      `/${ PRODUCT_NAME }/c/:cluster/${ NETWORK_HOME }`,
-    //   component: HomePage,
-    //     meta:      {
-    //       product: PRODUCT_NAME,
-    //       cluster: BLANK_CLUSTER
-    //     },
-    //   },  
+  },
+  // this covers the "custom page"
+  // {
+  //   name:      `${ PRODUCT_NAME }-c-cluster-${ NETWORK_HOME }`,
+  //   path:      `/${ PRODUCT_NAME }/c/:cluster/${ NETWORK_HOME }`,
+  //   component: HomePage,
+  //     meta:      {
+  //       product: PRODUCT_NAME,
+  //       cluster: BLANK_CLUSTER
+  //     },
+  //   },  
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ LIST_NETWORK }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ LIST_NETWORK }`,
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_NETWORK}`,
     component: ListNetwork,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ CREATE_NETWORK }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ CREATE_NETWORK }`,
+    name: `${PRODUCT_NAME}-c-cluster-${CREATE_NETWORK}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${CREATE_NETWORK}`,
     component: CreateNetwork,
-    meta:      {
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  // NAT GATEWAY
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_NAT_GATEWAY}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_NAT_GATEWAY}`,
+    component: ListNatGateway,
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ ROUTE_TABLE }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ ROUTE_TABLE }`,
+    name: `${PRODUCT_NAME}-c-cluster-${CREATE_NAT_GATEWAY}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${CREATE_NAT_GATEWAY}`,
+    component: CreateNatGateway,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${ROUTE_TABLE}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${ROUTE_TABLE}`,
     component: RouteTable,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-${ FORMS }`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/${ FORMS }`,
+    name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${FORMS}`,
     component: Forms,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
@@ -90,37 +116,37 @@ const routes = [
   // the following routes cover the "resource page"
   // registering routes for list/edit/create views
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-resource`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/:resource`,
+    name: `${PRODUCT_NAME}-c-cluster-resource`,
+    path: `/${PRODUCT_NAME}/c/:cluster/:resource`,
     component: ListResource,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-resource-create`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/:resource/create`,
+    name: `${PRODUCT_NAME}-c-cluster-resource-create`,
+    path: `/${PRODUCT_NAME}/c/:cluster/:resource/create`,
     component: CreateResource,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-resource-id`,
-    path:      `/${ PRODUCT_NAME }/c/:cluster/:resource/:id`,
+    name: `${PRODUCT_NAME}-c-cluster-resource-id`,
+    path: `/${PRODUCT_NAME}/c/:cluster/:resource/:id`,
     component: ViewResource,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
   },
   {
-    name:      `${ PRODUCT_NAME }-c-cluster-resource-namespace-id`,
-    path:      `/${ PRODUCT_NAME }/:cluster/:resource/:namespace/:id`,
+    name: `${PRODUCT_NAME}-c-cluster-resource-namespace-id`,
+    path: `/${PRODUCT_NAME}/:cluster/:resource/:namespace/:id`,
     component: ViewNamespacedResource,
-    meta:      {
+    meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER
     },
