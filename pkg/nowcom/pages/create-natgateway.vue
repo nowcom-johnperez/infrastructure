@@ -21,7 +21,7 @@
                         </p>
                         <br />
                         <h5 align="left">NAT Gateway Name</h5>
-                        <input type="text" v-model="selectedNatGatewayName" placeholder="vnet" required />
+                        <input type="text" v-model="selectedNatGatewayName" placeholder="NAT Gateway" required />
                     </div>
                 </div>
             </div>
@@ -84,16 +84,20 @@
                             <p :style="{ color: selectedNatGatewayName ? '' : 'red' }">
                                 Name : {{ selectedNatGatewayName || 'empty' }}
                             </p>
-
                             <br /><br /><br />
-                            <h2>Tag</h2>
-                            <span v-for="(tag, index) in tags" :key="index" class="tag">
-                                {{ tag }}
-                            </span>
-
+                            <h2>Outbound IP</h2>
+                            <p :style="{ color: selectedPublicIp ? '' : 'red' }">
+                                Public IP : {{ selectedPublicIp || 'empty' }}
+                            </p>
+                            <p :style="{ color: selectedCorporateIp ? '' : 'red' }">
+                                Corporate IP : {{ selectedCorporateIp || 'empty' }}
+                            </p>
                             <br /><br /><br />
                             <h2>Subnet</h2>
-
+                            <p :style="{ color: selectedVnet ? '' : 'red' }">
+                                VNET/Subnet : {{ selectedVnet || 'empty' }}
+                            </p>
+                            <br /><br /><br />
                         </div>
                     </div>
                 </div>
@@ -126,7 +130,7 @@
                     <button class="custom-button" :disabled="currentTab === 'tab4'" @click="nextTab">Next</button>
                     <!-- Conditionally render the button based on the current tab -->
                     <button v-if="currentTab === 'tab4'" class="custom-button"
-                        :disabled="isLoading || !selectedNatGatewayName || hasInvalidIPAddress || hasDuplicateIPAddress"
+                        :disabled="isLoading || !selectedNatGatewayName || !selectedPublicIp || hasInvalidIPAddress"
                         @click="createNetwork">
                         {{ currentTab === 'tab4' ? 'Create' : 'Review + Create' }}
                     </button>
@@ -172,6 +176,9 @@ export default {
             newTag: "",
             tags: [],
             hasInvalidIPAddress: false,
+            selectedPublicIp: '',
+            selectedCorporateIp: '',
+            selectedVnet: ''
         };
     },
     computed: {

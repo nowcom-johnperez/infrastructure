@@ -14,3 +14,9 @@ Release v0.2.2
 Release v0.2.3
 -  Add Network Name in Table
 -  Add Placeholder in subnet during VNET Creation
+
+Release v0.2.4
+- New API Kubernetes CRD
+- Design for NAT Gateway (unfinished)
+
+Release v0.2.5
