@@ -1,6 +1,6 @@
 <template>
     <div class="base">
-        <div>
+        <!-- <div>
             <input class="base-input" v-model="filters.name.value" placeholder="Search" />
             </br>
             <v-table :data="users" :currentPage.sync="currentPage" :pageSize="5" @totalPagesChanged="totalPages = $event"
@@ -26,7 +26,7 @@
             </v-table>
 
         </div>
-        </br> </br>
+        </br> </br> -->
         <h1>NAT Gateway</h1>
         <!-- Notification container -->
         <div class="message-row">
