@@ -284,7 +284,7 @@ export default {
 
         //call of subnets
         INSTANCE_V2.get(
-          `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
+          `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedNetwork.name}`
         ).then(async (response) => {
           console.log('response from vnet subnet', response);
 

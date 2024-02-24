@@ -10,7 +10,8 @@
     "@rancher/shell": "0.3.26",
     "@types/lodash": "4.14.184",
     "core-js": "3.21.1",
-    "css-loader": "4.3.0"
+    "css-loader": "4.3.0",
+    "vuejs-smart-table": "^0.0.8"
   },
   "resolutions": {
     "**/webpack": "4",

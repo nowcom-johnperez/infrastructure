@@ -1,5 +1,32 @@
 <template>
     <div class="base">
+        <div>
+            <input class="base-input" v-model="filters.name.value" placeholder="Search" />
+            </br>
+            <v-table :data="users" :currentPage.sync="currentPage" :pageSize="5" @totalPagesChanged="totalPages = $event"
+                :filters="filters">
+                <thead slot="head">
+                    <v-th sortKey="name">Name</v-th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </thead>
+                <tbody slot="body" slot-scope="{displayData}">
+                    <tr v-for="row in displayData" :key="row.id">
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.age }}</td>
+                        <td>{{ row.email }}</td>
+                        <td>
+                            {{ row.address.street }},
+                            {{ row.address.city }}
+                            {{ row.address.state }}
+                        </td>
+                    </tr>
+                </tbody>
+            </v-table>
+
+        </div>
+        </br> </br>
         <h1>NAT Gateway</h1>
         <!-- Notification container -->
         <div class="message-row">
@@ -199,6 +226,10 @@ import {
     NETWORKS,
     NETWORK_URL_V2,
 } from "../config/api.ts";
+import SmartTable from 'vuejs-smart-table'
+import Vue from 'vue'
+
+Vue.use(SmartTable)
 
 const INSTANCE = axios.create({
     //baseURL: LOCAL_URL,
@@ -239,7 +270,75 @@ export default {
             addSubnetSidebarVisible: false,
             apiError: null,
             apiResponseMessage: "",
-            network: []
+            network: [],
+            users: [
+                {
+                    name: "francis",
+                    age: 17,
+                    email: "fvictoriano@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                },
+                {
+                    name: "Andy",
+                    age: 17,
+                    email: "andy@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                },
+                {
+                    name: "george",
+                    age: 17,
+                    email: "george@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                },
+                {
+                    name: "kate",
+                    age: 17,
+                    email: "kate@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                },
+                {
+                    name: "carlo",
+                    age: 17,
+                    email: "carlo@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                },
+                {
+                    name: "mohenne",
+                    age: 17,
+                    email: "mohenne@nowcom.com",
+                    address: {
+                        street: "1152 S Ardmore",
+                        city: "Los Angeles",
+                        state: "California"
+                    }
+                }
+
+            ],
+            filters: {
+                name: { value: '', keys: ['name'] }
+            },
+            currentPage: 1,
+            totalPages: 0,
         };
     },
     computed: {
@@ -446,6 +545,14 @@ export default {
 .base {
     margin-left: 10px;
 }
+
+.base-input {
+    text-align: left;
+    width: 250px;
+    /* Adjust the width as needed */
+    /* Other styles as needed */
+}
+
 
 .form-container {
     text-align: center;
@@ -723,6 +830,33 @@ th {
     color: #666666;
     /* Dark grey */
     cursor: not-allowed;
+}
+
+
+/* Override styles for the pagination list */
+.smart-pagination .pagination {
+    list-style-type: none;
+    /* Remove bullet points */
+    padding: 0;
+    /* Remove default padding */
+}
+
+/* Override styles for the pagination items */
+.smart-pagination .pagination li {
+    display: inline-block;
+    /* Display pagination items inline */
+    margin-right: 5px;
+    /* Add margin between pagination items */
+}
+
+/* Override styles for the pagination links */
+.smart-pagination .pagination li a {
+    /* Add your custom styles for the pagination links */
+}
+
+/* Override styles for the active pagination link */
+.smart-pagination .pagination li.active a {
+    /* Add your custom styles for the active pagination link */
 }
 </style>
   
