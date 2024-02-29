@@ -22,13 +22,36 @@
     <br>
     <div class="form-row">
       <div class="form-column">
-        <table v-if="networks && networks.length">
+
+
+        <input class="base-input" v-model="filters.name.value" placeholder="Search" />
+        </br>
+        <v-table :data="networks" :currentPage.sync="currentPage" :pageSize="5" @totalPagesChanged="totalPages = $event"
+          :filters="filters">
+          <thead slot="head">
+            <v-th sortKey="name">Name</v-th>
+            <th>Cluster</th>
+            <th>Subnet</th>
+            <th>Action</th>
+          </thead>
+          <tbody slot="body" slot-scope="{displayData}">
+            <tr v-for="row in displayData" :key="row.name">
+              <td><a @click.prevent="openSidebar(row)">{{ row.name }}</a></td>
+              <td>local</td>
+              <td>{{ row.subnets.length }}</td>
+              <td width="50"> <button @click="openModal(row.name)" class="delete-button">Delete</button></td>
+            </tr>
+          </tbody>
+        </v-table>
+
+
+        </br> </br>
+        <!-- <table v-if="networks && networks.length">
           <thead>
             <tr>
               <th>VNET</th>
               <th>Cluster</th>
               <th>Subnet</th>
-              <!-- <th>Network</th> -->
               <th>Action</th>
             </tr>
           </thead>
@@ -36,37 +59,22 @@
             <tr v-for="item in networks" :key="item.id">
               <td><a @click.prevent="openSidebar(item)">{{ item.name }}</a></td>
               <td>
-                <!-- <ul>
-                    <li v-for="subnet in item.subnets">
-                      {{ subnet.subnet_name }}
-                    </li>
-                  </ul> -->
                 local
               </td>
               <td>
                 Total Subnet :{{ item.subnets.length }}
               </td>
-              <!-- <td>
-                  <ul>
-                    <li v-for="subnet in item.subnets">
-                      {{ subnet.network_prefix }}
-                   
-                    </li>
-                  </ul>
-                </td> -->
               <td width="50">
                 <button @click="openModal(item.name)" class="delete-button">Delete</button>
               </td>
             </tr>
           </tbody>
         </table>
-        <!-- <p v-else>No items available</p> -->
         <table v-else>
           <thead>
             <tr>
               <th>VNET</th>
               <th>Subnet</th>
-              <!-- <th>Network</th> -->
               <th>Action</th>
             </tr>
           </thead>
@@ -75,7 +83,7 @@
               <td colspan="3" style="text-align: center;">No items available</td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
     </div>
 
@@ -194,6 +202,10 @@ import {
   NETWORK_URL_V2,
   BEARERTOKEN
 } from "../config/api.ts";
+import SmartTable from 'vuejs-smart-table'
+import Vue from 'vue'
+
+Vue.use(SmartTable)
 
 const INSTANCE_V2 = axios.create({
   baseURL: NETWORK_URL_V2,
@@ -232,7 +244,12 @@ export default {
       addSubnetSidebarVisible: false,
       apiError: null,
       apiResponseMessage: "",
-      network: []
+      network: [],
+      filters: {
+        name: { value: '', keys: ['name'] }
+      },
+      currentPage: 1,
+      totalPages: 0,
     };
   },
   computed: {
@@ -509,6 +526,13 @@ export default {
 <style scoped>
 .base {
   margin-left: 10px;
+}
+
+.base-input {
+  text-align: left;
+  width: 250px;
+  /* Adjust the width as needed */
+  /* Other styles as needed */
 }
 
 .form-container {
