@@ -1,3 +1,4 @@
+<!-- eslint-disable no-console -->
 <template>
   <div class="base">
     <h1>Virtual Network</h1>
@@ -7,29 +8,40 @@
       <div class="message-column">
         <!-- Display API response data -->
         <div v-if="apiResponse">
-          <h2 align="center">{{ apiResponseMessage }}</h2>
-          <pre align="center" v-if="!apiError">Deleted VNET: {{ apiResponse.spec.name }}</pre>
-          <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName }}</pre>
+          <h2 align="center">
+            {{ apiResponseMessage }}
+          </h2>
+          <pre v-if="!apiError" align="center">Deleted VNET: {{ apiResponse.spec.name }}</pre>
+          <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedName }}</pre>
         </div>
       </div>
     </div>
     <div class="message-row">
       <div class="message-column">
-        <button @click="routeCreateNetwork" class="custom-button" style="width: 70px; margin-right: 10px;">Create</button>
-        <button @click="refreshList" class="custom-button" style="width: 70px; margin-right: 10px;">Refresh</button>
+        <button class="custom-button" style="width: 70px; margin-right: 10px;" @click="routeCreateNetwork">
+          Create
+        </button>
+        <button class="custom-button" style="width: 70px; margin-right: 10px;" @click="fetchNetworks">
+          Refresh
+        </button>
       </div>
     </div>
     <br>
     <div class="form-row">
       <div class="form-column">
-
-
-        <input class="base-input" v-model="filters.name.value" placeholder="Search" />
+        <input v-model="filters.name.value" class="base-input" placeholder="Search" />
         </br>
-        <v-table :data="networks" :currentPage.sync="currentPage" :pageSize="5" @totalPagesChanged="totalPages = $event"
-          :filters="filters">
+        <v-table
+          :data="networks"
+          :current-page.sync="currentPage"
+          :page-size="5"
+          :filters="filters"
+          @totalPagesChanged="totalPages = $event"
+        >
           <thead slot="head">
-            <v-th sortKey="name">Name</v-th>
+            <v-th sort-key="name">
+              Name
+            </v-th>
             <th>Cluster</th>
             <th>Subnet</th>
             <th>Action</th>
@@ -39,11 +51,14 @@
               <td><a @click.prevent="openSidebar(row)">{{ row.name }}</a></td>
               <td>local</td>
               <td>{{ row.subnets.length }}</td>
-              <td width="50"> <button @click="openModal(row.name)" class="delete-button">Delete</button></td>
+              <td width="50">
+                <button class="delete-button" @click="openModal(row.name)">
+                  Delete
+                </button>
+              </td>
             </tr>
           </tbody>
         </v-table>
-
 
         </br> </br>
         <!-- <table v-if="networks && networks.length">
@@ -92,7 +107,9 @@
         <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
-            <button @click.prevent="addSubnetSidebar" class="custom-button"> + Add Subnet</button>
+            <button class="custom-button" @click.prevent="addSubnetSidebar">
+              + Add Subnet
+            </button>
           </div>
         </div>
         <table>
@@ -115,8 +132,12 @@
               <td>{{ subnet ? subnet.prefix_len : 'No Network Prefix' }}</td>
               <!-- Action -->
               <td width="30">
-                <button @click="openModalSubnet(selectedNetwork.name, subnet.name, subnet.address, subnet.prefix_len)"
-                  class="list-delete-button">Delete</button>
+                <button
+                  class="list-delete-button"
+                  @click="openModalSubnet(selectedNetwork.name, subnet.name, subnet.address, subnet.prefix_len)"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           </tbody>
@@ -124,11 +145,15 @@
 
         </br>
         <div v-if="subnetResponse">
-          <h2 align="center">{{ subnetResponseMessage }}</h2>
-          <pre align="center" v-if="!apiError">SUBNET: {{ subnet_name }}</pre>
-          <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName }}</pre>
+          <h2 align="center">
+            {{ subnetResponseMessage }}
+          </h2>
+          <pre v-if="!apiError" align="center">SUBNET: {{ subnet_name }}</pre>
+          <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedName }}</pre>
         </div>
-        <button @click="closeSidebar" class="close-button">×</button>
+        <button class="close-button" @click="closeSidebar">
+          ×
+        </button>
       </div>
     </div>
 
@@ -139,17 +164,26 @@
         <h2>Add Subnet</h2>
         <!-- ... your content for adding subnet -->
         <div class="add-form-row">
-          <input type="text" v-model="selectedSubnetName" placeholder="Subnet Name" title="Subnet Name" />
+          <input v-model="selectedSubnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
         </div>
         <div class="add-form-row">
-          <input type="text" v-model="selectedVnetSubnets" placeholder="Enter subnet (e.g., 10.0.0.0)"
-            pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address" />
+          <input
+            v-model="selectedVnetSubnets"
+            type="text"
+            placeholder="Enter subnet (e.g., 10.0.0.0)"
+            pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+            title="Please enter a valid IP address"
+          />
         </div>
         <div class="add-form-row">
-          <button @click="addSubnet" class="row-button" :disabled="isAddSubnetDisabled"> + Add Subnet</button>
+          <button class="row-button" :disabled="isAddSubnetDisabled" @click="addSubnet">
+            + Add Subnet
+          </button>
         </div>
       </div>
-      <button @click="closeSubnetSidebar" class="close-subnet-button">×</button>
+      <button class="close-subnet-button" @click="closeSubnetSidebar">
+        ×
+      </button>
     </div>
     <!-- Modal -->
     <div v-if="isModalOpen" class="modal-overlay">
@@ -163,14 +197,17 @@
         <!-- Buttons container with flex layout -->
         <div class="button-container">
           <!-- Yes button on the left -->
-          <button @click="deleteNetwork" class="delete-button">Yes</button>
+          <button class="delete-button" @click="deleteNetwork">
+            Yes
+          </button>
 
           <!-- No button on the right -->
-          <button @click="closeModal" class="ok-button">No</button>
+          <button class="ok-button" @click="closeModal">
+            No
+          </button>
         </div>
       </div>
     </div>
-
 
     <!-- Modal -->
     <div v-if="isModalSubnetOpen" class="modal-overlay">
@@ -184,72 +221,60 @@
         <!-- Buttons container with flex layout -->
         <div class="button-container">
           <!-- Yes button on the left -->
-          <button @click="deleteSubnet" class="delete-button">Yes</button>
+          <button class="delete-button" @click="deleteSubnet">
+            Yes
+          </button>
 
           <!-- No button on the right -->
-          <button @click="closeModalSubnet" class="ok-button">No</button>
+          <button class="ok-button" @click="closeModalSubnet">
+            No
+          </button>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import https from "https";
-import {
-  NETWORK_URL_V2,
-  BEARERTOKEN
-} from "../config/api.ts";
-import SmartTable from 'vuejs-smart-table'
-import Vue from 'vue'
+import SmartTable from 'vuejs-smart-table';
+import Vue from 'vue';
+import { vNetService } from '../services/api/vnet';
 
-Vue.use(SmartTable)
+Vue.use(SmartTable);
 
-const INSTANCE_V2 = axios.create({
-  baseURL: NETWORK_URL_V2,
-  httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
-  headers: {
-    'Authorization': `Bearer ${BEARERTOKEN}`
-  }
-});
-
-const PRODUCT_NAME = "Network";
-const LIST_NETWORK = "create-network";
-const BLANK_CLUSTER = "_";
+const PRODUCT_NAME = 'Network';
+const LIST_NETWORK = 'create-network';
+const BLANK_CLUSTER = '_';
 
 export default {
-  name: "ListNetwork",
+  name: 'ListNetwork',
   // layout: 'home',
   data() {
     return {
-      selectedName: "", // Dropdown for network name
-      selectedVnetName: "",
-      selectedSubnetName: "",
-      selectedVnetSubnets: "10.55.0.0",
-      networks: [], // This will be populated with data from the API
-      loading: false,
-      isModalOpen: false,
-      apiResponse: null,
-      subnetResponse: null,
-      isModalSubnetOpen: false,
-      vnet_name: "",
-      subnet_name: "",
-      subnet_address: "",
-      subnet_prefix_len: "",
-      subnet_id: "",
-      selectedNetwork: null,
-      sidebarVisible: false,
+      selectedName:            '', // Dropdown for network name
+      selectedVnetName:        '',
+      selectedSubnetName:      '',
+      selectedVnetSubnets:     '10.55.0.0',
+      networks:                [], // This will be populated with data from the API
+      loading:                 false,
+      isModalOpen:             false,
+      apiResponse:             null,
+      subnetResponse:          null,
+      isModalSubnetOpen:       false,
+      vnet_name:               '',
+      subnet_name:             '',
+      subnet_address:          '',
+      subnet_prefix_len:       '',
+      subnet_id:               '',
+      selectedNetwork:         null,
+      sidebarVisible:          false,
       addSubnetSidebarVisible: false,
-      apiError: null,
-      apiResponseMessage: "",
-      network: [],
-      filters: {
-        name: { value: '', keys: ['name'] }
-      },
-      currentPage: 1,
-      totalPages: 0,
+      apiError:                null,
+      apiResponseMessage:      '',
+      network:                 [],
+      filters:                 { name: { value: '', keys: ['name'] } },
+      currentPage:             1,
+      totalPages:              0,
     };
   },
   computed: {
@@ -259,74 +284,58 @@ export default {
     },
   },
   methods: {
-    addSubnet() {
-      //v0.2
-      const subnet_data = {
-        name: this.selectedSubnetName.toLowerCase(),
-        address: this.selectedVnetSubnets,
-        prefix_len: 24
-      };
-
-      this.selectedNetwork.subnets.push(subnet_data);
-
-      const vnet_data = {
-        apiVersion: "packetlifter.dev/v1",
-        kind: "Vnet",
-        // vnet_vlan: this.selectedVnetVlan,
-        metadata: {
-          name: this.selectedNetwork.name.toLowerCase(),
-          namespace: "default"
-        },
-        spec: {
-          name: this.selectedNetwork.name.toLowerCase(),
-          subnets: this.selectedNetwork.subnets,
-        }
-      };
-
-      console.log("send to API", subnet_data);
-      console.log("log", this.selectedNetwork);
-
-      INSTANCE_V2.patch(
-        `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedNetwork.name}`,
-        vnet_data,
-        {
-          headers: {
-            'Content-Type': 'application/merge-patch+json'
-          }
-        }
-      ).then((response) => {
-        // Handle the response here
-        console.log("Subnet Network created:", response.data);
-        this.isLoading = false;
-
-        //call of subnets
-        INSTANCE_V2.get(
-          `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedNetwork.name}`
-        ).then(async (response) => {
-          console.log('response from vnet subnet', response);
-
-          this.selectedNetwork.subnets = response.data.spec.subnets;
-          console.log('subnets', this.selectedNetwork.subnets)
-
-        }).catch((error) => {
-          this.subnetResponseMessage = "Error";
-        });
-
+    async getSubnetByName (networkName) {
+      const subnetRes = await vNetService.getSubnetByName(networkName);
+      this.selectedNetwork.subnets = subnetRes.data.spec.subnets;
+    },
+    async addSubnet() {
+      try {
         this.apiError = null; // Reset error state
-        this.subnetResponseMessage = "Subnet Added Successfully";
+        // v0.2
+        const subnet_data = {
+          name:       this.selectedSubnetName.toLowerCase(),
+          address:    this.selectedVnetSubnets,
+          prefix_len: 24
+        };
+
+        this.selectedNetwork.subnets.push(subnet_data);
+
+        const vnet_data = {
+          apiVersion: 'packetlifter.dev/v1',
+          kind:       'Vnet',
+          // vnet_vlan: this.selectedVnetVlan,
+          metadata:   {
+            name:      this.selectedNetwork.name.toLowerCase(),
+            namespace: 'default'
+          },
+          spec: {
+            name:    this.selectedNetwork.name.toLowerCase(),
+            subnets: this.selectedNetwork.subnets,
+          }
+        };
+
+        console.log('send to API', subnet_data);
+        console.log('log', this.selectedNetwork);
+
+        this.loading = true
+
+        const response = await vNetService.patchSubnet(this.selectedNetwork.name, vnet_data);
+        console.log('Subnet Network created:', response.data);
+        
+        await this.getSubnetByName(this.selectedNetwork.name);
+        this.subnetResponseMessage = 'Subnet Added Successfully';
 
         this.addSubnetSidebarVisible = false;
-      })
-        .catch((error) => {
-          // Handle any errors here
-          // console.error("Error creating network:", error);
-          console.log(error.response)
-          this.isLoading = false;
-          alert(error.response.data.detail)
-          this.subnetResponseMessage = "Error";
-          // Set the API error in the component
-          this.apiError = "Error creating Subnet";
-        });
+      } catch(error) {
+        // Handle any errors here
+        // console.error("Error creating network:", error);
+        console.log(error.response);
+        this.loading = false;
+        alert(error.response.data.detail);
+        this.subnetResponseMessage = 'Error';
+        // Set the API error in the component
+        this.apiError = 'Error creating Subnet';
+      }
     },
     addSubnetSidebar() {
       this.selectedSubnetName = null;
@@ -335,7 +344,7 @@ export default {
     closeSubnetSidebar() {
       this.addSubnetSidebarVisible = false;
     },
-    async openSidebar(item) {
+    openSidebar(item) {
       // Update the item with the fetched data
       this.subnetResponse = false;
       this.selectedNetwork = item;
@@ -347,7 +356,7 @@ export default {
     },
     // Method to route to the Create Network page
     routeCreateNetwork() {
-      this.$router.push(`/${PRODUCT_NAME}/c/${BLANK_CLUSTER}/${LIST_NETWORK}`); // Assuming '/create-network' is the route for the Create Network page
+      this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
     },
     openModal(vnetName) {
       // Set the selected VLAN name
@@ -376,153 +385,117 @@ export default {
       this.isModalSubnetOpen = false;
     },
 
-    fetchNetworks() {
-      console.log("fetching networks");
+    async fetchNetworks() {
+      console.log('fetching networks');
 
       // Fetch the network list from your API
-      INSTANCE_V2.get(`/apis/packetlifter.dev/v1/vnets`)
-        .then((response) => {
-          this.networks = response.data;
+      try {
+        const response = await vNetService.getNetworks();
 
-          // Parse the "name" and "subnets" under the "spec" section
-          const parsedData = response.data.items.map(item => ({
-            name: item.spec.name,
+        // Parse the "name" and "subnets" under the "spec" section
+        const parsedData = response.data.items.map(item => ({
+            name:    item.spec.name,
             subnets: item.spec.subnets.map(subnet => ({
-              address: subnet.address,
-              name: subnet.name,
-              prefix_len: subnet.prefix_len
-            }))
-          }));
-          this.networks = parsedData;
-          console.log("from API", parsedData);
-        })
-        .catch((error) => {
-          console.error("Error fetching Network List:", error);
-        });
+            address:    subnet.address,
+            name:       subnet.name,
+            prefix_len: subnet.prefix_len
+          }))
+        }));
 
-      return this.network;
+        this.networks = parsedData;
+      } catch (error) {
+        console.error('Error fetching Network List:', error);
+      }
     },
-    deleteNetwork() {
-      console.log(`Delete Network Endpoint, ${this.selectedVnetName}`);
-      // Make an Axios DELETE request to delete the network with the selected VLAN name
-      INSTANCE_V2.delete(`/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.selectedVnetName}`)
-        .then((response) => {
-          // Handle the response here
-          console.log("VNET deleted:", response.data);
-          this.loading = false;
+    async deleteNetwork() {
+      try {
+        console.log(`Delete Network Endpoint, ${ this.selectedVnetName }`);
+        this.loading = true;
+        const response = await vNetService.deleteNetwork(this.selectedVnetName);
+        // Handle the response here
+        console.log('VNET deleted:', response.data);
+        this.loading = false;
 
-          this.apiResponse = response.data;
-          // Set the API response data in the component
-          this.apiResponseMessage = "VNET Successfully Deleted";
-          this.apiError = null; // Reset error state
-          //this.fetchHarvesterNetworks();
+        this.apiResponse = response.data;
+        // Set the API response data in the component
+        this.apiResponseMessage = 'VNET Successfully Deleted';
+        this.apiError = null; // Reset error state
 
-          setTimeout(() => {
-            this.fetchNetworks();
-          }, 1000);
-
-
-          // Close the modal after deletion
-          this.closeModal();
-        })
-        .catch((error) => {
-          // Handle any errors here
-          console.error("Error deleting network:", error);
-          this.loading = false;
-          this.apiResponseMessage = "Error";
-          // Set the API error in the component
-          this.apiError = error.response ? error.response.data : error.message;
-          this.apiResponse = 1; // Reset response state
-        });
+        await this.fetchNetworks();
+        // Close the modal after deletion
+        this.closeModal();
+      } catch (error) {
+        // Handle any errors here
+        console.error('Error deleting network:', error);
+        this.loading = false;
+        this.apiResponseMessage = 'Error';
+        // Set the API error in the component
+        this.apiError = error.response ? error.response.data : error.message;
+        this.apiResponse = 1; // Reset response state
+      }
     },
 
     async deleteSubnet() {
-      console.log(
-        `Delete Subnet Endpoint, ${this.vnet_name}, ${this.subnet_name}, ${this.subnet_id}`
-      );
-      this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
-      console.log("new subnet", this.selectedNetwork.subnet)
+      try {
+        console.log(
+          `Delete Subnet Endpoint, ${ this.vnet_name }, ${ this.subnet_name }, ${ this.subnet_id }`
+        );
+        this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
+        console.log('new subnet', this.selectedNetwork.subnet);
 
-      const vnet_data = {
-        apiVersion: "packetlifter.dev/v1",
-        kind: "Vnet",
-        // vnet_vlan: this.selectedVnetVlan,
-        metadata: {
-          name: this.vnet_name.toLowerCase(),
-          namespace: "default"
-        },
-        spec: {
-          name: this.vnet_name.toLowerCase(),
-          subnets: this.selectedNetwork.subnets,
-        }
-      };
-      //var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
-      // Make an Axios DELETE request to delete the network with the selected VLAN name
-      INSTANCE_V2.patch(
-        `/apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`,
-        vnet_data,
-        {
-          headers: {
-            'Content-Type': 'application/merge-patch+json'
+        const vnet_data = {
+          apiVersion: 'packetlifter.dev/v1',
+          kind:       'Vnet',
+          // vnet_vlan: this.selectedVnetVlan,
+          metadata:   {
+            name:      this.vnet_name.toLowerCase(),
+            namespace: 'default'
+          },
+          spec: {
+            name:    this.vnet_name.toLowerCase(),
+            subnets: this.selectedNetwork.subnets,
           }
-        }
-      )
-        .then(async (response) => {
-          // Handle the response here
-          console.log("Network deleted:", response.data);
-          this.loading = false;
+        };
 
-          this.subnetResponse = response.data;
-          // Set the API response data in the component
-          this.subnetResponseMessage = "Subnet Successfully Deleted";
-          this.apiError = null; // Reset error state
+        this.loading = true;
+        // var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
+        // Make an Axios DELETE request to delete the network with the selected VLAN name
+        const response = await vNetService.patchSubnet(this.vnet_name, vnet_data);
+        console.log('Network deleted:', response.data);
+        this.loading = false;
 
-          //call of subnets
-          INSTANCE_V2.get(
-            `apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}`
-          ).then(async (response) => {
-            console.log('response from vnet subnet', response);
+        this.subnetResponse = response.data;
+        // Set the API response data in the component
+        this.subnetResponseMessage = 'Subnet Successfully Deleted';
+        this.apiError = null; // Reset error state
 
-            //vnet api are separate to subnet
-            //apis/packetlifter.dev/v1/namespaces/default/vnets/${this.vnet_name}
-            //console.log('sub', response.data.spec.subnets);
+        await this.getSubnetByName(this.vnet_name);
 
-            this.selectedNetwork.subnets = response.data.spec.subnets;
-            console.log('subnets', this.selectedNetwork.subnets)
-
-          }).catch((error) => {
-            this.subnetResponseMessage = "Error";
-          });
-          // Update the selectedNetwork with the selected vnet_name
-          this.selectedNetwork.vnet_name = this.vnet_name;
-          console.log("Selected Network:", this.selectedNetwork);
-          // Close the modal after deletion
-          this.closeModalSubnet();
-        })
-        .catch((error) => {
-          // Handle any errors here
-          console.error("Error deleting network:", error);
-          this.loading = false;
-          this.subnetResponseMessage = "Error";
-          // Set the API error in the component
-          this.apiError = error.response ? error.response.data : error.message;
-          this.subnetResponse = 1; // Reset response state
-        });
-    },
-
-    refreshList() {
-      this.fetchNetworks();
-
+        // Update the selectedNetwork with the selected vnet_name
+        this.selectedNetwork.vnet_name = this.vnet_name;
+        console.log('Selected Network:', this.selectedNetwork);
+        // Close the modal after deletion
+        this.closeModalSubnet();
+      } catch (error) {
+        // Handle any errors here
+        console.error('Error deleting network:', error);
+        this.loading = false;
+        this.subnetResponseMessage = 'Error';
+        // Set the API error in the component
+        this.apiError = error.response ? error.response.data : error.message;
+        this.subnetResponse = 1; // Reset response state
+      }
+      
     },
   },
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
     this.fetchNetworks();
-    //this.fetchHarvesterNetworks();
+    // this.fetchHarvesterNetworks();
   },
 };
 </script>
-  
+
 <style scoped>
 .base {
   margin-left: 10px;
@@ -737,7 +710,7 @@ th {
     border: none;
     font-size: 12px;
     cursor: pointer;
-    color: #25bbb4; 
+    color: #25bbb4;
   } /* Set a default color */
 
 .dark-theme .sidebar {
@@ -813,4 +786,3 @@ th {
   cursor: not-allowed;
 }
 </style>
-  
