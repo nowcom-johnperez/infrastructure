@@ -1,7 +1,7 @@
 <!-- eslint-disable no-console -->
 <template>
   <div class="base">
-    <h1>Virtual Network</h1>
+    <h1 class="success">Virtual Network</h1>
     <!-- Notification container -->
     <div class="message-row">
       <div class="message-column"></div>
@@ -484,16 +484,6 @@ li {
   border-radius: 5px;
   color: #fff;
   font-weight: bold;
-}
-
-.success {
-  background-color: #4caf50;
-  /* Green */
-}
-
-.error {
-  background-color: #f44336;
-  /* Red */
 }
 
 /* Your CSS styles go here */
