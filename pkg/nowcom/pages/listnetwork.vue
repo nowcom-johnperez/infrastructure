@@ -18,131 +18,26 @@
     </div>
     <div class="message-row">
       <div class="message-column">
-        <button class="custom-button" style="width: 70px; margin-right: 10px;" @click="routeCreateNetwork">
-          Create
-        </button>
-        <button class="custom-button" style="width: 70px; margin-right: 10px;" @click="fetchNetworks">
-          Refresh
-        </button>
+        <cButton label="Create" class="custom-button" @click="routeCreateNetwork" />
+        <cButton label="Refresh" class="custom-button" @click="fetchNetworks" />
       </div>
     </div>
     <br>
     <div class="form-row">
       <div class="form-column">
-        <input v-model="filters.name.value" class="base-input" placeholder="Search" />
-        </br>
-        <v-table
-          :data="networks"
-          :current-page.sync="currentPage"
-          :page-size="5"
-          :filters="filters"
-          @totalPagesChanged="totalPages = $event"
-        >
-          <thead slot="head">
-            <v-th sort-key="name">
-              Name
-            </v-th>
-            <th>Cluster</th>
-            <th>Subnet</th>
-            <th>Action</th>
-          </thead>
-          <tbody slot="body" slot-scope="{displayData}">
-            <tr v-for="row in displayData" :key="row.name">
-              <td><a @click.prevent="openSidebar(row)">{{ row.name }}</a></td>
-              <td>local</td>
-              <td>{{ row.subnets.length }}</td>
-              <td width="50">
-                <button class="delete-button" @click="openModal(row.name)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-
+        <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" />
         </br> </br>
-        <!-- <table v-if="networks && networks.length">
-          <thead>
-            <tr>
-              <th>VNET</th>
-              <th>Cluster</th>
-              <th>Subnet</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in networks" :key="item.id">
-              <td><a @click.prevent="openSidebar(item)">{{ item.name }}</a></td>
-              <td>
-                local
-              </td>
-              <td>
-                Total Subnet :{{ item.subnets.length }}
-              </td>
-              <td width="50">
-                <button @click="openModal(item.name)" class="delete-button">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table v-else>
-          <thead>
-            <tr>
-              <th>VNET</th>
-              <th>Subnet</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="3" style="text-align: center;">No items available</td>
-            </tr>
-          </tbody>
-        </table> -->
       </div>
     </div>
 
-    <div class="sidebar" :class="{ 'sidebar-visible': sidebarVisible }">
-      <div class="sidebar-content">
-        <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
+    <SideBar type="main" :sidebar-visible="sidebarVisible">
+      <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
-            <button class="custom-button" @click.prevent="addSubnetSidebar">
-              + Add Subnet
-            </button>
+            <cButton label="+ Add Subnet" @click="addSubnetSidebar" />
           </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Subnet Name</th>
-              <th>IP Address</th>
-              <th>Network Prefix</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <!-- Table Body -->
-          <tbody>
-            <tr v-for="subnet in selectedNetwork ? selectedNetwork.subnets : []" :key="subnet.id">
-              <!-- Subnet Name -->
-              <td>{{ subnet ? subnet.name : 'No Identifier' }}</td>
-              <!-- Identifier -->
-              <td>{{ subnet ? subnet.address : 'No Subnet Name' }}</td>
-              <!-- Network Prefix -->
-              <td>{{ subnet ? subnet.prefix_len : 'No Network Prefix' }}</td>
-              <!-- Action -->
-              <td width="30">
-                <button
-                  class="list-delete-button"
-                  @click="openModalSubnet(selectedNetwork.name, subnet.name, subnet.address, subnet.prefix_len)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
+        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalSubnet" />
         </br>
         <div v-if="subnetResponse">
           <h2 align="center">
@@ -151,40 +46,30 @@
           <pre v-if="!apiError" align="center">SUBNET: {{ subnet_name }}</pre>
           <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedName }}</pre>
         </div>
-        <button class="close-button" @click="closeSidebar">
-          ×
-        </button>
-      </div>
-    </div>
+        <cButton label="×" class="close-button" @click="closeSidebar" />
+    </SideBar>
 
-    <!-- Second sidebar -->
-    <div class="add-subnet-sidebar" :class="{ 'add-subnet-sidebar-visible': addSubnetSidebarVisible }">
-      <!-- Second sidebar content -->
-      <div class="add-subnet-sidebar-content">
-        <h2>Add Subnet</h2>
-        <!-- ... your content for adding subnet -->
-        <div class="add-form-row">
-          <input v-model="selectedSubnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
-        </div>
-        <div class="add-form-row">
-          <input
-            v-model="selectedVnetSubnets"
-            type="text"
-            placeholder="Enter subnet (e.g., 10.0.0.0)"
-            pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-            title="Please enter a valid IP address"
-          />
-        </div>
-        <div class="add-form-row">
-          <button class="row-button" :disabled="isAddSubnetDisabled" @click="addSubnet">
-            + Add Subnet
-          </button>
-        </div>
+    <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible">
+      <h2>Add Subnet</h2>
+      <!-- ... your content for adding subnet -->
+      <div class="add-form-row">
+        <input v-model="selectedSubnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
       </div>
-      <button class="close-subnet-button" @click="closeSubnetSidebar">
-        ×
-      </button>
-    </div>
+      <div class="add-form-row">
+        <input
+          v-model="selectedVnetSubnets"
+          type="text"
+          placeholder="Enter subnet (e.g., 10.0.0.0)"
+          pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+          title="Please enter a valid IP address"
+        />
+      </div>
+      <div class="add-form-row">
+        <cButton label="+ Add Subnet" class="row-button" :disabled="isAddSubnetDisabled" @click="addSubnet"/>
+      </div>
+      <cButton label="×" class="close-button" @click="closeSubnetSidebar" />
+    </SideBar>
+
     <!-- Modal -->
     <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal">
@@ -236,18 +121,23 @@
 </template>
 
 <script>
-import SmartTable from 'vuejs-smart-table';
-import Vue from 'vue';
+import { NETWORK_HEADERS, SUB_NETWORK_HEADERS } from '../config/table'
 import { vNetService } from '../services/api/vnet';
-
-Vue.use(SmartTable);
 
 const PRODUCT_NAME = 'Network';
 const LIST_NETWORK = 'create-network';
 const BLANK_CLUSTER = '_';
+import UniversalTable from '../components/UniversalTable'
+import cButton from '../components/common/Button'
+import SideBar from '../components/Sidebar'
 
 export default {
   name: 'ListNetwork',
+  components: {
+    UniversalTable,
+    cButton,
+    SideBar
+  },
   // layout: 'home',
   data() {
     return {
@@ -267,7 +157,7 @@ export default {
       subnet_prefix_len:       '',
       subnet_id:               '',
       selectedNetwork:         null,
-      sidebarVisible:          false,
+      sidebarVisible:          true,
       addSubnetSidebarVisible: false,
       apiError:                null,
       apiResponseMessage:      '',
@@ -275,6 +165,8 @@ export default {
       filters:                 { name: { value: '', keys: ['name'] } },
       currentPage:             1,
       totalPages:              0,
+      networkHeader: [],
+      subnetworkHeader: [],
     };
   },
   computed: {
@@ -358,9 +250,10 @@ export default {
     routeCreateNetwork() {
       this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
     },
-    openModal(vnetName) {
+    openModal(vnetRow) {
+      const { name } = vnetRow;
       // Set the selected VLAN name
-      this.selectedVnetName = vnetName;
+      this.selectedVnetName = name;
       this.subnetResponse = false;
       // Open the modal
       this.isModalOpen = true;
@@ -369,11 +262,12 @@ export default {
       this.isModalOpen = false;
     },
 
-    openModalSubnet(vnet_name, subnet_name, address, prefix_len) {
+    openModalSubnet(subnetRow) {
+      const { name, address, prefix_len } = subnetRow;
       // Set the selected VLAN name
-      console.log(vnet_name, subnet_name, address, prefix_len);
-      this.vnet_name = vnet_name;
-      this.subnet_name = subnet_name;
+      console.log(name, address, prefix_len);
+      this.vnet_name = this.selectedNetwork.name;
+      this.subnet_name = name;
       this.subnet_address = address;
       this.subnet_prefix_len = prefix_len;
 
@@ -393,14 +287,19 @@ export default {
         const response = await vNetService.getNetworks();
 
         // Parse the "name" and "subnets" under the "spec" section
-        const parsedData = response.data.items.map(item => ({
-            name:    item.spec.name,
-            subnets: item.spec.subnets.map(subnet => ({
+        const parsedData = response.data.items.map(item => {
+          const subnets = item.spec.subnets.map(subnet => ({
             address:    subnet.address,
             name:       subnet.name,
             prefix_len: subnet.prefix_len
-          }))
-        }));
+          }));
+
+          return {
+            name:    item.spec.name,
+            subnets,
+            subnetLength: subnets.length
+          }
+        });
 
         this.networks = parsedData;
       } catch (error) {
@@ -488,6 +387,10 @@ export default {
       
     },
   },
+  created() {
+    this.networkHeader = NETWORK_HEADERS;
+    this.subnetworkHeader = SUB_NETWORK_HEADERS;
+  },
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
     this.fetchNetworks();
@@ -499,13 +402,6 @@ export default {
 <style scoped>
 .base {
   margin-left: 10px;
-}
-
-.base-input {
-  text-align: left;
-  width: 250px;
-  /* Adjust the width as needed */
-  /* Other styles as needed */
 }
 
 .form-container {
@@ -539,31 +435,6 @@ export default {
 .input-container {
   margin: 10px 0;
   /* Add padding at the top and bottom for input/select */
-}
-
-.custom-button {
-  background-color: #3b7498;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-  justify-content: center;
-  align-items: center;
-  /* Add this line for vertical alignment if needed */
-}
-
-.delete-button {
-  background-color: #ff001e;
-  color: #fff;
-  border: none;
-  padding: 5px 15px;
-  /* Adjust padding */
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-  /* Add margin for spacing */
 }
 
 .list-delete-button {
@@ -626,23 +497,6 @@ li {
 }
 
 /* Your CSS styles go here */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  /* margin-top: 10px; */
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #3b7498;
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -667,122 +521,5 @@ th {
   justify-content: space-between;
   margin-top: 20px;
   /* Add margin for spacing */
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 100%;
-  background-color: #736f6f;
-  /* Set a default background color */
-  overflow-x: hidden;
-  transition: 0.5s;
-  /* Adjust the duration of the animation */
-}
-
-.sidebar-content {
-  padding: 20px;
-  margin-top: 60px;
-}
-
-.sidebar-visible {
-  width: 65%;
-  /* Adjust the width of the sidebar */
-}
-
-.close-button {
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  border: none;
-  font-size: 12px;
-  cursor: pointer;
-  color: #f90c0c;
-  /* Set a default color */
-}
-
-/* .close-subnet-button {
-    position: absolute;
-    top: 50px;
-    right: 50px;
-    border: none;
-    font-size: 12px;
-    cursor: pointer;
-    color: #25bbb4;
-  } /* Set a default color */
-
-.dark-theme .sidebar {
-  background-color: #333;
-  /* Dark theme background color */
-  color: #fff;
-  /* Dark theme text color */
-}
-
-/* Styles for the second sidebar */
-.add-subnet-sidebar {
-  position: fixed;
-  top: 0;
-  right: -40%;
-  /* Initially off-screen */
-  width: 40%;
-  height: 100%;
-  background-color: #9c9393;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: right 0.3s ease-out;
-  z-index: 2;
-}
-
-/* Make the second sidebar visible */
-.add-subnet-sidebar.add-subnet-sidebar-visible {
-  right: 0;
-}
-
-/* Your existing styles for the second sidebar content */
-.add-subnet-sidebar-content {
-  /* ... */
-  margin-top: 60px;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  padding: 20px 10px 10px 10px;
-  /* Add top and bottom padding */
-}
-
-/* Your existing styles for the close button of the second sidebar */
-.close-subnet-button {
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-  color: #25bbb4;
-}
-
-.row-button {
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-align: left;
-}
-
-.add-form-row {
-  width: 300px;
-  /* display: grid; */
-  justify-content: center;
-  align-items: center;
-  /* Add this line for vertical alignment if needed */
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.row-button:disabled {
-  background-color: #cccccc;
-  /* Grey */
-  color: #666666;
-  /* Dark grey */
-  cursor: not-allowed;
 }
 </style>
