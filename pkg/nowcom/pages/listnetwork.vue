@@ -65,52 +65,29 @@
     </SideBar>
 
     <!-- Modal -->
-    <div v-if="isModalOpen" class="modal-overlay">
-      <div class="modal">
-        <!-- Modal content -->
-        <div>
-          <h2>Delete?</h2>
-          <p>Are you sure that you want to delete VLAN "{{ selectedVnetName }}"?</p>
-        </div>
+    <Modal v-if="isModalOpen">
+      <template v-slot:content>
+        <h2>Delete?</h2>
+        <p>Are you sure that you want to delete VLAN "{{ selectedVnetName }}"?</p>
+      </template>
 
-        <!-- Buttons container with flex layout -->
-        <div class="button-container">
-          <!-- Yes button on the left -->
-          <button class="delete-button" @click="deleteNetwork">
-            Yes
-          </button>
+      <template v-slot:footer>
+        <cButton class="delete-button" @click="deleteNetwork" label="Yes" />
+        <cButton class="ok-button" @click="closeModal" label="No" />
+      </template>
+    </Modal>
 
-          <!-- No button on the right -->
-          <button class="ok-button" @click="closeModal">
-            No
-          </button>
-        </div>
-      </div>
-    </div>
+    <Modal v-if="isModalSubnetOpen">
+      <template v-slot:content>
+        <h2>Are you sure that you want to delete:</h2>
+        <p>Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
+      </template>
 
-    <!-- Modal -->
-    <div v-if="isModalSubnetOpen" class="modal-overlay">
-      <div class="modal">
-        <!-- Modal content -->
-        <div>
-          <h2>Are you sure that you want to delete:</h2>
-          <p>Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
-        </div>
-
-        <!-- Buttons container with flex layout -->
-        <div class="button-container">
-          <!-- Yes button on the left -->
-          <button class="delete-button" @click="deleteSubnet">
-            Yes
-          </button>
-
-          <!-- No button on the right -->
-          <button class="ok-button" @click="closeModalSubnet">
-            No
-          </button>
-        </div>
-      </div>
-    </div>
+      <template v-slot:footer>
+        <cButton class="delete-button" @click="deleteSubnet" label="Yes" />
+        <cButton class="ok-button" @click="closeModalSubnet" label="No" />
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -119,13 +96,15 @@ import { NETWORK_HEADERS, SUB_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { vNetService } from '../services/api/vnet';
 
-const PRODUCT_NAME = 'Network';
-const LIST_NETWORK = 'create-network';
-const BLANK_CLUSTER = '_';
 import UniversalTable from '../components/UniversalTable'
 import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
+import Modal from '../components/common/Modal'
+
+const PRODUCT_NAME = 'Network';
+const LIST_NETWORK = 'create-network';
+const BLANK_CLUSTER = '_';
 
 export default {
   name: 'ListNetwork',
@@ -133,7 +112,8 @@ export default {
     UniversalTable,
     cButton,
     SideBar,
-    GroupButtons
+    GroupButtons,
+    Modal
   },
   // layout: 'home',
   data() {
@@ -406,82 +386,8 @@ export default {
 </script>
 
 <style scoped>
-.base {
-  margin-left: 10px;
-}
-
-.form-container {
-  text-align: center;
-}
-
-.form-row {
-  display: grid;
-  grid-gap: 10px;
-  padding: 10px 0;
-  /* Add top and bottom padding */
-}
-
-.form-column {
-  flex: 1;
-}
-
-.message-row {
-  display: grid;
-  grid-template-columns: repeat(3a, 1fr);
-  grid-gap: 10px;
-  padding: 10px 0;
-  /* Add top and bottom padding */
-  margin-left: 10px;
-}
-
-.message-column {
-  flex: 1;
-}
-
-.input-container {
-  margin: 10px 0;
-  /* Add padding at the top and bottom for input/select */
-}
-
-.list-delete-button {
-  background-color: #ff001e;
-  color: #fff;
-  border: none;
-  padding: 0 2px;
-  /* Adjust top and bottom padding */
-  border-radius: 2px;
-  cursor: pointer;
-  font-size: 10px;
-}
-
-/* Add margin to the top and bottom of the list */
-li {
-  margin: 5px 0;
-  /* Adjust top and bottom margin */
-}
-
-.ok-button {
-  background-color: #3b7498;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.custom-button:hover {
-  background-color: #0056b3;
-}
-
-.disable-hover:hover {
-  background-color: #007bff;
-  /* Change this to the non-hover background color */
-  cursor: not-allowed;
-}
-
 /* notif */
 /* Your existing style code */
-
 .notification {
   position: fixed;
   top: 10px;
@@ -490,32 +396,5 @@ li {
   border-radius: 5px;
   color: #fff;
   font-weight: bold;
-}
-
-/* Your CSS styles go here */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: #4e94b0;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  /* Add margin for spacing */
 }
 </style>

@@ -37,6 +37,16 @@ export default {
   margin-right: 10px;
 }
 
+.custom-button:hover {
+  background-color: #0056b3;
+}
+
+.disable-hover:hover {
+  background-color: #007bff;
+  /* Change this to the non-hover background color */
+  cursor: not-allowed;
+}
+
 .close-button {
   position: absolute;
   top: 60px;
@@ -84,5 +94,25 @@ export default {
   font-size: 20px;
   cursor: pointer;
   color: #25bbb4;
+}
+
+.list-delete-button {
+  background-color: #ff001e;
+  color: #fff;
+  border: none;
+  padding: 0 2px;
+  /* Adjust top and bottom padding */
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.ok-button {
+  background-color: #3b7498;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

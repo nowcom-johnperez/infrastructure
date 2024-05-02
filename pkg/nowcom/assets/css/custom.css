@@ -1,4 +1,41 @@
 @import '../font-awesome-4.7.0/css/font-awesome.min.css';
+.base {
+    margin-left: 10px;
+  }
+  
+  .form-container {
+    text-align: center;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-gap: 10px;
+    padding: 10px 0;
+    /* Add top and bottom padding */
+  }
+  
+  .form-column {
+    flex: 1;
+  }
+  
+  .message-row {
+    display: grid;
+    grid-template-columns: repeat(3a, 1fr);
+    grid-gap: 10px;
+    padding: 10px 0;
+    /* Add top and bottom padding */
+    margin-left: 10px;
+  }
+  
+  .message-column {
+    flex: 1;
+  }
+  
+  .input-container {
+    margin: 10px 0;
+    /* Add padding at the top and bottom for input/select */
+  }
+
 .success {
 background-color: #4caf50;
 /* Green */
@@ -8,3 +45,4 @@ background-color: #4caf50;
 background-color: #f44336;
 /* Red */
 }
+
