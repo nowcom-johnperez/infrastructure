@@ -1,7 +1,7 @@
 <!-- eslint-disable no-console -->
 <template>
   <div class="base">
-    <h1 class="success">Virtual Network</h1>
+    <h1>Virtual Network</h1>
     <!-- Notification container -->
     <div class="message-row">
       <div class="message-column"></div>
@@ -16,13 +16,7 @@
         </div>
       </div>
     </div>
-    <div class="message-row">
-      <div class="message-column">
-        <cButton label="Create" class="custom-button" @click="routeCreateNetwork" />
-        <cButton label="Refresh" class="custom-button" @click="fetchNetworks" />
-      </div>
-    </div>
-    <br>
+    <GroupButtons :list="vnetButtons" @action="actionHandler"/>
     <div class="form-row">
       <div class="form-column">
         <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" />
@@ -122,6 +116,7 @@
 
 <script>
 import { NETWORK_HEADERS, SUB_NETWORK_HEADERS } from '../config/table'
+import { VNET_BUTTONS } from '../config/buttons'
 import { vNetService } from '../services/api/vnet';
 
 const PRODUCT_NAME = 'Network';
@@ -130,13 +125,15 @@ const BLANK_CLUSTER = '_';
 import UniversalTable from '../components/UniversalTable'
 import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
+import GroupButtons from '../components/common/GroupButtons'
 
 export default {
   name: 'ListNetwork',
   components: {
     UniversalTable,
     cButton,
-    SideBar
+    SideBar,
+    GroupButtons
   },
   // layout: 'home',
   data() {
@@ -157,7 +154,7 @@ export default {
       subnet_prefix_len:       '',
       subnet_id:               '',
       selectedNetwork:         null,
-      sidebarVisible:          true,
+      sidebarVisible:          false,
       addSubnetSidebarVisible: false,
       apiError:                null,
       apiResponseMessage:      '',
@@ -167,6 +164,7 @@ export default {
       totalPages:              0,
       networkHeader: [],
       subnetworkHeader: [],
+      vnetButtons: [],
     };
   },
   computed: {
@@ -176,6 +174,13 @@ export default {
     },
   },
   methods: {
+    actionHandler (action) {
+      if (action === 'create') {
+        this.routeCreateNetwork();
+      } else if (action === 'refresh') {
+        this.fetchNetworks();
+      }
+    },
     async getSubnetByName (networkName) {
       const subnetRes = await vNetService.getSubnetByName(networkName);
       this.selectedNetwork.subnets = subnetRes.data.spec.subnets;
@@ -390,6 +395,7 @@ export default {
   created() {
     this.networkHeader = NETWORK_HEADERS;
     this.subnetworkHeader = SUB_NETWORK_HEADERS;
+    this.vnetButtons = VNET_BUTTONS;
   },
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
