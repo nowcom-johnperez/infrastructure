@@ -27,5 +27,20 @@ const VNET_BUTTONS = [
     },
 ];
 
+const NAT_BUTTONS = [
+    {
+        label: 'Create',
+        type: 'button',
+        icon: 'fa-plus',
+        action: 'create'
+    },
+    {
+        label: 'Refresh',
+        type: 'button',
+        icon: 'fa-refresh',
+        action: 'refresh'
+    },
+];
 
-export { ButtonInterface, VNET_BUTTONS }
+
+export { ButtonInterface, VNET_BUTTONS, NAT_BUTTONS }

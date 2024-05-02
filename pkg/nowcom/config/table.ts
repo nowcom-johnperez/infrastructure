@@ -65,5 +65,64 @@ const SUB_NETWORK_HEADERS: HeaderType[] = [
     },
 ];
 
+const VNET_HEADERS: HeaderType[] = [
+    {
+        title: 'Name',
+        value: 'vnet_name',
+        main: true,
+        sortable: true,
+        sort: 'vnet_name',
+    },
+    {
+        title: 'VNET Attachments',
+        value: 'attachments',
+        main: false,
+        sortable: false
+    },
+    {
+        title: 'Gateway IP',
+        value: 'subnetLength',
+        main: false,
+        sortable: true,
+        sort: 'subnetLength'
+    },
+    {
+        title: 'Actions',
+        value: 'action',
+        main: false,
+        sortable: false,
+    },
+];
 
-export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS }
+const SUB_VNET_HEADERS: HeaderType[] = [
+    {
+        title: 'Network Name',
+        value: 'identifier',
+        main: true,
+        sortable: true,
+        sort: 'identifier',
+    },
+    {
+        title: 'Subnet Name',
+        value: 'subnet_name',
+        main: false,
+        sortable: true,
+        sort: 'subnet_name'
+    },
+    {
+        title: 'Network Prefix',
+        value: 'network_prefix',
+        main: false,
+        sortable: true,
+        sort: 'network_prefix'
+    },
+    {
+        title: 'Actions',
+        value: 'action',
+        main: false,
+        sortable: false,
+    },
+];
+
+
+export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS, VNET_HEADERS, SUB_VNET_HEADERS }

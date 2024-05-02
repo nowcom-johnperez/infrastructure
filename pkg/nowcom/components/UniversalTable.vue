@@ -1,7 +1,7 @@
 <template>
     <div class="universal-table">
         <div class="">
-            <input v-if="Object.keys(filters).length > 0" v-model="filters.name.value" class="search" placeholder="Search" />
+            <input v-if="filters && Object.keys(filters).length > 0" v-model="filters.name.value" class="search" placeholder="Search" />
         </div>
         
         <div class="mt-10">
@@ -26,7 +26,7 @@
                                 <td v-else-if="h.value.toLowerCase() !== 'action' && h.main">
                                     <a @click.prevent="itemClick(row)">{{ row[h.value] }}</a>
                                 </td>
-                                <td v-else width="50">
+                                <td v-else width="30">
                                     <cButton label="Delete" class="delete-button" @click="actionClick(row)" />
                                 </td>
                             </template>
@@ -67,7 +67,7 @@ export default {
         },
         noDataPlaceholder: {
             type: String,
-            default: "No data found",
+            default: "No items available",
         }
     },
     data() {
@@ -84,6 +84,9 @@ export default {
             this.$emit('action-click', row);
         }
     },
+    mounted() {
+        console.log(`headers`, this.headers)
+    }
 }
 </script>
 
@@ -118,5 +121,31 @@ td {
 
 th {
   background-color: #297db4;
+}
+
+/* Override styles for the pagination list */
+.smart-pagination .pagination {
+    list-style-type: none;
+    /* Remove bullet points */
+    padding: 0;
+    /* Remove default padding */
+}
+
+/* Override styles for the pagination items */
+.smart-pagination .pagination li {
+    display: inline-block;
+    /* Display pagination items inline */
+    margin-right: 5px;
+    /* Add margin between pagination items */
+}
+
+/* Override styles for the pagination links */
+.smart-pagination .pagination li a {
+    /* Add your custom styles for the pagination links */
+}
+
+/* Override styles for the active pagination link */
+.smart-pagination .pagination li.active a {
+    /* Add your custom styles for the active pagination link */
 }
 </style>
