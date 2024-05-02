@@ -17,7 +17,7 @@
       </div>
     </div>
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
-    <div class="form-row">
+    <div class="form-row mt-10">
       <div class="form-column">
         <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" />
         </br> </br>

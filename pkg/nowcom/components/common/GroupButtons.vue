@@ -2,13 +2,19 @@
     <div class="nav-button-container">
         <template v-for="b in list">
             <button v-if="b.type === 'button'" class="button" @click="buttonHandler(b.action)">
-                <Icon v-if="b.icon" :icon="b.icon" />
+                <i v-if="b.icon" class="fa fa-lg mr-5" :class="b.icon"></i>
                 {{ b.label }}
             </button>
             <div v-else class="dropdown">
-                <button class="button">{{ b.label }}</button>
+                <button class="button">
+                    <i v-if="b.icon" class="fa fa-lg mr-5" :class="b.icon"></i> 
+                    {{ b.label }}
+                </button>
                 <div class="dropdown-content">
-                    <a v-for="link in b.links" :key="link.label" :href="link.href">{{ link.label }}</a>
+                    <a v-for="link in b.links" :key="link.label" :href="link.href">
+                        <i v-if="link.icon" class="fa fa-lg mr-5" :class="link.icon"></i> 
+                        {{ link.label }}
+                    </a>
                 </div>
             </div>
         </template>
@@ -16,7 +22,6 @@
 </template>
 
 <script>
-import Icon from './Icon'
 export default {
     name: 'GroupButtons',
     props: {
@@ -24,9 +29,6 @@ export default {
             type: Array,
             required: true
         }
-    },
-    components: {
-        Icon
     },
     methods: {
         buttonHandler (action) {
