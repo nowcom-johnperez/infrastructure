@@ -24,8 +24,9 @@
             <h2>{{ selectedNetwork ? selectedNetwork.vnet_name : 'No Network Selected' }}</h2>
             <div class="form-row">
                 <div class="form-column" align="left">
-                    <button @click.prevent="addSubnetSidebar" class="custom-button"> + Add Subnet</button>
-                    <cButton label="Add Subnet" class="custom-button" @click="addSubnetSidebar" prefix-icon="fa-plus" />
+                    <cButton class="custom-button" @click="addSubnetSidebar">
+                        <i class="fa fa-plus"></i> Add Subnet
+                    </cButton>
                 </div>
             </div>
             <UniversalTable v-if="selectedNetwork" :headers="subVnetHeaders" :items="selectedNetwork.subnets" @action-click="openModalSubnet" />
@@ -127,7 +128,7 @@ export default {
             subnet_name: "",
             subnet_id: "",
             selectedNetwork: null,
-            sidebarVisible: false,
+            sidebarVisible: true,
             addSubnetSidebarVisible: false,
             apiError: null,
             apiResponseMessage: "",
