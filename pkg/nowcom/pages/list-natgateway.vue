@@ -128,7 +128,7 @@ export default {
             subnet_name: "",
             subnet_id: "",
             selectedNetwork: null,
-            sidebarVisible: true,
+            sidebarVisible: false,
             addSubnetSidebarVisible: false,
             apiError: null,
             apiResponseMessage: "",

@@ -29,23 +29,17 @@
 
           <!-- New input field that appears when "Create New VNET" is selected -->
           <!-- Modal for creating a new network -->
-          <div v-if="creatingNewNetwork" class="modal-overlay">
-            <div class="modal">
-              <!-- Modal content -->
-              <div>
-                <h2>Create New Network</h2>
-                <input v-model="newNetworkName" value="Vrf-" placeholder="Enter new network name"
-                  @input="handleNewNetworkInput" />
-              </div>
-              <!-- Buttons container with flex layout -->
-              <div class="button-container">
-                <!-- Save button -->
-                <button class="custom-button" @click="saveNewNetwork">Save</button>
-                <!-- Cancel button -->
-                <button class="custom-button" @click="cancelNewNetwork">Cancel</button>
-              </div>
-            </div>
-          </div>
+          <Modal v-if="creatingNewNetwork">
+            <template v-slot:content>
+              <h2>Create New Network</h2>
+              <input v-model="newNetworkName" value="Vrf-" placeholder="Enter new network name" @input="handleNewNetworkInput" />
+            </template>
+
+            <template v-slot:footer>
+              <cButton class="btn btn-primary" @click="deleteNetwork" label="Save" />
+              <cButton class="btn btn-light" @click="closeModal" label="Cancel" />
+            </template>
+          </Modal>
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTab === 1 }">
@@ -74,15 +68,18 @@
                 <p>/24</p>
               </div>
               <div class="form-column" align="left">
-                <cButton v-if="index > 0" @click="removeSubnet(index)">
-                  <i class="fa fa-trash" style="color: red;"></i>
+                <cButton v-if="index > 0" class="btn-icon" @click="removeSubnet(index)">
+                  <i class="fa fa-trash fa-lg text-danger"></i>
                 </cButton>
               </div>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row ml-5">
             <div class="form-column" align="left">
-              <button @click="addSubnet" class="row-button"> + Add Subnet</button>
+              <cButton class="btn btn-success" @click="addSubnet">
+                <i class="fa fa-plus mr-5"></i>
+                Add Subnet
+              </cButton>
             </div>
           </div>
         </div>
@@ -127,12 +124,12 @@
     </div>
     <div class="footer">
       <div class="form-column-bottom">
-        <button class="custom-button mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
-        <button class="custom-button" :disabled="currentTab === 3" @click="nextTab">Next</button>
+        <button class="btn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
+        <button class="btn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button>
         <!-- Conditionally render the button based on the current tab -->
-        <button v-if="currentTab === 3" class="custom-button ml-10"
-          :disabled="isLoading || !selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress"
-          @click="createNetwork">
+        <button class="btn btn-primary ml-10"
+          :disabled="isLoading || (currentTab === 3 && (!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress))"
+          @click="currentTab === 3 ? createNetwork : currentTab = 3">
           {{ currentTab === 3 ? 'Create' : 'Review + Create' }}
         </button>
       </div>
@@ -144,20 +141,7 @@ import Tabs from '../components/common/Tabs'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
-import https from "https";
-import axios from "axios";
-import {
-  NETWORK_URL_V2,
-  BEARERTOKEN
-} from "../config/api.ts";
-
-const INSTANCE_V2 = axios.create({
-  baseURL: NETWORK_URL_V2,
-  httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
-  headers: {
-    'Authorization': `Bearer ${BEARERTOKEN}`
-  }
-});
+import { vNetService } from '../services/api/vnet';
 
 const PRODUCT_NAME = "Network";
 const LIST_NETWORK = "VNET";
@@ -230,7 +214,7 @@ export default {
     },
     showSpinner() {
       this.isLoading = true;
-      // Hide the spinner after 5 seconds
+      // Hide the spinner after 2 seconds
       setTimeout(() => {
         this.hideSpinner();
       }, 2000);
@@ -336,82 +320,68 @@ export default {
 
       return combinedArray;
     },
-    createNetwork() {
+    async createNetwork() {
       // loading
-      this.isLoading = true;
-      const combinedObjects = this.combineArraysIntoObjects(
-        this.selectedVnetSubnets,
-        this.selectedSubnetName
-      );
+      try {
+        this.isLoading = true;
+        const combinedObjects = this.combineArraysIntoObjects(
+          this.selectedVnetSubnets,
+          this.selectedSubnetName
+        );
 
-      const vnet_data = {
-        apiVersion: "packetlifter.dev/v1",
-        kind: "Vnet",
-        // vnet_vlan: this.selectedVnetVlan,
-        metadata: {
-          name: this.selectedVnetName.toLowerCase(),
-          namespace: "default"
-        },
-        spec: {
-          name: this.selectedVnetName.toLowerCase(),
-          subnets: combinedObjects,
-        }
-      };
-      // const vnet_data_string = JSON.stringify(vnet_data);
-      console.log("send to API", vnet_data);
+        const vnet_data = {
+          apiVersion: "packetlifter.dev/v1",
+          kind: "Vnet",
+          // vnet_vlan: this.selectedVnetVlan,
+          metadata: {
+            name: this.selectedVnetName.toLowerCase(),
+            namespace: "default"
+          },
+          spec: {
+            name: this.selectedVnetName.toLowerCase(),
+            subnets: combinedObjects,
+          }
+        };
+        // const vnet_data_string = JSON.stringify(vnet_data);
+        console.log("send to API", vnet_data);
 
-      INSTANCE_V2.post(`/apis/packetlifter.dev/v1/namespaces/default/vnets`, vnet_data)
-        .then((response) => {
-          // Handle the response here
-          console.log("Network created:", response.data);
-          this.isLoading = false;
-          // Set the API response data in the component
-          this.apiResponse = response.data;
-          console.log("response from create networks", this.apiResponse);
+        const response = await vNetService.createNetwork(vnet_data);
+        console.log("Network created:", response.data);
+        this.isLoading = false;
+        // Set the API response data in the component
+        this.apiResponse = response.data;
+        console.log("response from create networks", this.apiResponse);
 
-          this.apiResponseMessage = "VNET Successfully Added";
+        this.apiResponseMessage = "VNET Successfully Added";
 
-          this.apiError = null; // Reset error state
-          this.fetchNetworks();
+        this.apiError = null; // Reset error state
+        this.fetchNetworks();
 
-          setTimeout(() => {
-            this.routeListNetwork();
-          }, 2000);
-        })
-        .catch((error) => {
-          // Handle any errors here
-          console.error("Error creating network:", error);
-          this.isLoading = false;
-          this.apiResponseMessage = "Error";
-          // Set the API error in the component
-          this.apiError = "Error creating VRF";
-          this.apiResponse = 1; // Reset response state
-        });
+        setTimeout(() => {
+          this.routeListNetwork();
+        }, 2000);
+      } catch (error) {
+        console.error("Error creating network:", error);
+        this.isLoading = false;
+        this.apiResponseMessage = "Error";
+        // Set the API error in the component
+        this.apiError = "Error creating VRF";
+        this.apiResponse = 1; // Reset response state
+      }
     },
 
-    fetchNetworks() {
-      // Fetch the network list from your API
-      INSTANCE_V2.get(`/apis/packetlifter.dev/v1/vnets`)
-        .then((response) => {
-          this.networks = response.data;
+    async fetchNetworks() {
+      const response = await vNetService.getNetworks();
+      const parsedData = response.data.items.map(item => ({
+        name: item.spec.name,
+        subnets: item.spec.subnets.map(subnet => ({
+          address: subnet.address,
+          name: subnet.name,
+          prefix_len: subnet.prefix_len
+        }))
+      }));
 
-          // Parse the "name" and "subnets" under the "spec" section
-          const parsedData = response.data.items.map(item => ({
-            name: item.spec.name,
-            subnets: item.spec.subnets.map(subnet => ({
-              address: subnet.address,
-              name: subnet.name,
-              prefix_len: subnet.prefix_len
-            }))
-          }));
-
-          this.networks = parsedData;
-
-          console.log("from API", parsedData);
-        })
-        .catch((error) => {
-          console.error("Error fetching Network List:", error);
-        });
+      this.networks = parsedData;
     },
 
     getGatewayForSubnet(subnet) {
