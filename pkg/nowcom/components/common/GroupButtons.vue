@@ -2,17 +2,17 @@
     <div class="nav-button-container">
         <template v-for="b in list">
             <button v-if="b.type === 'button'" class="button" @click="buttonHandler(b.action)">
-                <i v-if="b.icon" class="fa fa-lg mr-5" :class="b.icon"></i>
+                <i v-if="b.icon" class="fa fa-lg mr-5 text-primary" :class="b.icon"></i>
                 {{ b.label }}
             </button>
             <div v-else class="dropdown">
                 <button class="button">
-                    <i v-if="b.icon" class="fa fa-lg mr-5" :class="b.icon"></i> 
+                    <i v-if="b.icon" class="fa fa-lg mr-5 text-primary" :class="b.icon"></i> 
                     {{ b.label }}
                 </button>
                 <div class="dropdown-content">
                     <a v-for="link in b.links" :key="link.label" :href="link.href">
-                        <i v-if="link.icon" class="fa fa-lg mr-5" :class="link.icon"></i> 
+                        <i v-if="link.icon" class="fa fa-lg mr-5 text-primary" :class="link.icon"></i> 
                         {{ link.label }}
                     </a>
                 </div>
