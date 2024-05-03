@@ -1,40 +1,40 @@
 @import '../font-awesome-4.7.0/css/font-awesome.min.css';
 .base {
-    margin-left: 10px;
-  }
-  
-  .form-container {
-    text-align: center;
-  }
-  
-  .form-row {
-    display: grid;
-    grid-gap: 10px;
-    padding: 10px 0;
-    /* Add top and bottom padding */
-  }
-  
-  .form-column {
-    flex: 1;
-  }
-  
-  .message-row {
-    display: grid;
-    grid-template-columns: repeat(3a, 1fr);
-    grid-gap: 10px;
-    padding: 10px 0;
-    /* Add top and bottom padding */
-    margin-left: 10px;
-  }
-  
-  .message-column {
-    flex: 1;
-  }
-  
-  .input-container {
-    margin: 10px 0;
-    /* Add padding at the top and bottom for input/select */
-  }
+  margin-left: 10px;
+}
+
+.form-container {
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-gap: 10px;
+  padding: 10px 0;
+  /* Add top and bottom padding */
+}
+
+.form-column {
+  flex: 1;
+}
+
+.message-row {
+  display: grid;
+  grid-template-columns: repeat(3a, 1fr);
+  grid-gap: 10px;
+  padding: 10px 0;
+  /* Add top and bottom padding */
+  margin-left: 10px;
+}
+
+.message-column {
+  flex: 1;
+}
+
+.input-container {
+  margin: 10px 0;
+  /* Add padding at the top and bottom for input/select */
+}
 
 .success {
 background-color: #4caf50;
@@ -46,3 +46,32 @@ background-color: #f44336;
 /* Red */
 }
 
+.tabs {
+  display: flex;
+}
+
+.tab {
+  padding: 0 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.tab:focus {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.tab.active {
+  border-bottom: 2px solid #297db4;
+}
+
+.tab-content-container .tab-content {
+  display: none;
+  width: 50%;
+}
+
+.tab-content-container .tab-content.show {
+  display: block;
+}
