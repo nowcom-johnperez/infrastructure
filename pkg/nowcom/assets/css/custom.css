@@ -93,6 +93,38 @@ background-color: #f44336;
   box-shadow: none;
 }
 
+.btn-x {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-x:hover {
+  background-color: #c82333;
+  border-color: #dc3545;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.x-icon {
+  color: black;
+  font-size: 24px;
+  line-height: 40px;
+  text-align: center;
+}
+
+.btn-x:hover .x-icon {
+  color: white;
+}
+
 .btn {
   display: inline-block;
   font-weight: 600;
@@ -101,18 +133,18 @@ background-color: #f44336;
   vertical-align: middle;
   user-select: none;
   border: 1px solid transparent;
-  padding: 0.05rem 1.75rem;
-  height: 24px;
+  padding: 0.15rem 1.5rem;
+  min-height: 30px;
   min-width: 80px;
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.2;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .btn:focus {
   background: transparent;
-  box-shadow: none !important;
+  box-shadow: none;
   border: 1px solid black;
 }
 

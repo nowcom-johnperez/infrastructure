@@ -88,12 +88,7 @@
           <div>
             <input v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
           </div>
-          <div>
-            <span v-for="(tag, index) in tags" :key="index" class="tag">
-              {{ tag }}
-              <button @click="removeTag(index)">X</button>
-            </span>
-          </div>
+          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="true" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTab === 3 }">
@@ -104,9 +99,9 @@
 
           <br /><br /><br />
           <h2>Tag</h2>
-          <span v-for="(tag, index) in tags" :key="index" class="tag">
-            {{ tag }}
-          </span>
+          <div class="mt-10">
+            <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+          </div>
 
           <br /><br /><br />
           <h2>Subnet</h2>
@@ -138,6 +133,7 @@
 </template>
 <script>
 import Tabs from '../components/common/Tabs'
+import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
@@ -174,7 +170,8 @@ export default {
     Tabs,
     Loading,
     cButton,
-    Modal
+    Modal,
+    Tag
   },
   computed: {
     isValidIPAddress() {
@@ -438,23 +435,6 @@ export default {
 h2 {
   color: #007bff;
 }
-
-.tag {
-  display: inline-block;
-  margin: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-.tag button {
-  margin-left: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: red;
-}
-
 /* Add this style to position the buttons at the bottom */
 .footer {
   position: fixed;

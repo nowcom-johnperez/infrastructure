@@ -34,10 +34,11 @@ export default {
   right: 0;
   width: 0;
   height: 100%;
-  background-color: #736f6f;
+  background-color: #fff;
   /* Set a default background color */
   overflow-x: hidden;
   transition: 0.5s;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   /* Adjust the duration of the animation */
 }
 
@@ -66,7 +67,7 @@ export default {
   /* Initially off-screen */
   width: 40%;
   height: 100%;
-  background-color: #9c9393;
+  background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   transition: right 0.3s ease-out;
   z-index: 2;

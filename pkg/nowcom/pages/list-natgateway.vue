@@ -37,7 +37,10 @@
                 <pre align="center" v-if="!apiError">SUBNET: {{ subnet_name }}</pre>
                 <pre align="center" v-if="apiError">{{ apiError.error }} : {{ selectedName }}</pre>
             </div>
-            <cButton label="×" class="close-button" @click="closeSidebar" />
+
+            <cButton class="btn-x" @click="closeSidebar">
+                <i class="x-icon fa fa-close fa-lg"></i>
+            </cButton>
         </SideBar>
 
         <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible">
@@ -56,9 +59,14 @@
                 />
             </div>
             <div class="add-form-row">
-                <cButton label="+ Add Subnet" class="row-button" :disabled="isAddSubnetDisabled" @click="addSubnet"/>
+                <cButton class="btn btn-light" :disabled="isAddSubnetDisabled" @click="addSubnet">
+                    <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
+                </cButton> 
             </div>
-            <cButton label="×" class="close-button" @click="closeSubnetSidebar" />
+
+            <cButton class="btn-x" @click="closeSubnetSidebar">
+                <i class="x-icon fa fa-close fa-lg"></i>
+            </cButton>
         </SideBar>
 
         <Modal v-if="isModalOpen">
