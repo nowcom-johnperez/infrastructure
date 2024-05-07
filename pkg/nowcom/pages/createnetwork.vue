@@ -121,7 +121,7 @@
         <!-- Conditionally render the button based on the current tab -->
         <button class="btn btn-primary ml-10"
           :disabled="isLoading || (currentTab === 3 && (!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress))"
-          @click="currentTab === 3 ? createNetwork : currentTab = 3">
+          @click="currentTab === 3 ? createNetwork() : currentTab = 3">
           {{ currentTab === 3 ? 'Create' : 'Review + Create' }}
         </button>
       </div>

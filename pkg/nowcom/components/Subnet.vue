@@ -1,7 +1,7 @@
 <template>
     <div class="subnet-container">
         <div class="subnet-name">{{ name }}</div>
-        <div>-</div>
+        <!-- <div>-</div> -->
         <div :class="{ 'invalid-ip': !isValidIPAddress }">
             {{ currentAddress }}
             <span v-if="!isValidIPAddress" class="invalid-message">

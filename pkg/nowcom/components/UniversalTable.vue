@@ -27,7 +27,7 @@
                                     <a @click.prevent="itemClick(row)">{{ row[h.value] }}</a>
                                 </td>
                                 <td v-else width="30">
-                                    <cButton label="Delete" class="delete-button" @click="actionClick(row)" />
+                                    <cButton label="Delete" class="btn btn-danger" @click="actionClick(row)" />
                                 </td>
                             </template>
                         </tr>
@@ -117,6 +117,10 @@ td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+}
+
+td a {
+    cursor: pointer;
 }
 
 th {

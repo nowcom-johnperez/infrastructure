@@ -284,13 +284,14 @@ export default {
           const subnets = item.spec.subnets.map(subnet => ({
             address:    subnet.address,
             name:       subnet.name,
-            prefix_len: subnet.prefix_len
+            prefix_len: subnet.prefixLength
           }));
 
           return {
             name:    item.spec.name,
             subnets,
-            subnetLength: subnets.length
+            subnetLength: subnets.length,
+            cluster: 'local'
           }
         });
 
