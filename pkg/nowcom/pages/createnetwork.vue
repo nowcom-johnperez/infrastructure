@@ -92,28 +92,25 @@
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTab === 3 }">
-          <h2>Basics</h2>
-          <p :style="{ color: selectedVnetName ? '' : 'red' }">
-            Name : {{ selectedVnetName || 'empty' }}
-          </p>
-
-          <br /><br /><br />
-          <h2>Tag</h2>
-          <div class="mt-10">
-            <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+          <div>
+            <h2>Basics</h2>
+            <p :style="{ color: selectedVnetName ? '' : 'red' }">
+              Name : {{ selectedVnetName || 'empty' }}
+            </p>
+          </div>
+          
+          <div class="mt-30">
+            <h2>Tag</h2>
+            <div class="mt-10">
+              <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+            </div>
           </div>
 
-          <br /><br /><br />
-          <h2>Subnet</h2>
-          <p v-for="(name, index) in selectedSubnetName" :key="index">
-            {{ name }} -
-            <span :class="{ 'invalid-ip': !isValidIPAddress(selectedVnetSubnets[index]) }">
-              {{ selectedVnetSubnets[index] || 'empty' }}
-              <span v-if="!isValidIPAddress(selectedVnetSubnets[index])" class="invalid-message"> (Invalid IP
-                Address)</span>
-              <span v-if="isDuplicateIPAddress(index)" class="invalid-message"> (Duplicate IP Address)</span>
-            </span>
-          </p>
+          <div class="mt-30">
+            <h2>Subnet</h2>
+            <Subnet v-for="(name, index) in selectedSubnetName" :key="index" :name="name" :current-address="selectedVnetSubnets[index] || 'empty'" :ip-list="selectedVnetSubnets" />
+          </div>
+          
         </div>
       </div>
     </div>
@@ -133,6 +130,7 @@
 </template>
 <script>
 import Tabs from '../components/common/Tabs'
+import Subnet from '../components/Subnet'
 import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
@@ -171,7 +169,8 @@ export default {
     Loading,
     cButton,
     Modal,
-    Tag
+    Tag,
+    Subnet
   },
   computed: {
     isValidIPAddress() {
@@ -195,10 +194,6 @@ export default {
     },
   },
   methods: {
-    isDuplicateIPAddress(index) {
-      const currentIPAddress = this.selectedVnetSubnets[index];
-      return this.selectedVnetSubnets.indexOf(currentIPAddress) !== index;
-    },
     addTag() {
       const trimmedTag = this.newTag.trim();
       if (trimmedTag) {
@@ -447,13 +442,5 @@ h2 {
 .form-column-bottom {
   display: flex;
   justify-content: start;
-}
-
-.invalid-ip {
-  color: red;
-}
-
-.invalid-message {
-  color: blue;
 }
 </style>

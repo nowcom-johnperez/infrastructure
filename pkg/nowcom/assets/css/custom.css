@@ -74,6 +74,8 @@ background-color: #f44336;
 .tab-content-container .tab-content {
   display: none;
   width: 50%;
+  height: 70vh;
+  overflow-y: scroll;
 }
 
 .tab-content-container .tab-content.show {
