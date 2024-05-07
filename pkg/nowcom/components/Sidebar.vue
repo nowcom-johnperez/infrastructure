@@ -87,14 +87,4 @@ export default {
   padding: 20px 10px 10px 10px;
   /* Add top and bottom padding */
 }
-
-.add-form-row {
-  width: 300px;
-  /* display: grid; */
-  justify-content: center;
-  align-items: center;
-  /* Add this line for vertical alignment if needed */
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
 </style>

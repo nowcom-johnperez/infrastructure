@@ -136,6 +136,7 @@ import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import { vNetService } from '../services/api/vnet';
+import { isValidIP } from '../services/helpers/utils'
 
 const PRODUCT_NAME = "Network";
 const LIST_NETWORK = "VNET";
@@ -161,7 +162,6 @@ export default {
       tabList: ['Basics', 'IP Address', 'Tags', 'Review + Create'],
       newTag: "",
       tags: [],
-      hasInvalidIPAddress: false,
     };
   },
   components: {
@@ -173,25 +173,13 @@ export default {
     Subnet
   },
   computed: {
-    isValidIPAddress() {
-      return (ip) => {
-        const ipRegex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
-        return ipRegex.test(ip);
-      };
-    },
     hasDuplicateIPAddress() {
       const uniqueIPAddresses = new Set(this.selectedVnetSubnets);
       return this.selectedVnetSubnets.length !== uniqueIPAddresses.size;
     },
-  },
-  watch: {
-    selectedVnetSubnets: {
-      handler(newVal) {
-        // Check for invalid IP addresses when the selectedVnetSubnets array changes
-        this.hasInvalidIPAddress = newVal.some(ip => !this.isValidIPAddress(ip));
-      },
-      deep: true,
-    },
+    hasInvalidIPAddress() {
+      return this.selectedVnetSubnets.some(ip => !isValidIP(ip));
+    }
   },
   methods: {
     addTag() {

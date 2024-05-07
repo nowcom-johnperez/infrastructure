@@ -217,3 +217,51 @@ background-color: #f44336;
 .bg-success {
   background-color: #28a745;
 }
+
+/* pagination (always make sure this is at the bottom) */
+.smart-pagination {
+  text-align: center;
+}
+
+.pagination {
+  display: inline-block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.page-item {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #333; /* Text color */
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+/* SVG Icon Styling */
+.page-link svg {
+  vertical-align: middle;
+  margin-right: 5px; 
+}
+
+.page-link:hover {
+  background-color: #f5f5f5;
+}
+
+.page-item.active {
+  color: #000;
+  background-color: #297db4;
+  border: 1px solid #297db4;
+}
+
+.page-item.active .page-link:hover {
+  color: #000;
+  background-color: #0056b3;
+  border-color: #0056b3;
+}

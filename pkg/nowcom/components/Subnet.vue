@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { isValidIP } from '../services/helpers/utils'
 export default {
     name: 'Subnet',
     props: {
@@ -32,8 +33,7 @@ export default {
     },
     computed: {
         isValidIPAddress() {
-            const ipRegex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
-            return ipRegex.test(this.currentAddress);
+            return isValidIP(this.currentAddress);
         },
         isDuplicateIPAddress() {
             return this.ipList.filter((ip) => ip === this.currentAddress).length > 1

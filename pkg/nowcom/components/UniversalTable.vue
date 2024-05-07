@@ -37,6 +37,12 @@
                     </tr>
                 </tbody>
             </v-table>
+
+            <smart-pagination
+                class="mt-20"
+                :currentPage.sync="currentPage"
+                :totalPages="totalPages"
+            />
         </div>
     </div>
 </template>
@@ -125,31 +131,5 @@ td a {
 
 th {
   background-color: #297db4;
-}
-
-/* Override styles for the pagination list */
-.smart-pagination .pagination {
-    list-style-type: none;
-    /* Remove bullet points */
-    padding: 0;
-    /* Remove default padding */
-}
-
-/* Override styles for the pagination items */
-.smart-pagination .pagination li {
-    display: inline-block;
-    /* Display pagination items inline */
-    margin-right: 5px;
-    /* Add margin between pagination items */
-}
-
-/* Override styles for the pagination links */
-.smart-pagination .pagination li a {
-    /* Add your custom styles for the pagination links */
-}
-
-/* Override styles for the active pagination link */
-.smart-pagination .pagination li.active a {
-    /* Add your custom styles for the active pagination link */
 }
 </style>

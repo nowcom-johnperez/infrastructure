@@ -33,7 +33,7 @@
             </cButton> 
           </div>
         </div>
-        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalSubnet" />
+        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalAction" />
         </br>
         <div v-if="subnetResponse">
           <h2 align="center">
@@ -48,25 +48,7 @@
     </SideBar>
 
     <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible">
-      <h2>Add Subnet</h2>
-      <!-- ... your content for adding subnet -->
-      <div class="add-form-row">
-        <input v-model="selectedSubnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
-      </div>
-      <div class="add-form-row">
-        <input
-          v-model="selectedVnetSubnets"
-          type="text"
-          placeholder="Enter subnet (e.g., 10.0.0.0)"
-          pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-          title="Please enter a valid IP address"
-        />
-      </div>
-      <div class="add-form-row">
-        <cButton class="btn btn-light" :disabled="isAddSubnetDisabled" @click="addSubnet">
-          <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
-        </cButton> 
-      </div>
+      <AddSubnet v-if="selectedNetwork" :is-open="addSubnetSidebarVisible" :current-network="selectedNetwork" @success="subnetAddedHandler" />
       <cButton class="btn-x" @click="closeSubnetSidebar">
         <i class="x-icon fa fa-close fa-lg"></i>
       </cButton>
@@ -109,6 +91,7 @@ import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
 import Modal from '../components/common/Modal'
+import AddSubnet from '../components/forms/AddSubnet'
 
 const PRODUCT_NAME = 'Network';
 const LIST_NETWORK = 'create-network';
@@ -121,7 +104,8 @@ export default {
     cButton,
     SideBar,
     GroupButtons,
-    Modal
+    Modal,
+    AddSubnet
   },
   // layout: 'home',
   data() {
@@ -155,12 +139,6 @@ export default {
       vnetButtons: [],
     };
   },
-  computed: {
-    isAddSubnetDisabled() {
-      // Check conditions to disable the button
-      return !this.selectedSubnetName || !this.selectedVnetSubnets;
-    },
-  },
   methods: {
     actionHandler (action) {
       if (action === 'create') {
@@ -171,56 +149,19 @@ export default {
     },
     async getSubnetByName (networkName) {
       const subnetRes = await vNetService.getSubnetByName(networkName);
-      this.selectedNetwork.subnets = subnetRes.data.spec.subnets;
+
+      this.selectedNetwork.subnets = subnetRes.data.spec.subnets.map(subnet => ({
+        address:    subnet.address,
+        name:       subnet.name,
+        prefix_len: subnet.prefixLength
+      }));
+
+      this.fetchNetworks();
     },
-    async addSubnet() {
-      try {
-        this.apiError = null; // Reset error state
-        // v0.2
-        const subnet_data = {
-          name:       this.selectedSubnetName.toLowerCase(),
-          address:    this.selectedVnetSubnets,
-          prefix_len: 24
-        };
-
-        this.selectedNetwork.subnets.push(subnet_data);
-
-        const vnet_data = {
-          apiVersion: 'packetlifter.dev/v1',
-          kind:       'Vnet',
-          // vnet_vlan: this.selectedVnetVlan,
-          metadata:   {
-            name:      this.selectedNetwork.name.toLowerCase(),
-            namespace: 'default'
-          },
-          spec: {
-            name:    this.selectedNetwork.name.toLowerCase(),
-            subnets: this.selectedNetwork.subnets,
-          }
-        };
-
-        console.log('send to API', subnet_data);
-        console.log('log', this.selectedNetwork);
-
-        this.loading = true
-
-        const response = await vNetService.patchSubnet(this.selectedNetwork.name, vnet_data);
-        console.log('Subnet Network created:', response.data);
-        
-        await this.getSubnetByName(this.selectedNetwork.name);
-        this.subnetResponseMessage = 'Subnet Added Successfully';
-
-        this.addSubnetSidebarVisible = false;
-      } catch(error) {
-        // Handle any errors here
-        // console.error("Error creating network:", error);
-        console.log(error.response);
-        this.loading = false;
-        alert(error.response.data.detail);
-        this.subnetResponseMessage = 'Error';
-        // Set the API error in the component
-        this.apiError = 'Error creating Subnet';
-      }
+    async subnetAddedHandler() {
+      await this.getSubnetByName(this.selectedNetwork.name);
+      this.subnetResponseMessage = 'Subnet Added Successfully';
+      this.addSubnetSidebarVisible = false;
     },
     addSubnetSidebar() {
       this.selectedSubnetName = null;
@@ -255,7 +196,7 @@ export default {
       this.isModalOpen = false;
     },
 
-    openModalSubnet(subnetRow) {
+    openModalAction(subnetRow) {
       const { name, address, prefix_len } = subnetRow;
       // Set the selected VLAN name
       console.log(name, address, prefix_len);
