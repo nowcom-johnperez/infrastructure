@@ -327,7 +327,7 @@ export default {
 
         const response = await vNetService.createNetwork(vnet_data);
         console.log("Network created:", response.data);
-        this.isLoading = false;
+        
         // Set the API response data in the component
         this.apiResponse = response.data;
         console.log("response from create networks", this.apiResponse);
@@ -335,11 +335,9 @@ export default {
         this.apiResponseMessage = "VNET Successfully Added";
 
         this.apiError = null; // Reset error state
-        this.fetchNetworks();
-
-        setTimeout(() => {
-          this.routeListNetwork();
-        }, 2000);
+        await this.fetchNetworks();
+        this.isLoading = false;
+        this.routeListNetwork();
       } catch (error) {
         console.error("Error creating network:", error);
         this.isLoading = false;

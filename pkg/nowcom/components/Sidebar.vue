@@ -2,13 +2,20 @@
     <div :class="{ 'sidebar': isMain, 'sidebar-visible': isMain && sidebarVisible, 'add-subnet-sidebar': !isMain, 'add-subnet-sidebar-visible': !isMain && sidebarVisible }">
       <div :class="{ 'sidebar-content': isMain, 'add-subnet-sidebar-content': !isMain }">
         <slot></slot>
+        <cButton class="btn-x" @click="closeSidebar">
+          <i class="x-icon fa fa-close fa-lg"></i>
+        </cButton>
       </div>
     </div>
 </template>
 
 <script>
+import cButton from '../components/common/Button'
 export default {
     name: "Sidebar",
+    components: {
+      cButton
+    },
     props: {
         sidebarVisible: {
             type: Boolean,
@@ -23,6 +30,11 @@ export default {
         isMain() {
             return this.type === 'main'
         }
+    },
+    methods: {
+      closeSidebar() {
+        this.$emit('close');
+      }
     }
 }
 </script>

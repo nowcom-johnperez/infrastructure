@@ -2,19 +2,8 @@
 <template>
   <div class="base">
     <h1>Virtual Network</h1>
-    <!-- Notification container -->
-    <div class="message-row">
-      <div class="message-column"></div>
-      <div class="message-column">
-        <!-- Display API response data -->
-        <div v-if="apiResponse">
-          <h2 align="center">
-            {{ apiResponseMessage }}
-          </h2>
-          <pre v-if="!apiError" align="center">Deleted VNET: {{ apiResponse.spec.name }}</pre>
-          <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedName }}</pre>
-        </div>
-      </div>
+    <div class="mt-10 mb-10" v-if="apiResponse">
+      <Alert :variant="apiResponse" @close="apiResponse = null">{{ apiResponseMessage }}</Alert>
     </div>
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
     <div class="form-row mt-10">
@@ -24,7 +13,7 @@
       </div>
     </div>
 
-    <SideBar type="main" :sidebar-visible="sidebarVisible">
+    <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
       <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
@@ -33,25 +22,14 @@
             </cButton> 
           </div>
         </div>
-        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalAction" />
-        </br>
-        <div v-if="subnetResponse">
-          <h2 align="center">
-            {{ subnetResponseMessage }}
-          </h2>
-          <pre v-if="!apiError" align="center">SUBNET: {{ subnet_name }}</pre>
-          <pre v-if="apiError" align="center">{{ apiError.error }} : {{ selectedName }}</pre>
+        <div class="mt-10 mb-10" v-if="subnetResponse">
+          <Alert :variant="subnetResponse" @close="subnetResponse = null">{{ subnetResponseMessage }}</Alert>
         </div>
-        <cButton class="btn-x" @click="closeSidebar">
-          <i class="x-icon fa fa-close fa-lg"></i>
-        </cButton>
+        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalAction" />
     </SideBar>
 
-    <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible">
+    <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible" @close="closeSubnetSidebar">
       <AddSubnet v-if="selectedNetwork" :is-open="addSubnetSidebarVisible" :current-network="selectedNetwork" @success="subnetAddedHandler" />
-      <cButton class="btn-x" @click="closeSubnetSidebar">
-        <i class="x-icon fa fa-close fa-lg"></i>
-      </cButton>
     </SideBar>
 
     <!-- Modal -->
@@ -62,8 +40,8 @@
       </template>
 
       <template v-slot:footer>
-        <cButton class="delete-button" @click="deleteNetwork" label="Yes" />
-        <cButton class="ok-button" @click="closeModal" label="No" />
+        <cButton class="btn btn-danger" @click="deleteNetwork" :disabled="loading" label="Yes" />
+        <cButton class="btn btn-light" @click="closeModal" :disabled="loading" label="No" />
       </template>
     </Modal>
 
@@ -74,8 +52,8 @@
       </template>
 
       <template v-slot:footer>
-        <cButton class="delete-button" @click="deleteSubnet" label="Yes" />
-        <cButton class="ok-button" @click="closeModalSubnet" label="No" />
+        <cButton class="btn btn-danger" @click="deleteSubnet" :disabled="loading" label="Yes" />
+        <cButton class="btn btn-light" @click="closeModalSubnet" :disabled="loading" label="No" />
       </template>
     </Modal>
   </div>
@@ -91,6 +69,7 @@ import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
 import Modal from '../components/common/Modal'
+import Alert from '../components/common/Alert'
 import AddSubnet from '../components/forms/AddSubnet'
 
 const PRODUCT_NAME = 'Network';
@@ -105,6 +84,7 @@ export default {
     SideBar,
     GroupButtons,
     Modal,
+    Alert,
     AddSubnet
   },
   // layout: 'home',
@@ -160,7 +140,8 @@ export default {
     },
     async subnetAddedHandler() {
       await this.getSubnetByName(this.selectedNetwork.name);
-      this.subnetResponseMessage = 'Subnet Added Successfully';
+      this.subnetResponse = 'success';
+      this.subnetResponseMessage = 'Successfully added subnet!';
       this.addSubnetSidebarVisible = false;
     },
     addSubnetSidebar() {
@@ -172,7 +153,7 @@ export default {
     },
     openSidebar(item) {
       // Update the item with the fetched data
-      this.subnetResponse = false;
+      this.subnetResponse = null;
       this.selectedNetwork = item;
       this.sidebarVisible = true;
     },
@@ -188,7 +169,7 @@ export default {
       const { name } = vnetRow;
       // Set the selected VLAN name
       this.selectedVnetName = name;
-      this.subnetResponse = false;
+      this.subnetResponse = null;
       // Open the modal
       this.isModalOpen = true;
     },
@@ -246,13 +227,11 @@ export default {
         console.log(`Delete Network Endpoint, ${ this.selectedVnetName }`);
         this.loading = true;
         const response = await vNetService.deleteNetwork(this.selectedVnetName);
-        // Handle the response here
-        console.log('VNET deleted:', response.data);
         this.loading = false;
 
-        this.apiResponse = response.data;
+        this.apiResponse = 'error';
         // Set the API response data in the component
-        this.apiResponseMessage = 'VNET Successfully Deleted';
+        this.apiResponseMessage = `You have successfully deleted VNET: ${this.selectedVnetName}`;
         this.apiError = null; // Reset error state
 
         await this.fetchNetworks();
@@ -292,16 +271,12 @@ export default {
         };
 
         this.loading = true;
-        // var vnet_subnet = `${this.vnet_name}-${this.subnet_name}-${this.subnet_address}-${this.subnet_prefix_len}`
-        // Make an Axios DELETE request to delete the network with the selected VLAN name
         const response = await vNetService.patchSubnet(this.vnet_name, vnet_data);
         console.log('Network deleted:', response.data);
         this.loading = false;
 
-        this.subnetResponse = response.data;
-        // Set the API response data in the component
-        this.subnetResponseMessage = 'Subnet Successfully Deleted';
-        this.apiError = null; // Reset error state
+        this.subnetResponse = 'error';
+        this.subnetResponseMessage = `Successfully deleted subnet: ${this.subnet_name}`;
 
         await this.getSubnetByName(this.vnet_name);
 
@@ -314,10 +289,9 @@ export default {
         // Handle any errors here
         console.error('Error deleting network:', error);
         this.loading = false;
-        this.subnetResponseMessage = 'Error';
         // Set the API error in the component
-        this.apiError = error.response ? error.response.data : error.message;
-        this.subnetResponse = 1; // Reset response state
+        this.subnetResponseMessage = error.response ? error.response.data : error.message;
+        this.subnetResponse = 'error';
       }
       
     },

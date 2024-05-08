@@ -34,7 +34,7 @@ export default {
 }
 
 .modal {
-  background: #4e94b0;
+  background: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -42,7 +42,10 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   margin-top: 20px;
   /* Add margin for spacing */
 }
