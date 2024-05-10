@@ -96,7 +96,6 @@ export default {
   name: 'ListNetwork',
   components: {
     SortableTable,
-    UniversalTable,
     cButton,
     SideBar,
     GroupButtons,
