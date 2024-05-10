@@ -51,6 +51,7 @@ export default {
   overflow-x: hidden;
   transition: 0.5s;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 11;
   /* Adjust the duration of the animation */
 }
 
@@ -82,7 +83,7 @@ export default {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   transition: right 0.3s ease-out;
-  z-index: 2;
+  z-index: 11;
 }
 
 /* Make the second sidebar visible */

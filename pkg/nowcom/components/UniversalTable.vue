@@ -90,9 +90,6 @@ export default {
             this.$emit('action-click', row);
         }
     },
-    mounted() {
-        console.log(`headers`, this.headers)
-    }
 }
 </script>
 

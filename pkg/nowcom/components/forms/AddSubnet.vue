@@ -16,7 +16,7 @@
             <p v-if="!isSubnetIPValid" class="text-danger" style="font-weight: bold;">Invalid IP Address</p>
         </div>
         <div class="add-form-row">
-            <cButton class="btn btn-light" :disabled="isAddSubnetDisabled || loading" @click="addSubnet">
+            <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading" @click="addSubnet">
                 <template v-if="!loading">
                     <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
                 </template>

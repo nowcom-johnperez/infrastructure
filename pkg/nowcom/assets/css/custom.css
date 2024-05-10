@@ -127,7 +127,7 @@ background-color: #f44336;
   color: white;
 }
 
-.btn {
+.cbtn {
   display: inline-block;
   font-weight: 600;
   text-align: center;
@@ -144,7 +144,7 @@ background-color: #f44336;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.btn:focus {
+.cbtn:focus {
   background: transparent;
   box-shadow: none;
   border: 1px solid black;

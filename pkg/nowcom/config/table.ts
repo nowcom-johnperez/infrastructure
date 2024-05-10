@@ -6,6 +6,38 @@ interface HeaderType {
     sort?: string;
 };
 
+interface SortableHeaderType {
+    name: string;
+    label: string;
+    sort: string|string[];
+    search: string|string[];
+    width: number;
+}
+
+const SORTABLE_NETWORK_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+        width: 50
+    },
+    {
+        name: 'cluster',
+        label: 'Cluster',
+        sort: ['cluster'],
+        search: ['cluster'],
+        width: 30
+    },
+    {
+        name: 'subnetLength',
+        label: 'Subnet',
+        sort: ['subnetLength'],
+        search: ['subnetLength'],
+        width: 10
+    }
+];
+
 const NETWORK_HEADERS: HeaderType[] = [
     {
         title: 'Name',
@@ -125,4 +157,4 @@ const SUB_VNET_HEADERS: HeaderType[] = [
 ];
 
 
-export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS, VNET_HEADERS, SUB_VNET_HEADERS }
+export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS, VNET_HEADERS, SUB_VNET_HEADERS, SORTABLE_NETWORK_HEADERS }

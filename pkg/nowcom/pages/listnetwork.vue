@@ -8,7 +8,17 @@
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
     <div class="form-row mt-10">
       <div class="form-column">
-        <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" />
+        <SortableTable :headers="networkHeader" :rows="networks" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+          <template #row-actions="row">
+            <!-- <cButton class="btn-icon btn-light" @click="openSidebar(row.row)" :disabled="loading">
+              <i class="fa fa-eye fa-lg"></i>
+            </cButton> -->
+            <cButton class="btn-icon btn-danger" @click="openModal(row.row)" :disabled="loading">
+              <i class="fa fa-trash fa-lg"></i>
+            </cButton>
+          </template>  
+        </SortableTable>
+        <!-- <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" /> -->
         </br> </br>
       </div>
     </div>
@@ -17,7 +27,7 @@
       <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
-            <cButton class="btn btn-light" @click="addSubnetSidebar">
+            <cButton class="cbtn btn-light" @click="addSubnetSidebar">
               <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
             </cButton> 
           </div>
@@ -40,8 +50,8 @@
       </template>
 
       <template v-slot:footer>
-        <cButton class="btn btn-danger" @click="deleteNetwork" :disabled="loading" label="Yes" />
-        <cButton class="btn btn-light" @click="closeModal" :disabled="loading" label="No" />
+        <cButton class="cbtn btn-danger" @click="deleteNetwork" :disabled="loading" label="Yes" />
+        <cButton class="cbtn btn-light" @click="closeModal" :disabled="loading" label="No" />
       </template>
     </Modal>
 
@@ -52,17 +62,19 @@
       </template>
 
       <template v-slot:footer>
-        <cButton class="btn btn-danger" @click="deleteSubnet" :disabled="loading" label="Yes" />
-        <cButton class="btn btn-light" @click="closeModalSubnet" :disabled="loading" label="No" />
+        <cButton class="cbtn btn-danger" @click="deleteSubnet" :disabled="loading" label="Yes" />
+        <cButton class="cbtn btn-light" @click="closeModalSubnet" :disabled="loading" label="No" />
       </template>
     </Modal>
   </div>
 </template>
 
 <script>
-import { NETWORK_HEADERS, SUB_NETWORK_HEADERS } from '../config/table'
+import { NETWORK_HEADERS, SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { vNetService } from '../services/api/vnet';
+
+import SortableTable from '@shell/components/ResourceTable.vue'
 
 import UniversalTable from '../components/UniversalTable'
 import cButton from '../components/common/Button'
@@ -79,6 +91,7 @@ const BLANK_CLUSTER = '_';
 export default {
   name: 'ListNetwork',
   components: {
+    SortableTable,
     UniversalTable,
     cButton,
     SideBar,
@@ -117,6 +130,24 @@ export default {
       networkHeader: [],
       subnetworkHeader: [],
       vnetButtons: [],
+      bulkActions: [
+        {
+          label: "Bulk Action Example",
+          action: () => {
+            alert('Bulk Action executed')
+          }
+        }
+      ],
+      rowActions: [
+        {
+          label: "View",
+          icon: 'icon icon-eye',
+          enabled: true,
+          action: (row) => {
+            alert(row);
+          }
+        }
+      ]
     };
   },
   methods: {
@@ -297,7 +328,7 @@ export default {
     },
   },
   created() {
-    this.networkHeader = NETWORK_HEADERS;
+    this.networkHeader = SORTABLE_NETWORK_HEADERS;
     this.subnetworkHeader = SUB_NETWORK_HEADERS;
     this.vnetButtons = VNET_BUTTONS;
   },

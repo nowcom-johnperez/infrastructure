@@ -36,8 +36,8 @@
             </template>
 
             <template v-slot:footer>
-              <cButton class="btn btn-primary" @click="deleteNetwork" label="Save" />
-              <cButton class="btn btn-light" @click="closeModal" label="Cancel" />
+              <cButton class="cbtn btn-primary" @click="deleteNetwork" label="Save" />
+              <cButton class="cbtn btn-light" @click="closeModal" label="Cancel" />
             </template>
           </Modal>
         </div>
@@ -76,7 +76,7 @@
           </div>
           <div class="form-row ml-5">
             <div class="form-column" align="left">
-              <cButton class="btn btn-success" @click="addSubnet">
+              <cButton class="cbtn btn-success" @click="addSubnet">
                 <i class="fa fa-plus mr-5"></i>
                 Add Subnet
               </cButton>
@@ -116,10 +116,10 @@
     </div>
     <div class="footer">
       <div class="form-column-bottom">
-        <button class="btn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
-        <button class="btn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button>
+        <button class="cbtn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
+        <button class="cbtn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button>
         <!-- Conditionally render the button based on the current tab -->
-        <button class="btn btn-primary ml-10"
+        <button class="cbtn btn-primary ml-10"
           :disabled="isLoading || (currentTab === 3 && (!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress))"
           @click="currentTab === 3 ? createNetwork() : currentTab = 3">
           {{ currentTab === 3 ? 'Create' : 'Review + Create' }}

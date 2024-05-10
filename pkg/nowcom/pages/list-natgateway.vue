@@ -59,7 +59,7 @@
                 />
             </div>
             <div class="add-form-row">
-                <cButton class="btn btn-light" :disabled="isAddSubnetDisabled" @click="addSubnet">
+                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled" @click="addSubnet">
                     <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
                 </cButton> 
             </div>
