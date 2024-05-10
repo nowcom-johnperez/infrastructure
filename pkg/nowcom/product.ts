@@ -155,7 +155,8 @@ export function init($plugin: any, store: any) {
   // basicType([YOUR_K8S_RESOURCE_NAME, CUSTOM_PAGE_NAME, CREATE_NETWORK]);
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
   // basicType([HOME]);
-  basicType([LIST_NAT_GATEWAY, LIST_NETWORK]);
+  // basicType([LIST_NAT_GATEWAY, LIST_NETWORK]);
+  basicType([LIST_NETWORK]);
   // basicType([
   //   REPO,
   // ], 'HOME');

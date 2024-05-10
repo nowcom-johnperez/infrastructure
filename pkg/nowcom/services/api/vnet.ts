@@ -5,6 +5,10 @@ export const vNetService = {
         return await INSTANCE_V2.get(`/apis/packetlifter.dev/v1/vnets`)
     },
 
+    getNetworkTranslations: async () => {
+        return await INSTANCE_V2.get(`/apis/packetlifter.dev/v1/addresstranslations`)
+    },
+
     createNetwork: async (data: any) => {
         return await INSTANCE_V2.post(`/apis/packetlifter.dev/v1/namespaces/default/vnets`, data);
     },

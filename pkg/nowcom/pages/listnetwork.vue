@@ -1,7 +1,7 @@
 <!-- eslint-disable no-console -->
 <template>
   <div class="base">
-    <h1>Virtual Network</h1>
+    <h1 class="text-label">Virtual Network</h1>
     <div class="mt-10 mb-10" v-if="apiResponse">
       <Alert :variant="apiResponse" @close="apiResponse = null">{{ apiResponseMessage }}</Alert>
     </div>
@@ -9,22 +9,21 @@
     <div class="form-row mt-10">
       <div class="form-column">
         <SortableTable :headers="networkHeader" :rows="networks" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+          <template #cell:name="{row}">
+            <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
+          </template>
           <template #row-actions="row">
-            <!-- <cButton class="btn-icon btn-light" @click="openSidebar(row.row)" :disabled="loading">
-              <i class="fa fa-eye fa-lg"></i>
-            </cButton> -->
-            <cButton class="btn-icon btn-danger" @click="openModal(row.row)" :disabled="loading">
-              <i class="fa fa-trash fa-lg"></i>
+            <cButton class="cbtn btn-primary" @click="openModal(row.row)" :disabled="loading">
+              <span class="fa fa-trash fa-lg mr-5"></span> Delete
             </cButton>
-          </template>  
+          </template>
         </SortableTable>
-        <!-- <UniversalTable v-if="networkHeader" :headers="networkHeader" :items="networks" :filters="filters" @item-click="openSidebar" @action-click="openModal" /> -->
         </br> </br>
       </div>
     </div>
 
     <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
-      <h2>{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
+      <h2 class="text-label">{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
             <cButton class="cbtn btn-light" @click="addSubnetSidebar">
@@ -35,7 +34,13 @@
         <div class="mt-10 mb-10" v-if="subnetResponse">
           <Alert :variant="subnetResponse" @close="subnetResponse = null">{{ subnetResponseMessage }}</Alert>
         </div>
-        <UniversalTable v-if="selectedNetwork" :headers="subnetworkHeader" :items="selectedNetwork.subnets" @action-click="openModalAction" />
+        <SortableTable v-if="selectedNetwork" :headers="subnetworkHeader" :rows="selectedNetwork.subnets" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+          <template #row-actions="row">
+            <cButton class="cbtn btn-primary" @click="openModalAction(row.row)" :disabled="loading">
+              <span class="fa fa-trash fa-lg mr-5"></span> Delete
+            </cButton>
+          </template>  
+        </SortableTable>
     </SideBar>
 
     <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible" @close="closeSubnetSidebar">
@@ -70,13 +75,12 @@
 </template>
 
 <script>
-import { NETWORK_HEADERS, SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
+import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { vNetService } from '../services/api/vnet';
 
 import SortableTable from '@shell/components/ResourceTable.vue'
 
-import UniversalTable from '../components/UniversalTable'
 import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
@@ -225,26 +229,42 @@ export default {
       this.isModalSubnetOpen = false;
     },
 
+    findTranslatedAddress(addressList, addressName) {
+      return addressList.find((d) => d.metadata.ownerReferences.find((owner) => owner.name === addressName))
+    },
+
     async fetchNetworks() {
       console.log('fetching networks');
 
       // Fetch the network list from your API
       try {
-        const response = await vNetService.getNetworks();
+        const [networks, networkTranslations] = await Promise.all([
+            vNetService.getNetworks(),
+            vNetService.getNetworkTranslations()
+        ]);
 
         // Parse the "name" and "subnets" under the "spec" section
-        const parsedData = response.data.items.map(item => {
-          const subnets = item.spec.subnets.map(subnet => ({
-            address:    subnet.address,
-            name:       subnet.name,
-            prefix_len: subnet.prefixLength
-          }));
+        const parsedData = networks.data.items.map(item => {
+
+          const translatedAddressData = networkTranslations.data.items;
+          const mainTranslatedAddress = this.findTranslatedAddress(translatedAddressData, item.spec.name);
+
+          const subnets = item.spec.subnets.map(subnet => {
+            const subTranslatedAddress = this.findTranslatedAddress(translatedAddressData, subnet.name);
+            return {
+              address:    `${subnet.address}/${subnet.prefixLength}`,
+              name:       subnet.name,
+              prefix_len: subnet.prefixLength,
+              translatedAddress: subTranslatedAddress.spec.outside
+            }
+          });
 
           return {
             name:    item.spec.name,
             subnets,
             subnetLength: subnets.length,
-            cluster: 'local'
+            cluster: 'local',
+            translatedAddress: mainTranslatedAddress.spec.outside
           }
         });
 
@@ -329,7 +349,7 @@ export default {
   },
   created() {
     this.networkHeader = SORTABLE_NETWORK_HEADERS;
-    this.subnetworkHeader = SUB_NETWORK_HEADERS;
+    this.subnetworkHeader = SORTABLE_SUB_NETWORK_HEADERS;
     this.vnetButtons = VNET_BUTTONS;
   },
   mounted() {

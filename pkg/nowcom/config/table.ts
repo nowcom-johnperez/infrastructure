@@ -12,6 +12,7 @@ interface SortableHeaderType {
     sort: string|string[];
     search: string|string[];
     width: number;
+    formatter?: string;
 }
 
 const SORTABLE_NETWORK_HEADERS: SortableHeaderType[] = [
@@ -20,14 +21,14 @@ const SORTABLE_NETWORK_HEADERS: SortableHeaderType[] = [
         label: 'Name',
         sort: ['name'],
         search: ['name'],
-        width: 50
+        width: 10,
     },
     {
-        name: 'cluster',
-        label: 'Cluster',
-        sort: ['cluster'],
-        search: ['cluster'],
-        width: 30
+        name: 'translatedAddress',
+        label: 'Translated Address',
+        sort: ['translatedAddress'],
+        search: ['translatedAddress'],
+        width: 10
     },
     {
         name: 'subnetLength',
@@ -36,6 +37,37 @@ const SORTABLE_NETWORK_HEADERS: SortableHeaderType[] = [
         search: ['subnetLength'],
         width: 10
     }
+];
+
+const SORTABLE_SUB_NETWORK_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'name',
+        label: 'Subnet Name',
+        sort: ['name'],
+        search: ['name'],
+        width: 50,
+    },
+    {
+        name: 'address',
+        label: 'Network Address',
+        sort: ['address'],
+        search: ['address'],
+        width: 30
+    },
+    {
+        name: 'translatedAddress',
+        label: 'Translated Address',
+        sort: ['translatedAddress'],
+        search: ['translatedAddress'],
+        width: 30
+    },
+    // {
+    //     name: 'prefix_len',
+    //     label: 'Network Prefix',
+    //     sort: ['prefix_len'],
+    //     search: ['prefix_len'],
+    //     width: 10
+    // }
 ];
 
 const NETWORK_HEADERS: HeaderType[] = [
@@ -157,4 +189,4 @@ const SUB_VNET_HEADERS: HeaderType[] = [
 ];
 
 
-export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS, VNET_HEADERS, SUB_VNET_HEADERS, SORTABLE_NETWORK_HEADERS }
+export { NETWORK_HEADERS, HeaderType, SUB_NETWORK_HEADERS, VNET_HEADERS, SUB_VNET_HEADERS, SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS }
