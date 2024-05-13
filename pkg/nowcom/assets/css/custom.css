@@ -109,7 +109,7 @@ background-color: #f44336;
   justify-content: center;
 }
 
-.btn-x:hover {
+.btn-x:hover, .btn-x:focus {
   background-color: #c82333;
   border-color: #dc3545;
   box-shadow: none;
@@ -125,6 +125,14 @@ background-color: #f44336;
 
 .btn-x:hover .x-icon {
   color: white;
+}
+
+.theme-dark .x-icon {
+  color: #fff;
+}
+
+.theme-dark .btn-x:hover .x-icon {
+  color: #000;
 }
 
 .cbtn {
@@ -194,8 +202,19 @@ background-color: #f44336;
 
 .btn-light:hover {
   color: #000;
-  background-color: #cfc7c7;
+  background-color: #979595;
   border-color: black;
+}
+
+.theme-dark .btn-light, .theme-dark .btn-light:focus {
+  color: white;
+  border-color: white;
+}
+
+.theme-dark .btn-light:hover {
+  color: #fff;
+  background-color: #979595;
+  border-color: #fff;
 }
 
 .text-primary {

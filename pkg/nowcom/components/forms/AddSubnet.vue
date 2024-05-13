@@ -88,17 +88,17 @@ export default {
                 network.subnets.push(subnet_data);
 
                 const vnet_data = {
-                apiVersion: 'packetlifter.dev/v1',
-                kind:       'Vnet',
-                // vnet_vlan: this.selectedVnetVlan,
-                metadata:   {
-                    name:      network.name.toLowerCase(),
-                    namespace: 'default'
-                },
-                spec: {
-                    name:    network.name.toLowerCase(),
-                    subnets: network.subnets,
-                }
+                    apiVersion: 'packetlifter.dev/v1',
+                    kind:       'Vnet',
+                    // vnet_vlan: this.selectedVnetVlan,
+                    metadata:   {
+                        name:      network.name.toLowerCase(),
+                        namespace: 'default'
+                    },
+                    spec: {
+                        name:    network.name.toLowerCase(),
+                        subnets: network.subnets,
+                    }
                 };
 
                 console.log('send to API', subnet_data);

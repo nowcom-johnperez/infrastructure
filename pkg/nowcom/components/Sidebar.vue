@@ -40,6 +40,11 @@ export default {
 </script>
 
 <style scoped>
+.theme-dark .sidebar, .theme-dark .add-subnet-sidebar {
+  background-color: #27292e !important;
+  /* Dark theme background color */
+  color: #fff !important;
+}
 .sidebar {
   position: fixed;
   top: 0;

@@ -20,7 +20,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -49,5 +49,11 @@ export default {
   text-align: center;
   margin-top: 20px;
   /* Add margin for spacing */
+}
+
+.theme-dark {
+  .modal {
+    background: #27292e;
+  }
 }
 </style>

@@ -229,7 +229,8 @@ export default {
     },
 
     findTranslatedAddress(addressList, addressName) {
-      return addressList.find((d) => d.metadata.ownerReferences.find((owner) => owner.name === addressName))
+      // console.log(`test`, addressName, addressList.find((d) => d.metadata?.ownerReferences))
+      return addressList.find((d) => d.metadata?.ownerReferences?.find((owner) => owner.name === addressName))
     },
 
     async fetchNetworks() {
@@ -254,7 +255,7 @@ export default {
               address:    `${subnet.address}/${subnet.prefixLength}`,
               name:       subnet.name,
               prefix_len: subnet.prefixLength,
-              translatedAddress: subTranslatedAddress.spec.outside
+              translatedAddress: subTranslatedAddress?.spec?.outside
             }
           });
 
@@ -263,7 +264,7 @@ export default {
             subnets,
             subnetLength: subnets.length,
             cluster: 'local',
-            translatedAddress: mainTranslatedAddress.spec.outside
+            translatedAddress: mainTranslatedAddress?.spec?.outside
           }
         });
 
