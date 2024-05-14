@@ -41,17 +41,17 @@ const SORTABLE_NETWORK_HEADERS: SortableHeaderType[] = [
 
 const SORTABLE_SUB_NETWORK_HEADERS: SortableHeaderType[] = [
     {
-        name: 'name',
+        name: 'longName',
         label: 'Subnet Name',
-        sort: ['name'],
-        search: ['name'],
+        sort: ['longName'],
+        search: ['longName'],
         width: 50,
     },
     {
-        name: 'address',
+        name: 'formattedAddress',
         label: 'Network Address',
-        sort: ['address'],
-        search: ['address'],
+        sort: ['formattedAddress'],
+        search: ['formattedAddress'],
         width: 30
     },
     {

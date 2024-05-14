@@ -79,9 +79,12 @@ export default {
                 const network = {...this.currentNetwork};
                 this.apiError = null; // Reset error state
                 // v0.2
+                const subnetName = this.subnetName.toLowerCase();
                 const subnet_data = {
-                    name:       this.subnetName.toLowerCase(),
-                    address:    this.subnetIP,
+                    longName: `${network.name}-${subnetName}-${this.subnetIP}-24`,
+                    name:      subnetName,
+                    address:   this.subnetIP,
+                    formattedAddress: `${this.subnetIP}/24`,
                     prefix_len: 24
                 };
 

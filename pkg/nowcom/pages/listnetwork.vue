@@ -8,7 +8,7 @@
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
     <div class="form-row mt-10">
       <div class="form-column">
-        <SortableTable :headers="networkHeader" :rows="networks" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+        <SortableTable :headers="networkHeader" :rows="networks" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="longName" :loading="loading">
           <template #cell:name="{row}">
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
           </template>
@@ -78,7 +78,7 @@
 import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { vNetService } from '../services/api/vnet';
-
+import { stripStrings } from '../services/helpers/utils'
 import SortableTable from '@shell/components/ResourceTable.vue'
 
 import cButton from '../components/common/Button'
@@ -126,31 +126,12 @@ export default {
       addSubnetSidebarVisible: false,
       apiError:                null,
       apiResponseMessage:      '',
-      network:                 [],
-      filters:                 { name: { value: '', keys: ['name'] } },
+      filters:                 { name: { value: '', keys: ['longName'] } },
       currentPage:             1,
       totalPages:              0,
       networkHeader: [],
       subnetworkHeader: [],
       vnetButtons: [],
-      bulkActions: [
-        {
-          label: "Bulk Action Example",
-          action: () => {
-            alert('Bulk Action executed')
-          }
-        }
-      ],
-      rowActions: [
-        {
-          label: "View",
-          icon: 'icon icon-eye',
-          enabled: true,
-          action: (row) => {
-            alert(row);
-          }
-        }
-      ]
     };
   },
   methods: {
@@ -162,21 +143,29 @@ export default {
       }
     },
     async getSubnetByName (networkName) {
-      const subnetRes = await vNetService.getSubnetByName(networkName);
+      // const subnetRes = await vNetService.getSubnetByName(networkName);
 
-      this.selectedNetwork.subnets = subnetRes.data.spec.subnets.map(subnet => ({
-        address:    subnet.address,
-        name:       subnet.name,
-        prefix_len: subnet.prefixLength
-      }));
+      this.selectedNetwork = null;
 
-      this.fetchNetworks();
+      // this.selectedNetwork.subnets = subnetRes.data.spec.subnets.map(subnet => ({
+      //   address:    subnet.address,
+      //   formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
+      //   name:       stripStrings(subnet.name),
+      //   longName:   subnet.name,
+      //   prefix_len: subnet.prefixLength,
+      //   translatedAddress: subnet.addressTranslation?.outside
+      // }));
+
+      // console.log(`subnetRes`, this.selectedNetwork.subnets)
+      await this.fetchNetworks();
+
+      this.selectedNetwork = this.networks.find((network) => network.name === networkName);
     },
     async subnetAddedHandler() {
-      await this.getSubnetByName(this.selectedNetwork.name);
       this.subnetResponse = 'success';
       this.subnetResponseMessage = 'Successfully added subnet!';
       this.addSubnetSidebarVisible = false;
+      await this.getSubnetByName(this.selectedNetwork.name);
     },
     addSubnetSidebar() {
       this.selectedSubnetName = null;
@@ -243,6 +232,8 @@ export default {
             vNetService.getNetworkTranslations()
         ]);
 
+        // this.translatedAddress = networkTranslations.data.items;
+        // this.networks = networks.data;
         // Parse the "name" and "subnets" under the "spec" section
         const parsedData = networks.data.items.map(item => {
 
@@ -250,15 +241,17 @@ export default {
           const mainTranslatedAddress = this.findTranslatedAddress(translatedAddressData, item.spec.name);
 
           const subnets = item.spec.subnets.map(subnet => {
-            const subTranslatedAddress = this.findTranslatedAddress(translatedAddressData, subnet.name);
             return {
-              address:    `${subnet.address}/${subnet.prefixLength}`,
-              name:       subnet.name,
+              address:    subnet.address,
+              formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
+              name:       stripStrings(subnet.name),
+              longName:   subnet.name,
               prefix_len: subnet.prefixLength,
-              translatedAddress: subTranslatedAddress?.spec?.outside
+              translatedAddress: subnet.addressTranslation?.outside
             }
           });
 
+          console.log(`sinmets`, subnets.length)
           return {
             name:    item.spec.name,
             subnets,
@@ -277,25 +270,29 @@ export default {
       try {
         console.log(`Delete Network Endpoint, ${ this.selectedVnetName }`);
         this.loading = true;
+        // Close the modal before deletion
+        this.closeModal();
         const response = await vNetService.deleteNetwork(this.selectedVnetName);
         this.loading = false;
 
+        // defines what kind of component should the notification show
         this.apiResponse = 'error';
         // Set the API response data in the component
         this.apiResponseMessage = `You have successfully deleted VNET: ${this.selectedVnetName}`;
         this.apiError = null; // Reset error state
 
         await this.fetchNetworks();
-        // Close the modal after deletion
-        this.closeModal();
       } catch (error) {
         // Handle any errors here
         console.error('Error deleting network:', error);
         this.loading = false;
+        this.isModalOpen = true;
         this.apiResponseMessage = 'Error';
         // Set the API error in the component
         this.apiError = error.response ? error.response.data : error.message;
         this.apiResponse = 1; // Reset response state
+      } finally {
+        
       }
     },
 
@@ -322,10 +319,13 @@ export default {
         };
 
         this.loading = true;
+        // Close the modal before deletion
+        this.closeModalSubnet();
         const response = await vNetService.patchSubnet(this.vnet_name, vnet_data);
         console.log('Network deleted:', response.data);
         this.loading = false;
 
+        // defines what kind of component should the notification show
         this.subnetResponse = 'error';
         this.subnetResponseMessage = `Successfully deleted subnet: ${this.subnet_name}`;
 
@@ -333,18 +333,16 @@ export default {
 
         // Update the selectedNetwork with the selected vnet_name
         this.selectedNetwork.vnet_name = this.vnet_name;
-        console.log('Selected Network:', this.selectedNetwork);
-        // Close the modal after deletion
-        this.closeModalSubnet();
+        
       } catch (error) {
         // Handle any errors here
         console.error('Error deleting network:', error);
         this.loading = false;
+        this.isModalSubnetOpen = true;
         // Set the API error in the component
         this.subnetResponseMessage = error.response ? error.response.data : error.message;
         this.subnetResponse = 'error';
       }
-      
     },
   },
   created() {
