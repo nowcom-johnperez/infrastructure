@@ -17,15 +17,25 @@
             isolation.
           </p>
           <br />
-          <h5 align="left">VNET Name</h5>
           <!-- Updated select input with "Create New VNET" option -->
           <!-- <select v-model="selectedVnetName" @change="handleSelectChange">
                     <option value="">Select Network Name</option>
                     <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
                     <option value="Create VNET">Create New VNET</option>
                 </select> -->
-          <!-- <h5 align="left">VNET Name</h5> -->
-          <input type="text" v-model="selectedVnetName" placeholder="e.g. vnet" required />
+          <div class="input-container">
+            <label for="vnet">Vnet Name</label>
+            <input type="text" class="mt-10" name="vnet" v-model="selectedVnetName" placeholder="e.g. vnet" required />
+            <span class="info-icon">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+            <div class="tooltip">Nowcom Virtual Network (VNet) is the fundamental building block for your private network in Nowcom Cloud.
+            VNet enables many types of Nowcom resources, such as Nowcom Virtual Machines (VM),
+            to securely communicate with each other, the internet, and on-premises networks.
+            VNet is similar to a traditional network that you'd operate in your own data center,
+            but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and
+            isolation.</div>
+          </div>
 
           <div class="mt-20">
             <p>
@@ -68,9 +78,13 @@
             </div>
           </div>
 
-          <div class="mt-20">
-            <label for="tags" class="mb-10">Tags</label>
-            <input name="tags" class="mt-10" v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
+          <div class="input-container">
+            <label for="tags">Tags</label>
+            <input type="text" class="mt-10" name="tags" v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
+            <span class="info-icon">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+            <div class="tooltip">Tooltip text</div>
           </div>
           <Tag v-for="(tag, index) in tags" :key="index" :show-delete="true" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
 
@@ -89,28 +103,37 @@
           </Modal> -->
         </div>
 
-
-        <div class="tab-content" :class="{ 'show': currentTab === 3 }">
-          <div>
-            <h2>Basics</h2>
-            <p :style="{ color: selectedVnetName ? '' : 'red' }">
-              Name : {{ selectedVnetName || 'empty' }}
-            </p>
-          </div>
-          
-          <div class="mt-30">
-            <h2>Tag</h2>
-            <div class="mt-10">
-              <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+        <Modal size="lg" v-if="reviewModalState">
+          <template #header>
+            <h1 class="mb-0">Review</h1>
+          </template>
+          <template v-slot:content>
+            
+            <div>
+              <h2>Configure</h2>
+              <p>
+                Virtual Network Name: &nbsp; <span class="text-bold" :style="{ color: selectedVnetName ? '' : 'red', 'font-size': '1.3rem' }">{{ selectedVnetName || 'empty' }}</span>
+              </p>
             </div>
-          </div>
+            
+            <div class="mt-30">
+              <h2>Tags</h2>
+              <div class="mt-10">
+                <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+              </div>
+            </div>
 
-          <div class="mt-30">
-            <h2>Subnet</h2>
-            <Subnet v-for="(name, index) in selectedSubnetName" :key="index" :name="name" :current-address="selectedVnetSubnets[index] || 'empty'" :ip-list="selectedVnetSubnets" />
-          </div>
-          
-        </div>
+            <div class="mt-30">
+              <h2>Subnet</h2>
+              <Subnet v-for="(name, index) in selectedSubnetName" :key="index" :name="name" :current-address="selectedVnetSubnets[index] || 'empty'" :ip-list="selectedVnetSubnets" />
+            </div>
+          </template>
+
+          <template v-slot:footer>
+            <cButton class="cbtn btn-primary" @click="createNetwork" :disabled="!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress || isLoading" label="Create" />
+            <cButton class="cbtn btn-light" @click="reviewModalState = false" label="Cancel" />
+          </template>
+        </Modal>
       </div>
     </div>
     <div class="footer">
@@ -118,10 +141,8 @@
         <!-- <button class="cbtn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
         <button class="cbtn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button> -->
         <!-- Conditionally render the button based on the current tab -->
-        <button class="cbtn btn-primary ml-10"
-          :disabled="isLoading || (currentTab === 3 && (!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress))"
-          @click="currentTab === 3 ? createNetwork() : currentTab = 3">
-          {{ currentTab === 3 ? 'Create' : 'Review + Create' }}
+        <button class="cbtn btn-primary ml-10" @click="reviewModalState = true">
+          Review
         </button>
       </div>
     </div>
@@ -146,6 +167,7 @@ export default {
   // layout: 'home',
   data() {
     return {
+      reviewModalState: false,
       selectedVnetName: "", // Dropdown for network name
       selectedVnetSubnets: ["10.55.0.0"], // Network Address (disabled and readonly)
       selectedSubnetName: ["default"],
@@ -412,16 +434,21 @@ export default {
 }
 
 /* Style for tab content */
-h2 {
+/* h2 {
   color: #007bff;
-}
+} */
 /* Add this style to position the buttons at the bottom */
 .footer {
   position: fixed;
-  bottom: 30px;
+  bottom: 0;
   border-top: 2px solid #9c9393;
   width: 80%;
   padding: 20px 0;
+  background-color: #fff;
+}
+
+.theme-dark .footer {
+  background-color: #1b1c21;
 }
 
 .form-column-bottom {

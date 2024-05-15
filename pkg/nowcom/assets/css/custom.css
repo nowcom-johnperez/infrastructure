@@ -73,9 +73,9 @@ background-color: #f44336;
 
 .tab-content-container .tab-content {
   display: none;
-  width: 50%;
+  /* width: 50%; */
   height: 70vh;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .tab-content-container .tab-content.show {
@@ -158,6 +158,15 @@ background-color: #f44336;
   border: 1px solid black;
 }
 
+.cbtn:disabled {
+  background-color: #cccccc;
+  /* Grey */
+  color: #666666;
+  /* Dark grey */
+  cursor: not-allowed;
+  border-color: none;
+}
+
 .btn-primary, .btn-primary:focus {
   color: #fff;
   background-color: #297db4;
@@ -168,6 +177,15 @@ background-color: #f44336;
   color: #fff;
   background-color: #0056b3;
   border-color: #0056b3;
+}
+
+.btn-primary:disabled:hover {
+  background-color: #cccccc;
+  /* Grey */
+  color: #666666;
+  /* Dark grey */
+  cursor: not-allowed;
+  border-color: none;
 }
 
 .btn-danger, .btn-danger:focus {
@@ -236,6 +254,55 @@ background-color: #f44336;
 .bg-success {
   background-color: #28a745;
 }
+
+.input-container {
+  position: relative;
+  width: 400px;
+
+  input[type="text"] {
+    padding-right: 40px; /* Adjust as needed */
+  }
+  
+  .info-icon {
+    position: absolute;
+    top: 70%;
+    right: 15px; /* Adjust as needed */
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    left: calc(80% + 25px);
+    min-width: 200px;
+  }
+  
+  .tooltip::before {
+    content: "";
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+    top: -10px;
+    right: calc(80% + 5px);
+    transform: translateX(50%);
+  }
+  
+  .info-icon:hover + .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+
 
 /* pagination (always make sure this is at the bottom) */
 .smart-pagination {

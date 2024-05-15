@@ -1,13 +1,13 @@
 <template>
     <div class="subnet-container">
-        <div class="subnet-name">{{ name }}</div>
+        <div class="subnet-name" :class="{ 'invalid-message': !isValidIPAddress }">{{ name }}</div>
         <!-- <div>-</div> -->
-        <div :class="{ 'invalid-ip': !isValidIPAddress }">
+        <div :class="{ 'invalid-message': !isValidIPAddress }">
             {{ currentAddress }}
-            <span v-if="!isValidIPAddress" class="invalid-message">
+            <span v-if="!isValidIPAddress">
                 (Invalid IP Address)
             </span>
-            <span v-else-if="isDuplicateIPAddress" class="invalid-message"> (Duplicate IP Address)</span>
+            <span v-else-if="isDuplicateIPAddress"> (Duplicate IP Address)</span>
         </div>
     </div>
 </template>
@@ -42,7 +42,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .subnet-container {
     display: flex;
     justify-items: center;
@@ -56,11 +56,8 @@ export default {
     max-width: 100px;
     font-size: 1.1rem;
 }
-.invalid-ip {
-  color: red;
-}
 
 .invalid-message {
-  color: blue;
+  color: red;
 }
 </style>

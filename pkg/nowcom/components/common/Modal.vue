@@ -1,13 +1,16 @@
 <template>
     <div class="modal-overlay">
-      <div class="modal">
+      <div class="modal" :class="[`${size}`]">
         <!-- Modal content -->
-        <div>
+        <div class="modal-header">
+          <slot name="header"></slot>
+        </div>
+        <div class="modal-content">
             <slot name="content"></slot>
         </div>
 
         <!-- Buttons container with flex layout -->
-        <div class="button-container">
+        <div class="moodal-footer button-container">
             <slot name="footer"></slot>
         </div>
       </div>
@@ -16,7 +19,13 @@
 
 <script>
 export default {
-    name: 'Modal'
+    name: 'Modal',
+    props: {
+      size: {
+        type: String,
+        default: 'sm'
+      }
+    }
 }
 </script>
 
@@ -41,6 +50,10 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+.modal.lg {
+  width: 50%;
+}
+
 .button-container {
   display: flex;
   gap: 10px;
@@ -49,6 +62,22 @@ export default {
   text-align: center;
   margin-top: 20px;
   /* Add margin for spacing */
+}
+
+.modal-header {
+  border-bottom: 1px solid #fff;
+  padding: 10px 0;
+  margin-bottom: 15px;
+}
+
+.modal-content {
+  h2 {
+    color: #007bff;
+  }
+}
+
+.modal.lg .button-container {
+  justify-content: flex-end !important;
 }
 
 .theme-dark {
