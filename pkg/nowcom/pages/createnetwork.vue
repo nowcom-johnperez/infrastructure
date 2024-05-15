@@ -25,11 +25,58 @@
                     <option value="Create VNET">Create New VNET</option>
                 </select> -->
           <!-- <h5 align="left">VNET Name</h5> -->
-          <input type="text" v-model="selectedVnetName" placeholder="vnet" required />
+          <input type="text" v-model="selectedVnetName" placeholder="e.g. vnet" required />
+
+          <div class="mt-20">
+            <p>
+              Configure your virtual network address space with the IPv4 and IPv6 addresses and subnets you need.
+            </p>
+            <p class="mt-5">
+              Define the address space of your virtual network with one or more IPv4 or IPv6 address ranges.
+              Create subnets to segment the virtual network address space into smaller ranges for use by your
+              applications.
+              When you deploy resources into a subnet, Nowcom assigns the resource an IP address from the subnet.
+            </p>
+            <div class="mt-20">
+              <div v-for="(subnet, index) in selectedVnetSubnets" :key="`subnet_${index}`" class="row mt-10" style="justify-content: space-between; gap: 5px; align-items: center;">
+                <div>
+                  <input v-model="selectedSubnetName[index]" type="text" placeholder="Subnet Name"
+                  title="Please enter a valid IP address" @input="handleSubnetInput(index)" />
+                </div>
+                <div>
+                  <input v-model="selectedVnetSubnets[index]" type="text" placeholder="Enter subnet (e.g., 10.0.0.0)"
+                    pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address"
+                    @input="handleSubnetInput(index)" />
+                </div>
+                <div class="subnet-suffix">
+                  <p>/24</p>
+                </div>
+                <div class="form-column" align="left">
+                  <cButton v-if="index > 0" class="btn-icon" @click="removeSubnet(index)">
+                    <i class="fa fa-trash fa-lg text-danger"></i>
+                  </cButton>
+                </div>
+              </div>
+            </div>
+            <div class="form-row ml-5">
+              <div class="form-column" align="left">
+                <cButton class="cbtn btn-success" @click="addSubnet">
+                  <i class="fa fa-plus mr-5"></i>
+                  Add Subnet
+                </cButton>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-20">
+            <label for="tags" class="mb-10">Tags</label>
+            <input name="tags" class="mt-10" v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
+          </div>
+          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="true" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
 
           <!-- New input field that appears when "Create New VNET" is selected -->
           <!-- Modal for creating a new network -->
-          <Modal v-if="creatingNewNetwork">
+          <!-- <Modal v-if="creatingNewNetwork">
             <template v-slot:content>
               <h2>Create New Network</h2>
               <input v-model="newNetworkName" value="Vrf-" placeholder="Enter new network name" @input="handleNewNetworkInput" />
@@ -39,57 +86,9 @@
               <cButton class="cbtn btn-primary" @click="deleteNetwork" label="Save" />
               <cButton class="cbtn btn-light" @click="closeModal" label="Cancel" />
             </template>
-          </Modal>
+          </Modal> -->
         </div>
 
-        <div class="tab-content" :class="{ 'show': currentTab === 1 }">
-          <!-- <h5 align="left">Subnet</h5>   -->
-          <p>
-            Configure your virtual network address space with the IPv4 and IPv6 addresses and subnets you need.
-          </p>
-          <p class="mt-5">
-            Define the address space of your virtual network with one or more IPv4 or IPv6 address ranges.
-            Create subnets to segment the virtual network address space into smaller ranges for use by your
-            applications.
-            When you deploy resources into a subnet, Nowcom assigns the resource an IP address from the subnet.
-          </p>
-          <div class="mt-20">
-            <div v-for="(subnet, index) in selectedVnetSubnets" :key="`subnet_${index}`" class="row mt-10" style="justify-content: space-between; gap: 5px; align-items: center;">
-              <div>
-                <input v-model="selectedSubnetName[index]" type="text" placeholder="Subnet Name"
-                title="Please enter a valid IP address" @input="handleSubnetInput(index)" />
-              </div>
-              <div>
-                <input v-model="selectedVnetSubnets[index]" type="text" placeholder="Enter subnet (e.g., 10.0.0.0)"
-                  pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address"
-                  @input="handleSubnetInput(index)" />
-              </div>
-              <div class="subnet-suffix">
-                <p>/24</p>
-              </div>
-              <div class="form-column" align="left">
-                <cButton v-if="index > 0" class="btn-icon" @click="removeSubnet(index)">
-                  <i class="fa fa-trash fa-lg text-danger"></i>
-                </cButton>
-              </div>
-            </div>
-          </div>
-          <div class="form-row ml-5">
-            <div class="form-column" align="left">
-              <cButton class="cbtn btn-success" @click="addSubnet">
-                <i class="fa fa-plus mr-5"></i>
-                Add Subnet
-              </cButton>
-            </div>
-          </div>
-        </div>
-
-        <div class="tab-content" :class="{ 'show': currentTab === 2 }">
-          <div>
-            <input v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
-          </div>
-          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="true" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
-        </div>
 
         <div class="tab-content" :class="{ 'show': currentTab === 3 }">
           <div>
@@ -116,8 +115,8 @@
     </div>
     <div class="footer">
       <div class="form-column-bottom">
-        <button class="cbtn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
-        <button class="cbtn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button>
+        <!-- <button class="cbtn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
+        <button class="cbtn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button> -->
         <!-- Conditionally render the button based on the current tab -->
         <button class="cbtn btn-primary ml-10"
           :disabled="isLoading || (currentTab === 3 && (!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress))"
@@ -159,7 +158,7 @@ export default {
       creatingNewNetwork: false, // New data property to track if creating a new network
       apiResponseUpdate: "", //response for update
       currentTab: 0, // Initial tab
-      tabList: ['Basics', 'IP Address', 'Tags', 'Review + Create'],
+      tabList: ['Configure'],
       newTag: "",
       tags: [],
     };
