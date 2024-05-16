@@ -1,7 +1,7 @@
 <template>
-  <div class="base">
+  <div class="base create-base">
     <Loading :loading="isLoading" />
-    <div>
+    <div class="create-content">
       <h1>Create VNET Network</h1>
       <!-- <p>This is page is for the creation of VNET</p> -->
       <br />
@@ -35,6 +35,16 @@
             VNet is similar to a traditional network that you'd operate in your own data center,
             but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and
             isolation.</div>
+          </div>
+
+          <div class="checkbox-content mt-20">
+            <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
+            <label for="dhcp">DHCP Enabled?</label>
+          </div>
+          
+          <div class="checkbox-content mt-20">
+            <input type="checkbox" id="dhcp" v-model="externalDNSenabled" />
+            <label for="dhcp">External DNS</label>
           </div>
 
           <div class="mt-20">
@@ -114,12 +124,21 @@
               <p>
                 Virtual Network Name: &nbsp; <span class="text-bold" :style="{ color: selectedVnetName ? '' : 'red', 'font-size': '1.3rem' }">{{ selectedVnetName || 'empty' }}</span>
               </p>
+              <p>
+                DHCP Enabled: {{ dhcpEnabled }}
+              </p>
+              <p>
+                External DNS: {{ externalDNSenabled }}
+              </p>
             </div>
             
             <div class="mt-30">
               <h2>Tags</h2>
               <div class="mt-10">
-                <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+                <template v-if="tags.length > 0">
+                  <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
+                </template>
+                <p v-else>No Tags</p>
               </div>
             </div>
 
@@ -159,7 +178,7 @@ import { vNetService } from '../services/api/vnet';
 import { isValidIP } from '../services/helpers/utils'
 
 const PRODUCT_NAME = "Network";
-const LIST_NETWORK = "VNET";
+const LIST_NETWORK = "vnet";
 const BLANK_CLUSTER = "_";
 
 export default {
@@ -183,6 +202,9 @@ export default {
       tabList: ['Configure'],
       newTag: "",
       tags: [],
+      dhcpEnabled: false,
+      externalDNSenabled: false,
+      externalDNSsource: ''
     };
   },
   components: {
@@ -442,7 +464,7 @@ export default {
   position: fixed;
   bottom: 0;
   border-top: 2px solid #9c9393;
-  width: 80%;
+  width: 70%;
   padding: 20px 0;
   background-color: #fff;
 }

@@ -7,6 +7,17 @@ p {
   margin-left: 10px;
 }
 
+.create-base {
+  position: relative;
+  padding-bottom: 100px;
+}
+
+.create-content {
+  overflow-y: auto; /* Allow content to be scrolled within this container */
+  max-height: calc(100vh - 180px); /* Adjust max-height based on screen size and footer height */
+  padding-bottom: 50px;
+}
+
 .form-container {
   text-align: center;
 }
@@ -73,9 +84,7 @@ background-color: #f44336;
 
 .tab-content-container .tab-content {
   display: none;
-  /* width: 50%; */
   height: 70vh;
-  /* overflow-y: scroll; */
 }
 
 .tab-content-container .tab-content.show {
@@ -302,6 +311,45 @@ background-color: #f44336;
   }
 }
 
+.checkbox-content {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-content input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  outline: none;
+  cursor: pointer;
+  margin-right: 10px;
+  position: relative;
+}
+
+.checkbox-content input[type="checkbox"]::before {
+  content: '';
+  display: block;
+  width: 70%;
+  height: 70%;
+  background-color: transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.checkbox-content input[type="checkbox"]:checked::before {
+  background-color: #666;
+}
+
+.checkbox-content label {
+  cursor: pointer;
+}
 
 
 /* pagination (always make sure this is at the bottom) */
