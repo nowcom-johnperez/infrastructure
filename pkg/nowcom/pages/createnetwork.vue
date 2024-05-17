@@ -24,7 +24,7 @@
                     <option value="Create VNET">Create New VNET</option>
                 </select> -->
           <div class="input-container">
-            <label for="vnet">Vnet Name</label>
+            <label for="vnet">VNet Name</label>
             <input type="text" class="mt-10" name="vnet" v-model="selectedVnetName" placeholder="e.g. vnet" required />
             <span class="info-icon">
               <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -80,7 +80,7 @@
             </div>
             <div class="form-row ml-5">
               <div class="form-column" align="left">
-                <cButton class="cbtn btn-success" @click="addSubnet">
+                <cButton class="cbtn btn-light" @click="addSubnet">
                   <i class="fa fa-plus mr-5"></i>
                   Add Subnet
                 </cButton>

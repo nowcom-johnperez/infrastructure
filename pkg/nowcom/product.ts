@@ -158,17 +158,17 @@ export function init($plugin: any, store: any) {
   // });
 
   // creating a custom page
-  // virtualType({
-  //   labelKey: 'some.translation.key',
-  //   name: FORMS,
-  //   route: {
-  //     name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
-  //     params: {
-  //       product: PRODUCT_NAME,
-  //       cluster: BLANK_CLUSTER
-  //     }
-  //   }
-  // });
+  virtualType({
+    labelKey: 'some.translation.key',
+    name: FORMS,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
   // const REPO = 'catalog.cattle.io.clusterrepo';
 
   // mapGroup('HOME', 'Repositories');  
@@ -177,7 +177,7 @@ export function init($plugin: any, store: any) {
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
   // basicType([HOME]);
   // basicType([LIST_NAT_GATEWAY, LIST_NETWORK]);
-  basicType([LIST_NETWORK, TEST]);
+  basicType([LIST_NETWORK]);
   // basicType([
   //   REPO,
   // ], 'HOME');
