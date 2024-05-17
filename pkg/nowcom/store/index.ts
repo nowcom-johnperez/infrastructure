@@ -89,6 +89,9 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
             },
             async deleteSubnet({ commit }: any, data: { vnetName: string, vnetData: any}) {
                 return await vNetService.patchSubnet(data.vnetName, data.vnetData);
+            },
+            reset({ commit }: any) {
+                commit('setItems', [])
             }
         }
     }
