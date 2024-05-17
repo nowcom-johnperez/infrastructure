@@ -11,3 +11,4 @@ export const NODE = 'management.cattle.io.node'
 export const CLUSTER = 'management.cattle.io.cluster'
 export const HOME = 'Home';
 export const BLANK_CLUSTER = '_';
+export const CUSTOM_K8S_RESOURCE_NAME = 'vnetExtensionFactory';

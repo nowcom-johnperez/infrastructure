@@ -94,9 +94,9 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
     }
 }
 
-const config: CoreStoreConfig = { namespace: PRODUCT_NAME };
+const config: CoreStoreConfig = { namespace: PRODUCT_NAME, isClusterStore: true };
 
 export default {
     specifics: vnetExtensionFactory(),
-    config
+    config,
 };

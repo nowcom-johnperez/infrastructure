@@ -1,7 +1,7 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME } from './config/constants';
 export function init($plugin: any, store: any) {
   const {
     product,
@@ -82,6 +82,24 @@ export function init($plugin: any, store: any) {
   //     }
   //   }
   // });
+
+  configureType(CUSTOM_K8S_RESOURCE_NAME, {
+    displayName: 'Virtual Networks',
+    isCreatable: true,
+    isEditable: true,
+    isRemovable: true,
+    showAge: true,
+    showState: true,
+    canYaml: true,
+    customRoute: {
+      name: `${PRODUCT_NAME}-c-cluster-resource`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER,
+        resource: CUSTOM_K8S_RESOURCE_NAME
+      }
+    }
+  });
 
   // creating a custom page
   virtualType({
