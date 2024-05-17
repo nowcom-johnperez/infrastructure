@@ -12,19 +12,8 @@ import CreateNatGateway from '../pages/create-natgateway.vue';
 
 import RouteTable from '../pages/routetables.vue';
 import Forms from '../pages/forms.vue';
-const BLANK_CLUSTER = '_';
-// to achieve naming consistency throughout the extension
-// we recommend this to be defined on a config file and exported
-// so that the developer can import it wherever it needs to be used
-const PRODUCT_NAME = 'Network';
-const PAGE_NAME = 'Home';
-const NETWORK_HOME = 'Network';
-const LIST_NETWORK = 'vnet';
-const LIST_NAT_GATEWAY = 'nat.gateway';
-const CREATE_NAT_GATEWAY = 'create.nat.gateway';
-const CREATE_NETWORK = 'create-network';
-const ROUTE_TABLE = 'Route Table';
-const FORMS = 'Forms';
+
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY, CREATE_NETWORK, ROUTE_TABLE, FORMS, BLANK_CLUSTER } from '../config/constants';
 
 const routes = [
   // // this covers the "custom page"
@@ -39,8 +28,8 @@ const routes = [
   // },
   // this covers the "custom page"
   {
-    name: `${PRODUCT_NAME}-c-cluster-${PAGE_NAME}`,
-    path: `/${PRODUCT_NAME}/c/:cluster/${PAGE_NAME}`,
+    name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${HOME}`,
     component: HomePage,
     meta: {
       product: PRODUCT_NAME,

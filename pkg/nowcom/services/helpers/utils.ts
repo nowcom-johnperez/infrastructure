@@ -12,3 +12,25 @@ export const stripStrings = (input: string) => {
 
     return input.substring(firstDashIndex + 1, secondDashIndex);
 }
+
+export const findTranslatedAddress = (addressList: any[], addressName: string) => {
+    return addressList.find((d) => d.metadata?.ownerReferences?.find((owner: any) => owner.name === addressName))
+}
+
+export const combineArraysIntoObjects = (subnets: any, subnetNames: any) => {
+    if (subnets.length !== subnetNames.length) {
+        console.error("Arrays must have the same length");
+        return [];
+    }
+
+    // Use map to combine the arrays into an array of objects
+    const combinedArray = subnets.map((subnet: any, index: number) => {
+        return {
+            address: subnet,
+            name: subnetNames[index],
+            prefix_len: 24
+        };
+    });
+
+    return combinedArray;
+}

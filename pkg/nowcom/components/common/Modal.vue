@@ -2,7 +2,7 @@
     <div class="modal-overlay">
       <div class="modal" :class="[`${size}`]">
         <!-- Modal content -->
-        <div class="modal-header">
+        <div v-if="$slots.header" class="modal-header">
           <slot name="header"></slot>
         </div>
         <div class="modal-content">

@@ -77,8 +77,7 @@
 <script>
 import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
-import { vNetService } from '../services/api/vnet';
-import { stripStrings } from '../services/helpers/utils'
+import { mapGetters } from 'vuex'
 import SortableTable from '@shell/components/ResourceTable.vue'
 
 import cButton from '../components/common/Button'
@@ -88,9 +87,7 @@ import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
 import AddSubnet from '../components/forms/AddSubnet'
 
-const PRODUCT_NAME = 'Network';
-const LIST_NETWORK = 'create-network';
-const BLANK_CLUSTER = '_';
+import { PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
 export default {
   name: 'ListNetwork',
@@ -110,7 +107,6 @@ export default {
       selectedVnetName:        '',
       selectedSubnetName:      '',
       selectedVnetSubnets:     '10.55.0.0',
-      networks:                [], // This will be populated with data from the API
       loading:                 false,
       isModalOpen:             false,
       apiResponse:             null,
@@ -134,10 +130,15 @@ export default {
       vnetButtons: [],
     };
   },
+  computed: {
+    ...mapGetters(PRODUCT_NAME, {
+      networks: 'items',
+    })
+  },
   methods: {
     actionHandler (action) {
       if (action === 'create') {
-        this.routeCreateNetwork();
+        this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ CREATE_NETWORK }`);
       } else if (action === 'refresh') {
         this.fetchNetworks();
       }
@@ -184,10 +185,6 @@ export default {
       this.selectedNetwork = null;
       this.sidebarVisible = false;
     },
-    // Method to route to the Create Network page
-    routeCreateNetwork() {
-      this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ LIST_NETWORK }`); // Assuming '/create-network' is the route for the Create Network page
-    },
     openModal(vnetRow) {
       const { name } = vnetRow;
       // Set the selected VLAN name
@@ -217,51 +214,11 @@ export default {
       this.isModalSubnetOpen = false;
     },
 
-    findTranslatedAddress(addressList, addressName) {
-      // console.log(`test`, addressName, addressList.find((d) => d.metadata?.ownerReferences))
-      return addressList.find((d) => d.metadata?.ownerReferences?.find((owner) => owner.name === addressName))
-    },
-
     async fetchNetworks() {
       console.log('fetching networks');
-
       // Fetch the network list from your API
       try {
-        const [networks, networkTranslations] = await Promise.all([
-            vNetService.getNetworks(),
-            vNetService.getNetworkTranslations()
-        ]);
-
-        // this.translatedAddress = networkTranslations.data.items;
-        // this.networks = networks.data;
-        // Parse the "name" and "subnets" under the "spec" section
-        const parsedData = networks.data.items.map(item => {
-
-          const translatedAddressData = networkTranslations.data.items;
-          const mainTranslatedAddress = this.findTranslatedAddress(translatedAddressData, item.spec.name);
-
-          const subnets = item.spec.subnets.map(subnet => {
-            return {
-              address:    subnet.address,
-              formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-              name:       stripStrings(subnet.name),
-              longName:   subnet.name,
-              prefix_len: subnet.prefixLength,
-              translatedAddress: subnet.addressTranslation?.outside
-            }
-          });
-
-          console.log(`sinmets`, subnets.length)
-          return {
-            name:    item.spec.name,
-            subnets,
-            subnetLength: subnets.length,
-            cluster: 'local',
-            translatedAddress: mainTranslatedAddress?.spec?.outside
-          }
-        });
-
-        this.networks = parsedData;
+        await this.$store.dispatch(`${PRODUCT_NAME}/findAll`)
       } catch (error) {
         console.error('Error fetching Network List:', error);
       }
@@ -272,7 +229,7 @@ export default {
         this.loading = true;
         // Close the modal before deletion
         this.closeModal();
-        const response = await vNetService.deleteNetwork(this.selectedVnetName);
+        await this.$store.dispatch(`${PRODUCT_NAME}/deleteNetwork`, this.selectedVnetName);
         this.loading = false;
 
         // defines what kind of component should the notification show
@@ -321,8 +278,10 @@ export default {
         this.loading = true;
         // Close the modal before deletion
         this.closeModalSubnet();
-        const response = await vNetService.patchSubnet(this.vnet_name, vnet_data);
-        console.log('Network deleted:', response.data);
+        await this.$store.dispatch(`${PRODUCT_NAME}/deleteSubnet`, {
+          vnetName: this.vnet_name,
+          vnetData: vnet_data
+        })
         this.loading = false;
 
         // defines what kind of component should the notification show

@@ -1,19 +1,8 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
-const BLANK_CLUSTER = '_';
-import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
-
+// import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER } from './config/constants';
 export function init($plugin: any, store: any) {
-  const PRODUCT_NAME = 'Network';
-  const NODE = 'management.cattle.io.node'
-  const CLUSTER = 'management.cattle.io.cluster'
-  const HOME = 'Home';
-  const LIST_NETWORK = 'vnet';
-  const LIST_NAT_GATEWAY = 'nat.gateway';
-  const ROUTE_TABLE = 'Route Table';
-  const FORMS = 'Forms';
-  const TEST = 'addresstranslations.packetlifter.dev'
-
   const {
     product,
     configureType,
@@ -94,24 +83,6 @@ export function init($plugin: any, store: any) {
   //   }
   // });
 
-  configureType(TEST, {
-    displayName: 'Translated Address',
-    isCreatable: false,
-    isEditable: false,
-    isRemovable: true,
-    showAge: false,
-    showState: true,
-    canYaml: false,
-    customRoute: {
-      name: `${PRODUCT_NAME}-c-cluster-resource`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER,
-        resource: TEST
-      }
-    }
-  });
-
   // creating a custom page
   virtualType({
     label: 'Virtual Network',
@@ -127,7 +98,6 @@ export function init($plugin: any, store: any) {
     }
   });
 
-  
 
   // creating a custom page
   // virtualType({

@@ -174,12 +174,8 @@ import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
-import { vNetService } from '../services/api/vnet';
-import { isValidIP } from '../services/helpers/utils'
-
-const PRODUCT_NAME = "Network";
-const LIST_NETWORK = "vnet";
-const BLANK_CLUSTER = "_";
+import { isValidIP, combineArraysIntoObjects } from '../services/helpers/utils'
+import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
 export default {
   name: "CreateNetwork",
@@ -190,7 +186,6 @@ export default {
       selectedVnetName: "", // Dropdown for network name
       selectedVnetSubnets: ["10.55.0.0"], // Network Address (disabled and readonly)
       selectedSubnetName: ["default"],
-      networks: [], // This will be populated with data from the API
       isLoading: false,
       apiResponse: null, // New data property to store the API response
       apiResponseMessage: null, // New data property to store the API response
@@ -239,11 +234,8 @@ export default {
       this.isLoading = true;
       // Hide the spinner after 2 seconds
       setTimeout(() => {
-        this.hideSpinner();
+        this.isLoading = false;
       }, 2000);
-    },
-    hideSpinner() {
-      this.isLoading = false;
     },
     routeListNetwork() {
       this.$router.push(`/${PRODUCT_NAME}/c/${BLANK_CLUSTER}/${LIST_NETWORK}`); // Assuming '/create-network' is the route for the Create Network page
@@ -251,60 +243,6 @@ export default {
     changeTab(tabIndex) {
       this.currentTab = tabIndex;
     },
-    previousTab() {
-      if (this.currentTab < this.tabList.length && this.currentTab > 0) {
-        this.currentTab--;
-      }
-    },
-    nextTab() {
-      if (this.currentTab >= 0 && this.currentTab !== this.tabList.length - 1) {
-        this.currentTab++;
-      }
-    },
-    handleSelectChange() {
-      const network = this.networks.find(
-        (net) => net.vnet_name === this.selectedVnetName
-      );
-      if (this.selectedVnetName === "Create VNET") {
-        this.creatingNewNetwork = true; // Show the new network input field
-        this.newNetworkName = ""; // Clear any previous input
-      } else {
-        // If a regular network is selected, you can call populateFields as usual
-        this.populateFields(this.selectedVnetName);
-        this.creatingNewNetwork = false; // Hide the new network input field
-      }
-    },
-    handleNewNetworkInput() {
-      // Handle input in the new network name field
-      // You can add additional validation or processing logic here
-    },
-    saveNewNetwork() {
-      // Handle the logic to save the new network
-      // You can add your API call or any other logic here
-      console.log("Saving new network:", this.newNetworkName);
-
-      // Update the selectedName to the new network
-      this.selectedVnetName = this.newNetworkName;
-
-      // Fetch and populate other fields based on the new network
-      this.populateFields(this.selectedVnetName);
-
-      // Close the modal after saving
-      this.cancelNewNetwork();
-    },
-
-    cancelNewNetwork() {
-      // Reset the newNetworkName and close the modal
-      this.newNetworkName = "";
-      this.creatingNewNetwork = false;
-    },
-
-    handleSubnetInput(index) {
-      console.log("HandleSubnetInput", index)
-      // Handle input in the specified subnet field
-      // You can access the subnet value using this.selectedVnetSubnets[index]
-    },
-
     addSubnet() {
       // Add a new empty subnet field
       this.$set(
@@ -324,30 +262,11 @@ export default {
       this.selectedVnetSubnets.splice(index, 1);
       this.selectedSubnetName.splice(index, 1);
     },
-
-    combineArraysIntoObjects(subnets, subnetNames) {
-      // Check if both arrays have the same length
-      if (subnets.length !== subnetNames.length) {
-        console.error("Arrays must have the same length");
-        return [];
-      }
-
-      // Use map to combine the arrays into an array of objects
-      const combinedArray = subnets.map((subnet, index) => {
-        return {
-          address: subnet,
-          name: subnetNames[index],
-          prefix_len: 24
-        };
-      });
-
-      return combinedArray;
-    },
     async createNetwork() {
       // loading
       try {
         this.isLoading = true;
-        const combinedObjects = this.combineArraysIntoObjects(
+        const combinedObjects = combineArraysIntoObjects(
           this.selectedVnetSubnets,
           this.selectedSubnetName
         );
@@ -368,7 +287,7 @@ export default {
         // const vnet_data_string = JSON.stringify(vnet_data);
         console.log("send to API", vnet_data);
 
-        const response = await vNetService.createNetwork(vnet_data);
+        const response = await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
         console.log("Network created:", response.data);
         
         // Set the API response data in the component
@@ -378,7 +297,7 @@ export default {
         this.apiResponseMessage = "VNET Successfully Added";
 
         this.apiError = null; // Reset error state
-        await this.fetchNetworks();
+
         this.isLoading = false;
         this.routeListNetwork();
       } catch (error) {
@@ -389,20 +308,6 @@ export default {
         this.apiError = "Error creating VRF";
         this.apiResponse = 1; // Reset response state
       }
-    },
-
-    async fetchNetworks() {
-      const response = await vNetService.getNetworks();
-      const parsedData = response.data.items.map(item => ({
-        name: item.spec.name,
-        subnets: item.spec.subnets.map(subnet => ({
-          address: subnet.address,
-          name: subnet.name,
-          prefix_len: subnet.prefix_len
-        }))
-      }));
-
-      this.networks = parsedData;
     },
 
     getGatewayForSubnet(subnet) {
@@ -430,11 +335,6 @@ export default {
         this.selectedVnetSubnets = ["10.55.0.0"];
       }
     },
-  },
-  mounted() {
-    // Fetch the VLAN list and network list when the component is mounted
-    this.fetchNetworks();
-    //this.fetchHarvesterNetworks();
   },
 
 };

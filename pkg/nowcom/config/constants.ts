@@ -1,0 +1,13 @@
+export const PRODUCT_NAME = 'Network';
+export const PAGE_NAME = 'Home';
+export const NETWORK_HOME = 'Network';
+export const LIST_NETWORK = 'vnet';
+export const LIST_NAT_GATEWAY = 'nat.gateway';
+export const CREATE_NAT_GATEWAY = 'create.nat.gateway';
+export const CREATE_NETWORK = 'create-network';
+export const ROUTE_TABLE = 'Route Table';
+export const FORMS = 'Forms';
+export const NODE = 'management.cattle.io.node'
+export const CLUSTER = 'management.cattle.io.cluster'
+export const HOME = 'Home';
+export const BLANK_CLUSTER = '_';
