@@ -61,12 +61,12 @@
               <div v-for="(subnet, index) in selectedVnetSubnets" :key="`subnet_${index}`" class="row mt-10" style="justify-content: space-between; gap: 5px; align-items: center;">
                 <div>
                   <input v-model="selectedSubnetName[index]" type="text" placeholder="Subnet Name"
-                  title="Please enter a valid IP address" @input="handleSubnetInput(index)" />
+                  title="Please enter a valid IP address" />
                 </div>
                 <div>
                   <input v-model="selectedVnetSubnets[index]" type="text" placeholder="Enter subnet (e.g., 10.0.0.0)"
                     pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address"
-                    @input="handleSubnetInput(index)" />
+                    />
                 </div>
                 <div class="subnet-suffix">
                   <p>/24</p>
