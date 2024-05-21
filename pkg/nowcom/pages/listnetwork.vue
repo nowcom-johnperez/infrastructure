@@ -8,7 +8,22 @@
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
     <div class="form-row mt-10">
       <div class="form-column">
-        <SortableTable :headers="networkHeader" :rows="networks" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="longName" :loading="loading">
+        <SortableTable 
+          :headers="networkHeader" 
+          :rows="networks" 
+          :paging="true" 
+          :rowActionsWidth="10" 
+          :rows-per-page="5" 
+          keyField="name" 
+          :loading="loading"
+          :tableActions="true"
+          :rowActions="true"
+          >
+          <template #header-left>
+            <cButton class="cbtn btn-primary block" @click="initBulkDelete" :disabled="loading">
+              <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
+            </cButton>
+          </template>
           <template #cell:name="{row}">
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
           </template>
@@ -57,6 +72,21 @@
       <template v-slot:footer>
         <cButton class="cbtn btn-danger" @click="deleteNetwork" :disabled="loading" label="Yes" />
         <cButton class="cbtn btn-light" @click="closeModal" :disabled="loading" label="No" />
+      </template>
+    </Modal>
+
+    <Modal v-if="bulk.show">
+      <template v-slot:content>
+        <h2>Delete?</h2>
+        <p>Are you sure that you want to delete the following VLAN:</p>
+        <ul>
+          <li v-for="vlan in bulk.items" :key="vlan">{{ vlan }}</li>
+        </ul>
+      </template>
+
+      <template v-slot:footer>
+        <cButton class="cbtn btn-danger" @click="processBulkDelete" :disabled="loading" label="Yes" />
+        <cButton class="cbtn btn-light" @click="closeBulkDelete" :disabled="loading" label="No" />
       </template>
     </Modal>
 
@@ -128,14 +158,33 @@ export default {
       networkHeader: [],
       subnetworkHeader: [],
       vnetButtons: [],
+      bulk: {
+        items: [],
+        show: false,
+      }
     };
   },
   computed: {
     ...mapGetters(PRODUCT_NAME, {
       networks: 'items',
-    })
+    }),
   },
   methods: {
+    processBulkDelete () {
+      console.log(`process delete`)
+    },
+    closeBulkDelete () {
+      this.bulk.show = false
+    },
+    initBulkDelete() {
+      const selectedRows = document.querySelectorAll('.row-selected');
+      if (selectedRows.length === 0) return
+      this.bulk.items = Array.from(selectedRows).map(row => {
+        return row.getAttribute('data-node-id');
+      });
+
+      this.bulk.show = true
+    },
     actionHandler (action) {
       if (action === 'create') {
         this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ CREATE_NETWORK }`);
