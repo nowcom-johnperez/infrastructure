@@ -247,7 +247,7 @@ export function init($plugin: any, store: any) {
   // basicType([NODE, CLUSTER], "Management");
   basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
   weightType(LIST_K8, 5, true)
-  weightType(LIST_NETWORK, 4, true)
+  weightType(LIST_NETWORK, 44, true)
   weightType(LIST_FIREWALL, 3, true)
   weightType(LIST_DNS, 2, true)
   weightType(LIST_DHCP, 1, true)

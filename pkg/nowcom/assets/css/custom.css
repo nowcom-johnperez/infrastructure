@@ -56,10 +56,10 @@ background-color: #4caf50;
 /* Green */
 }
 
-.error {
-background-color: #f44336;
+/* .error { */
+/* background-color: #f44336; */
 /* Red */
-}
+/* } */
 
 .tabs {
   display: flex;
