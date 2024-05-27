@@ -13,7 +13,7 @@ import CreateNatGateway from '../pages/create-natgateway.vue';
 import RouteTable from '../pages/routetables.vue';
 import Forms from '../pages/forms.vue';
 
-import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY, CREATE_NETWORK, ROUTE_TABLE, FORMS, BLANK_CLUSTER } from '../config/constants';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY, CREATE_NETWORK, ROUTE_TABLE, FORMS, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP } from '../config/constants';
 
 const routes = [
   // // this covers the "custom page"
@@ -49,6 +49,42 @@ const routes = [
   {
     name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
     path: `/${PRODUCT_NAME}/c/:cluster/${LIST_NETWORK}`,
+    component: ListNetwork,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_K8}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_K8}`,
+    component: ListNetwork,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_FIREWALL}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_FIREWALL}`,
+    component: ListNetwork,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_DNS}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_DNS}`,
+    component: ListNetwork,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${LIST_DHCP}`,
     component: ListNetwork,
     meta: {
       product: PRODUCT_NAME,

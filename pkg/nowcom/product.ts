@@ -1,13 +1,15 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP } from './config/constants';
+
 export function init($plugin: any, store: any) {
   const {
     product,
     configureType,
     virtualType,
     basicType,
+    weightType,
     weightGroup,
     mapGroup,
     headers
@@ -70,7 +72,7 @@ export function init($plugin: any, store: any) {
   // });
 
 
-  // // creating a custom page
+  // creating a custom page
   // virtualType({
   //   labelKey: 'some.translation.key',
   //   name: HOME,
@@ -83,20 +85,34 @@ export function init($plugin: any, store: any) {
   //   }
   // });
 
-  configureType(CUSTOM_K8S_RESOURCE_NAME, {
-    displayName: 'Virtual Networks',
-    isCreatable: true,
-    isEditable: true,
-    isRemovable: true,
-    showAge: true,
-    showState: true,
-    canYaml: true,
-    customRoute: {
-      name: `${PRODUCT_NAME}-c-cluster-resource`,
+  // configureType(CUSTOM_K8S_RESOURCE_NAME, {
+  //   displayName: 'Virtual Networks',
+  //   isCreatable: true,
+  //   isEditable: true,
+  //   isRemovable: true,
+  //   showAge: true,
+  //   showState: true,
+  //   canYaml: true,
+  //   customRoute: {
+  //     name: `${PRODUCT_NAME}-c-cluster-resource`,
+  //     params: {
+  //       product: PRODUCT_NAME,
+  //       cluster: BLANK_CLUSTER,
+  //       resource: CUSTOM_K8S_RESOURCE_NAME
+  //     }
+  //   }
+  // });
+  // creating a custom page
+  virtualType({
+    label: 'Kubernetes',
+    labelKey: 'Kubernetes',
+    displayName: 'Kubernetes',
+    name: LIST_K8,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_K8}`,
       params: {
         product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER,
-        resource: CUSTOM_K8S_RESOURCE_NAME
+        cluster: BLANK_CLUSTER
       }
     }
   });
@@ -116,7 +132,47 @@ export function init($plugin: any, store: any) {
     }
   });
 
+  virtualType({
+    label: 'Firewall',
+    labelKey: 'Firewall',
+    displayName: 'Firewall',
+    name: LIST_FIREWALL,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_FIREWALL}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
 
+  virtualType({
+    label: 'DNS',
+    labelKey: 'DNS',
+    displayName: 'DNS',
+    name: LIST_DNS,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_DNS}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  virtualType({
+    label: 'DHCP',
+    labelKey: 'DHCP',
+    displayName: 'DHCP',
+    name: LIST_DHCP,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
   // creating a custom page
   // virtualType({
   //   label: 'NAT Gateway',
@@ -165,7 +221,7 @@ export function init($plugin: any, store: any) {
   // basicType([FORMS, CUSTOM_PAGE_NAME]);
   // basicType([HOME]);
   // basicType([LIST_NAT_GATEWAY, LIST_NETWORK]);
-  basicType([LIST_NETWORK]);
+  // basicType([LIST_NETWORK]);
   // basicType([
   //   REPO,
   // ], 'HOME');
@@ -189,5 +245,12 @@ export function init($plugin: any, store: any) {
   // ]);
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
   // basicType([NODE, CLUSTER], "Management");
-  // weightGroup("Management", 1003, true)
+  basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
+  weightType(LIST_K8, 5, true)
+  weightType(LIST_NETWORK, 4, true)
+  weightType(LIST_FIREWALL, 3, true)
+  weightType(LIST_DNS, 2, true)
+  weightType(LIST_DHCP, 1, true)
+  weightGroup('Infrastructure', 1001, true)
+  
 }
