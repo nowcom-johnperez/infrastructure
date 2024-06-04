@@ -89,12 +89,12 @@
           </div>
 
           <div class="input-container">
-            <label for="tags">Tags</label>
+            <label for="tags">Labels</label>
             <input type="text" class="mt-10" name="tags" v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
             <span class="info-icon">
               <i class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
-            <div class="tooltip">Tooltip text</div>
+            <div class="tooltip">Uses Key Value Pair</div>
           </div>
           <Tag v-for="(tag, index) in tags" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
 
@@ -133,7 +133,7 @@
             </div>
             
             <div class="mt-30">
-              <h2>Tags</h2>
+              <h2>Labels</h2>
               <div class="mt-10">
                 <template v-if="tags.length > 0">
                   <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
