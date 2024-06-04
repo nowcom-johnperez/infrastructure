@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncButton from '@shell/components/AsyncButton';
 import { _CREATE } from '@shell/config/query-params';
 import { exceptionToErrorsArray } from '@shell/utils/error';
-import { NAMESPACE, NODE, NORMAN} from '@shell/config/types';
+import { NAMESPACE, NODE, NORMAN, MANAGEMENT} from '@shell/config/types';
 import Namespace from '@shell/models/namespace';
 
 export default {
@@ -23,30 +23,31 @@ components: {
     async submit(buttonCb) {
 
         try {
-            console.log("test NAMESPACE")
+            // console.log("test NAMESPACE")
             //await this.$refs.changePassword.save();
-            this.value = await this.$store.dispatch('management/create', {
-                type: NAMESPACE,
+            this.value = await this.$store.dispatch('management/findAll', {
+                type: MANAGEMENT,
                 metadata: {
                     name: 'testing',
                 },
-                kind: "Namespace",
+                kind: "Namespaces",
                 apiVersion: "v1",
                 status: {
                     phase: "Active"
                 }
             });
 
-            console.log(this.$store.getters['defaultNamespace'])
+            // console.log(this.$store.getters['defaultNamespace'])
 
             console.log(this.value)
             //"type":"namespace","metadata":{"annotations":{"field.cattle.io/containerDefaultResourceLimit":"{}"},"name":"testing"},"disableOpenApiValidation":false}
             // this.show(false);
             buttonCb(true);
         } catch (err) {
+            console.log(`err`, err)
             buttonCb(false);
         }
-        },
+    },
     async createNamespace(buttonCb) {
         // Function to get the CSRF token from the 'CSRF' cookie
         function getCsrfTokenFromCookie() {
@@ -110,6 +111,6 @@ components: {
   mode="apply"
   class="btn bg-error ml-10"
   value="LOGIN"
-  @click="createNamespace"
+  @click="submit"
 />
 </template>

@@ -1,5 +1,6 @@
 node_modules
 dist-pkg
+pkg/nowcom/config/api.ts
 tmp
 .DS_Store
 .gitignore
