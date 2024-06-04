@@ -96,7 +96,7 @@
             </span>
             <div class="tooltip">Tooltip text</div>
           </div>
-          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="true" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
+          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
 
           <!-- New input field that appears when "Create New VNET" is selected -->
           <!-- Modal for creating a new network -->
@@ -217,9 +217,22 @@ export default {
     },
     hasInvalidIPAddress() {
       return this.selectedVnetSubnets.some(ip => !isValidIP(ip));
+    },
+    user() {
+      return this.$store.getters['auth/v3User']
+    },
+  },
+  mounted() {
+    if (this.$store.getters['auth/loggedIn']) {
+      const date = new Date()
+      this.tags.push(`packetlifter.dev/owner:${this.user.username}`)
+      this.tags.push(`packetlifter.dev/created:${date.toISOString()}`)
     }
   },
   methods: {
+    showTagDelete(tag) {
+      return !['packetlifter.dev/owner', 'packetlifter.dev/created'].some((text) => tag.includes(text))
+    },
     addTag() {
       const trimmedTag = this.newTag.trim();
       if (trimmedTag) {
