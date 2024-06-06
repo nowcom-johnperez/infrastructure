@@ -1,4 +1,4 @@
-# Network
+# Infrastucture
 
 Nowcom Network Automation Platform - Developed by Nowcom Infrastructure Team
 
@@ -22,3 +22,19 @@ Release v0.2.4
 Release v0.2.5
 - Add sample sortable table / commented
 - Fixed some issues under vnet
+
+Release v0.2.6
+- Refactor Codes
+
+Release v0.2.7
+- Refactor design
+
+Release v0.2.8
+- Added placeholders for different kinds of Infra
+- remove NAT Gateway page
+
+Release v0.2.9
+- Refactor Create Network
+- Added DHCP for subnets
+- Implement Store for network
+- Added Bulk Delete for networks
