@@ -171,14 +171,13 @@
 </template>
 <script>
 import Tabs from '../components/common/Tabs'
-import Subnet from '../components/Subnet'
 import SubnetTable from '../components/SubnetTable'
 import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
-import { isValidIP, combineArraysIntoObjects } from '../services/helpers/utils'
+import { isValidIP } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
 export default {

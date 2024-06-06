@@ -50,6 +50,12 @@
           <Alert :variant="subnetResponse" @close="subnetResponse = null">{{ subnetResponseMessage }}</Alert>
         </div>
         <SortableTable v-if="selectedNetwork" :headers="subnetworkHeader" :rows="selectedNetwork.subnets" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+          <template #cell:dhcpEnabled="{row}">
+            <BadgeState
+              :color="row.dhcpEnabled ? 'bg-success' : 'bg-info'"
+              :label="row.dhcpEnabled ? 'ENABLED' : 'DISABLED'"
+            />
+          </template>
           <template #row-actions="row">
             <cButton class="cbtn btn-primary" @click="openModalAction(row.row)" :disabled="loading">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
@@ -116,6 +122,7 @@ import GroupButtons from '../components/common/GroupButtons'
 import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
 import AddSubnet from '../components/forms/AddSubnet'
+import { BadgeState } from '@components/BadgeState';
 
 import { PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
@@ -128,7 +135,8 @@ export default {
     GroupButtons,
     Modal,
     Alert,
-    AddSubnet
+    AddSubnet,
+    BadgeState
   },
   // layout: 'home',
   data() {

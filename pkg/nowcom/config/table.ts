@@ -61,6 +61,13 @@ const SORTABLE_SUB_NETWORK_HEADERS: SortableHeaderType[] = [
         search: ['translatedAddress'],
         width: 30
     },
+    {
+        name: 'dhcpEnabled',
+        label: 'DHCP',
+        sort: ['dhcpEnabled'],
+        search: ['dhcpEnabled'],
+        width: 30
+    },
     // {
     //     name: 'prefix_len',
     //     label: 'Network Prefix',
