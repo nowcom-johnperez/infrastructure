@@ -170,8 +170,16 @@ export default {
     }),
   },
   methods: {
-    processBulkDelete () {
-      console.log(`process delete`)
+    async processBulkDelete () {
+      if (this.bulk.show) {
+        this.loading = true;
+        for(const vnetName of this.bulk.items) {
+          await this.$store.dispatch(`${PRODUCT_NAME}/deleteNetwork`, vnetName);
+        }
+        this.loading = false;
+        this.bulk.show = false;
+      }
+      await this.fetchNetworks();
     },
     closeBulkDelete () {
       this.bulk.show = false

@@ -44,10 +44,13 @@ export default {
 }
 
 .modal {
+  max-height: 70vh;
   background: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .modal.lg {

@@ -36,11 +36,6 @@
             but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and
             isolation.</div>
           </div>
-
-          <div class="checkbox-content mt-20">
-            <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
-            <label for="dhcp">DHCP Enabled?</label>
-          </div>
           
           <div class="checkbox-content mt-20">
             <input type="checkbox" id="dhcp" v-model="externalDNSenabled" />
@@ -58,19 +53,24 @@
               When you deploy resources into a subnet, Nowcom assigns the resource an IP address from the subnet.
             </p>
             <div class="mt-20">
-              <div v-for="(subnet, index) in selectedVnetSubnets" :key="`subnet_${index}`" class="row mt-10" style="justify-content: space-between; gap: 5px; align-items: center;">
+              <div v-for="(subnet, index) in subnets" :key="`subnet_${index}`" class="row mt-10" style="justify-content: space-between; gap: 5px; align-items: center;">
                 <div>
-                  <input v-model="selectedSubnetName[index]" type="text" placeholder="Subnet Name"
+                  <input v-model="subnet.name" type="text" placeholder="Subnet Name"
                   title="Please enter a valid IP address" />
                 </div>
                 <div>
-                  <input v-model="selectedVnetSubnets[index]" type="text" placeholder="Enter subnet (e.g., 10.0.0.0)"
+                  <input v-model="subnet.address" type="text" placeholder="Enter subnet (e.g., 10.0.0.0)"
                     pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" title="Please enter a valid IP address"
                     />
                 </div>
                 <div class="subnet-suffix">
                   <p>/24</p>
                 </div>
+                <div class="checkbox-content">
+                  <input type="checkbox" id="dhcp" v-model="subnet.dhcpEnabled" />
+                  <label for="dhcp">DHCP Enabled?</label>
+                </div>
+                
                 <div class="form-column" align="left">
                   <cButton v-if="index > 0" class="btn-icon" @click="removeSubnet(index)">
                     <i class="fa fa-trash fa-lg text-danger"></i>
@@ -125,9 +125,6 @@
                 Virtual Network Name: &nbsp; <span class="text-bold" :style="{ color: selectedVnetName ? '' : 'red', 'font-size': '1.3rem' }">{{ selectedVnetName || 'empty' }}</span>
               </p>
               <p>
-                DHCP Enabled: {{ dhcpEnabled }}
-              </p>
-              <p>
                 External DNS: {{ externalDNSenabled }}
               </p>
             </div>
@@ -144,12 +141,17 @@
 
             <div class="mt-30">
               <h2>Subnet</h2>
-              <Subnet v-for="(name, index) in selectedSubnetName" :key="index" :name="name" :current-address="selectedVnetSubnets[index] || 'empty'" :ip-list="selectedVnetSubnets" />
+              <SubnetTable :subnets="subnets" />
+              <!-- <Subnet v-for="(subnet, index) in subnets" :key="index" :subnet="subnet" :ip-list="subnets" /> -->
+            </div>
+
+            <div class="mt-10 mb-10" v-if="apiResponse">
+              <Alert :variant="apiResponse" @close="apiResponse = null">{{ apiResponseMessage }}</Alert>
             </div>
           </template>
 
           <template v-slot:footer>
-            <cButton class="cbtn btn-primary" @click="createNetwork" :disabled="!selectedVnetName || hasInvalidIPAddress || hasDuplicateIPAddress || isLoading" label="Create" />
+            <cButton class="cbtn btn-primary" @click="createNetwork" :disabled="isInvalidForm || isLoading" label="Create" />
             <cButton class="cbtn btn-light" @click="reviewModalState = false" label="Cancel" />
           </template>
         </Modal>
@@ -170,10 +172,12 @@
 <script>
 import Tabs from '../components/common/Tabs'
 import Subnet from '../components/Subnet'
+import SubnetTable from '../components/SubnetTable'
 import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
+import Alert from '../components/common/Alert'
 import { isValidIP, combineArraysIntoObjects } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
@@ -183,16 +187,17 @@ export default {
   data() {
     return {
       reviewModalState: false,
+      subnets: [
+        {
+          address: "10.55.0.0",
+          name: "default",
+          dhcpEnabled: false,
+        }
+      ],
       selectedVnetName: "", // Dropdown for network name
-      selectedVnetSubnets: ["10.55.0.0"], // Network Address (disabled and readonly)
-      selectedSubnetName: ["default"],
       isLoading: false,
       apiResponse: null, // New data property to store the API response
       apiResponseMessage: null, // New data property to store the API response
-      apiError: null,
-      newNetworkName: "", // New data property for the new network name
-      creatingNewNetwork: false, // New data property to track if creating a new network
-      apiResponseUpdate: "", //response for update
       currentTab: 0, // Initial tab
       tabList: ['Configure'],
       newTag: "",
@@ -208,15 +213,22 @@ export default {
     cButton,
     Modal,
     Tag,
-    Subnet
+    SubnetTable,
+    Alert
   },
   computed: {
+    isInvalidForm () {
+      return !this.selectedVnetName || this.hasInvalidIPAddress || this.hasDuplicateIPAddress || this.hasInvalidSubnetName
+    },
     hasDuplicateIPAddress() {
-      const uniqueIPAddresses = new Set(this.selectedVnetSubnets);
-      return this.selectedVnetSubnets.length !== uniqueIPAddresses.size;
+      const uniqueIPAddresses = new Set(this.subnets.map((subnet) => subnet.address));
+      return this.subnets.length !== uniqueIPAddresses.size;
+    },
+    hasInvalidSubnetName() {
+      return this.subnets.some(subnet => subnet.name === '')
     },
     hasInvalidIPAddress() {
-      return this.selectedVnetSubnets.some(ip => !isValidIP(ip));
+      return this.subnets.some(subnet => !isValidIP(subnet.address));
     },
     user() {
       return this.$store.getters['auth/v3User']
@@ -258,32 +270,20 @@ export default {
     },
     addSubnet() {
       // Add a new empty subnet field
-      this.$set(
-        this.selectedVnetSubnets,
-        this.selectedVnetSubnets.length,
-        "10.55.0.0"
-      );
-      this.$set(
-        this.selectedSubnetName,
-        this.selectedSubnetName.length,
-        ""
-      );
+      this.subnets.push({
+        address: "10.55.0.0",
+        name: "",
+        dhcpEnabled: false,
+      })
     },
 
     removeSubnet(index) {
-      // Remove the subnet at the specified index
-      this.selectedVnetSubnets.splice(index, 1);
-      this.selectedSubnetName.splice(index, 1);
+      this.subnets.splice(index, 1);
     },
     async createNetwork() {
       // loading
       try {
         this.isLoading = true;
-        const combinedObjects = combineArraysIntoObjects(
-          this.selectedVnetSubnets,
-          this.selectedSubnetName
-        );
-
         const vnet_data = {
           apiVersion: "packetlifter.dev/v1",
           kind: "Vnet",
@@ -294,58 +294,27 @@ export default {
           },
           spec: {
             name: this.selectedVnetName.toLowerCase(),
-            subnets: combinedObjects,
+            subnets: this.subnets,
           }
         };
-        // const vnet_data_string = JSON.stringify(vnet_data);
-        console.log("send to API", vnet_data);
-
-        const response = await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
-        console.log("Network created:", response.data);
-        
-        // Set the API response data in the component
-        this.apiResponse = response.data;
-        console.log("response from create networks", this.apiResponse);
-
+        await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
+        this.apiResponse = 'success';
         this.apiResponseMessage = "VNET Successfully Added";
-
-        this.apiError = null; // Reset error state
-
         this.isLoading = false;
         this.routeListNetwork();
       } catch (error) {
-        console.error("Error creating network:", error);
+        console.error("Error creating network:", error.response.data.details);
+
+        const e = error.response.data;
+
+        if (e.reason === 'AlreadyExists') {
+          this.apiResponseMessage = `${e?.details?.name} network already exist`;
+        } else {
+          this.apiResponseMessage = "Oops! Something went wrong!";
+        }
         this.isLoading = false;
-        this.apiResponseMessage = "Error";
-        // Set the API error in the component
-        this.apiError = "Error creating VRF";
-        this.apiResponse = 1; // Reset response state
-      }
-    },
-
-    getGatewayForSubnet(subnet) {
-      // Find the network with the selected subnet and return its gateway
-      const network = this.networks.find(
-        (net) => net.network_address === subnet
-      );
-      return network ? network.gateway : "";
-    },
-
-    populateFields(selectedVnetName) {
-      this.apiResponse = "";
-      // Find the selected network by name and populate other fields
-      const network = this.networks.find(
-        (net) => net.vnet_name === selectedVnetName
-      );
-      if (network) {
-        this.selectedVnetName = network.vnet_name;
-        //this.selectedVnetVlan = network.vnet_vlan;
-        this.selectedVnetSubnets = ["10.55.0.0"];
-      } else {
-        // Reset other fields if the network is not found
-        this.selectedVnetName = selectedVnetName;
-        //this.selectedVnetVlan = 'Vlan';
-        this.selectedVnetSubnets = ["10.55.0.0"];
+        
+        this.apiResponse = 'error';
       }
     },
   },

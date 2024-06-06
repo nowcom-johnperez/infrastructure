@@ -1,13 +1,16 @@
 <template>
     <div class="subnet-container">
-        <div class="subnet-name" :class="{ 'invalid-message': !isValidIPAddress }">{{ name }}</div>
+        <div class="subnet-name" :class="{ 'invalid-message': !isValidIPAddress }">{{ subnet.name }}</div>
         <!-- <div>-</div> -->
         <div :class="{ 'invalid-message': !isValidIPAddress }">
-            {{ currentAddress }}
+            {{ subnet.address }}
             <span v-if="!isValidIPAddress">
                 (Invalid IP Address)
             </span>
             <span v-else-if="isDuplicateIPAddress"> (Duplicate IP Address)</span>
+        </div>
+        <div>
+            DHCP Enabled: {{ subnet.dhcpEnabled }}
         </div>
     </div>
 </template>
@@ -17,12 +20,8 @@ import { isValidIP } from '../services/helpers/utils'
 export default {
     name: 'Subnet',
     props: {
-        name: {
-            type: String,
-            required: true
-        },
-        currentAddress: {
-            type: String,
+        subnet: {
+            type: Object,
             required: true
         },
         ipList: {
@@ -33,10 +32,10 @@ export default {
     },
     computed: {
         isValidIPAddress() {
-            return isValidIP(this.currentAddress);
+            return isValidIP(this.subnet.address);
         },
         isDuplicateIPAddress() {
-            return this.ipList.filter((ip) => ip === this.currentAddress).length > 1
+            return this.ipList.filter((sub) => sub.address === this.subnet.address).length > 1
         }
     },
 }
