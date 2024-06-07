@@ -280,7 +280,7 @@ background-color: #4caf50;
     cursor: pointer;
   }
 
-  .tooltip {
+  /* .tooltip {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
@@ -308,7 +308,7 @@ background-color: #4caf50;
   .info-icon:hover + .tooltip {
     visibility: visible;
     opacity: 1;
-  }
+  } */
 }
 
 .checkbox-content {

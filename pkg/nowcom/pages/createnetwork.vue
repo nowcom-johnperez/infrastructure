@@ -20,20 +20,14 @@
           <div class="input-container">
             <label for="vnet">VNet Name</label>
             <input type="text" class="mt-10" name="vnet" v-model="selectedVnetName" placeholder="e.g. vnet" required />
-            <span class="info-icon">
+            <span class="info-icon" v-clean-tooltip="tooltipVnet">
               <i class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
-            <div class="tooltip">Nowcom Virtual Network (VNet) is the fundamental building block for your private network in Nowcom Cloud.
-            VNet enables many types of Nowcom resources, such as Nowcom Virtual Machines (VM),
-            to securely communicate with each other, the internet, and on-premises networks.
-            VNet is similar to a traditional network that you'd operate in your own data center,
-            but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and
-            isolation.</div>
           </div>
           
           <div class="checkbox-content mt-20">
             <input type="checkbox" id="dhcp" v-model="externalDNSenabled" />
-            <label for="dhcp">External DNS</label>
+            <label for="dhcp" v-clean-tooltip="tooltipComingSoon">External DNS</label>
           </div>
 
           <div class="mt-20">
@@ -82,7 +76,10 @@
             </div>
           </div>
 
-          <h3 class="mt-20">Labels</h3>
+          <h3 class="mt-20">
+            Labels
+            <i class="fa fa-info-circle ml-5" v-clean-tooltip="tooltipLabels" aria-hidden="true"></i>
+          </h3>
           <div>
             <div class="row" style="align-items: center;">
               <div>
@@ -123,7 +120,6 @@
             <div class="mt-30">
               <h2>Subnet</h2>
               <SubnetTable :subnets="subnets" />
-              <!-- <Subnet v-for="(subnet, index) in subnets" :key="index" :subnet="subnet" :ip-list="subnets" /> -->
             </div>
             
             <div class="mt-30">
@@ -193,7 +189,6 @@ export default {
         key: "",
         value: ""
       },
-      dhcpEnabled: false,
       externalDNSenabled: false,
       externalDNSsource: ''
     };
@@ -208,6 +203,24 @@ export default {
     Alert
   },
   computed: {
+    tooltipVnet() {
+      return {
+        content: `VNet name is used to identify your virtual network`,
+        hideOnTargetClick: false
+      }
+    },
+    tooltipLabels() {
+      return {
+        content: `Labels accepts key:value pair`,
+        hideOnTargetClick: false
+      }
+    },
+    tooltipComingSoon() {
+      return {
+        content: 'Feature coming soon!',
+        hideOnTargetClick: false,
+      }
+    },
     isInvalidForm () {
       return !this.selectedVnetName || this.hasInvalidIPAddress || this.hasDuplicateIPAddress || this.hasInvalidSubnetName
     },
