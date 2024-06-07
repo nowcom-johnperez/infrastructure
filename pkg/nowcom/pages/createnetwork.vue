@@ -9,20 +9,14 @@
       <div class="tab-content-container mt-10">
         <div class="tab-content" :class="{ 'show': currentTab === 0 }">
           <p>
-            Nowcom Virtual Network (VNet) is the fundamental building block for your private network in Nowcom Cloud.
-            VNet enables many types of Nowcom resources, such as Nowcom Virtual Machines (VM),
-            to securely communicate with each other, the internet, and on-premises networks.
-            VNet is similar to a traditional network that you'd operate in your own data center,
+            Nowcom Virtual Network (VNet) is the fundamental building block for your private network in Nowcom Cloud. <br/>
+            VNet enables many types of Nowcom resources, such as Nowcom Virtual Machines (VM), <br />
+            to securely communicate with each other, the internet, and on-premises networks. <br />
+            VNet is similar to a traditional network that you'd operate in your own data center, <br />
             but brings with it additional benefits of Nowcom's infrastructure such as scale, availability, and
             isolation.
           </p>
           <br />
-          <!-- Updated select input with "Create New VNET" option -->
-          <!-- <select v-model="selectedVnetName" @change="handleSelectChange">
-                    <option value="">Select Network Name</option>
-                    <option v-for="network in networks" :value="network.vnet_name">{{ network.vnet_name }}</option>
-                    <option value="Create VNET">Create New VNET</option>
-                </select> -->
           <div class="input-container">
             <label for="vnet">VNet Name</label>
             <input type="text" class="mt-10" name="vnet" v-model="selectedVnetName" placeholder="e.g. vnet" required />
@@ -88,29 +82,26 @@
             </div>
           </div>
 
-          <div class="input-container">
-            <label for="tags">Labels</label>
-            <input type="text" class="mt-10" name="tags" v-model="newTag" placeholder="Type and press Enter to add tags" @keydown.enter.prevent="addTag" />
-            <span class="info-icon">
-              <i class="fa fa-info-circle" aria-hidden="true"></i>
-            </span>
-            <div class="tooltip">Uses Key Value Pair</div>
+          <h3 class="mt-20">Labels</h3>
+          <div>
+            <div class="row" style="align-items: center;">
+              <div>
+                <label for="key">Key</label>
+                <input type="text" name="key" v-model="tags.key" placeholder="Key"/>
+              </div>
+              <div class="ml-5 mr-5">
+                <label for="value">Value</label>
+                <input type="text" name="value" v-model="tags.value" placeholder="Value" @keydown.enter="addTag"/>
+              </div>
+              <div class="mt-15">
+                <cButton class="cbtn btn-light" @click="addTag">
+                  <i class="fa fa-plus mr-5"></i>
+                  Add Label
+                </cButton>
+              </div>
+            </div>
           </div>
-          <Tag v-for="(tag, index) in tags" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
-
-          <!-- New input field that appears when "Create New VNET" is selected -->
-          <!-- Modal for creating a new network -->
-          <!-- <Modal v-if="creatingNewNetwork">
-            <template v-slot:content>
-              <h2>Create New Network</h2>
-              <input v-model="newNetworkName" value="Vrf-" placeholder="Enter new network name" @input="handleNewNetworkInput" />
-            </template>
-
-            <template v-slot:footer>
-              <cButton class="cbtn btn-primary" @click="deleteNetwork" label="Save" />
-              <cButton class="cbtn btn-light" @click="closeModal" label="Cancel" />
-            </template>
-          </Modal> -->
+          <Tag v-for="(tag, index) in tags.items" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
         </div>
 
         <Modal size="lg" v-if="reviewModalState">
@@ -128,21 +119,21 @@
                 External DNS: {{ externalDNSenabled }}
               </p>
             </div>
-            
-            <div class="mt-30">
-              <h2>Labels</h2>
-              <div class="mt-10">
-                <template v-if="tags.length > 0">
-                  <Tag v-for="(tag, index) in tags" :key="index">{{tag}}</Tag>
-                </template>
-                <p v-else>No Tags</p>
-              </div>
-            </div>
 
             <div class="mt-30">
               <h2>Subnet</h2>
               <SubnetTable :subnets="subnets" />
               <!-- <Subnet v-for="(subnet, index) in subnets" :key="index" :subnet="subnet" :ip-list="subnets" /> -->
+            </div>
+            
+            <div class="mt-30">
+              <h2>Labels</h2>
+              <div>
+                <template v-if="tags.items.length > 0">
+                  <Tag v-for="(tag, index) in tags.items" class="mt-5" :key="index">{{tag}}</Tag>
+                </template>
+                <p v-else>No Tags</p>
+              </div>
             </div>
 
             <div class="mt-10 mb-10" v-if="apiResponse">
@@ -159,9 +150,6 @@
     </div>
     <div class="footer">
       <div class="form-column-bottom">
-        <!-- <button class="cbtn btn-light mr-10" :disabled="currentTab === 0" @click="previousTab">Previous</button>
-        <button class="cbtn btn-light" :disabled="currentTab === 3" @click="nextTab">Next</button> -->
-        <!-- Conditionally render the button based on the current tab -->
         <button class="cbtn btn-primary ml-10" @click="reviewModalState = true">
           Review
         </button>
@@ -200,7 +188,11 @@ export default {
       currentTab: 0, // Initial tab
       tabList: ['Configure'],
       newTag: "",
-      tags: [],
+      tags: {
+        items: [],
+        key: "",
+        value: ""
+      },
       dhcpEnabled: false,
       externalDNSenabled: false,
       externalDNSsource: ''
@@ -236,8 +228,8 @@ export default {
   mounted() {
     if (this.$store.getters['auth/loggedIn']) {
       const date = new Date()
-      this.tags.push(`packetlifter.dev/owner:${this.user.username}`)
-      this.tags.push(`packetlifter.dev/created:${date.toISOString()}`)
+      this.tags.items.push(`packetlifter.dev/owner:${this.user.username}`)
+      this.tags.items.push(`packetlifter.dev/created:${date.toISOString()}`)
     }
   },
   methods: {
@@ -245,14 +237,16 @@ export default {
       return !['packetlifter.dev/owner', 'packetlifter.dev/created'].some((text) => tag.includes(text))
     },
     addTag() {
-      const trimmedTag = this.newTag.trim();
-      if (trimmedTag) {
-        this.tags.push(trimmedTag);
-        this.newTag = ""; // Clear the input field after adding a tag
+      const trimmedKey = this.tags.key.trim();
+      const trimmedValue = this.tags.value.trim();
+      if (trimmedKey && trimmedValue) {
+        this.tags.items.push(`${trimmedKey}:${trimmedValue}`);
+        this.tags.key = ""; // Clear the input field after adding a tag
+        this.tags.value = ""; // Clear the input field after adding a tag
       }
     },
     removeTag(index) {
-      this.tags.splice(index, 1);
+      this.tags.items.splice(index, 1);
     },
     showSpinner() {
       this.isLoading = true;

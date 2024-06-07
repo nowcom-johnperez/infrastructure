@@ -68,9 +68,13 @@ export default {
 }
 
 .modal-header {
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #2f2d2d;
   padding: 10px 0;
   margin-bottom: 15px;
+}
+
+.theme-dark .modal-header {
+  border-bottom: 1px solid #fff !important;
 }
 
 .modal-content {
