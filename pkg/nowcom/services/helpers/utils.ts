@@ -34,3 +34,10 @@ export const combineArraysIntoObjects = (subnets: any, subnetNames: any) => {
 
     return combinedArray;
 }
+
+export const transformArrayToObject = (arr: { key: string, value: string }[]) => {
+    return arr.reduce((acc, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+  }

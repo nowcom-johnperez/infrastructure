@@ -8,6 +8,7 @@ export const LIST_FIREWALL = 'firewall';
 export const LIST_DNS = 'dns';
 export const LIST_DHCP = 'dhcp';
 export const LIST_NAT_GATEWAY = 'nat.gateway';
+export const ROAD_MAP = 'roadmap';
 
 export const CREATE_NAT_GATEWAY = 'create.nat.gateway';
 export const CREATE_NETWORK = 'create-network';

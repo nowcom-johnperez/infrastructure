@@ -1,7 +1,7 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP } from './config/constants';
 
 export function init($plugin: any, store: any) {
   const {
@@ -105,7 +105,6 @@ export function init($plugin: any, store: any) {
   // creating a custom page
   virtualType({
     label: 'Kubernetes',
-    labelKey: 'Kubernetes',
     displayName: 'Kubernetes',
     name: LIST_K8,
     route: {
@@ -120,7 +119,6 @@ export function init($plugin: any, store: any) {
   // creating a custom page
   virtualType({
     label: 'Virtual Network',
-    labelKey: 'Virtual Network',
     displayName: 'Virtual Network',
     name: LIST_NETWORK,
     route: {
@@ -134,7 +132,6 @@ export function init($plugin: any, store: any) {
 
   virtualType({
     label: 'Firewall',
-    labelKey: 'Firewall',
     displayName: 'Firewall',
     name: LIST_FIREWALL,
     route: {
@@ -148,7 +145,6 @@ export function init($plugin: any, store: any) {
 
   virtualType({
     label: 'DNS',
-    labelKey: 'DNS',
     displayName: 'DNS',
     name: LIST_DNS,
     route: {
@@ -162,11 +158,22 @@ export function init($plugin: any, store: any) {
 
   virtualType({
     label: 'DHCP',
-    labelKey: 'DHCP',
     displayName: 'DHCP',
     name: LIST_DHCP,
     route: {
       name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  virtualType({
+    label: 'Road Map',
+    name: ROAD_MAP,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -246,6 +253,7 @@ export function init($plugin: any, store: any) {
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
   // basicType([NODE, CLUSTER], "Management");
   basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
+  basicType([ROAD_MAP]);
   weightType(LIST_K8, 5, true)
   weightType(LIST_NETWORK, 44, true)
   weightType(LIST_FIREWALL, 3, true)
