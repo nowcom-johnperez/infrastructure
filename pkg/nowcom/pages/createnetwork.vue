@@ -98,7 +98,7 @@
               </div>
             </div>
           </div>
-          <Tag v-for="(tag, index) in tags.items" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{tag}}</Tag>
+          <Tag v-for="(tag, index) in tags.items" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{ `${tag.key}:${tag.value}` }}</Tag>
         </div>
 
         <Modal size="lg" v-if="reviewModalState">
@@ -126,7 +126,7 @@
               <h2>Labels</h2>
               <div>
                 <template v-if="tags.items.length > 0">
-                  <Tag v-for="(tag, index) in tags.items" class="mt-5" :key="index">{{tag}}</Tag>
+                  <Tag v-for="(tag, index) in tags.items" class="mt-5" :key="index">{{ `${tag.key}:${tag.value}` }}</Tag>
                 </template>
                 <p v-else>No Tags</p>
               </div>
@@ -161,7 +161,7 @@ import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
-import { isValidIP } from '../services/helpers/utils'
+import { isValidIP, transformArrayToObject } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
 export default {
@@ -241,19 +241,36 @@ export default {
   mounted() {
     if (this.$store.getters['auth/loggedIn']) {
       const date = new Date()
-      this.tags.items.push(`packetlifter.dev/owner:${this.user.username}`)
-      this.tags.items.push(`packetlifter.dev/created:${date.toISOString()}`)
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+
+      const formattedDate = `${year}-${month}-${day}`;
+      // this.tags.items.push(`packetlifter.dev/owner:${this.user.username}`)
+      // this.tags.items.push(`packetlifter.dev/created:${date.toISOString()}`)
+      this.tags.items.push({
+        key: 'packetlifter.dev-owner',
+        value: this.user.username
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev-created',
+        value: formattedDate
+      });
     }
   },
   methods: {
     showTagDelete(tag) {
-      return !['packetlifter.dev/owner', 'packetlifter.dev/created'].some((text) => tag.includes(text))
+      return !['packetlifter.dev/owner', 'packetlifter.dev/created'].some((text) => tag.key.includes(text))
     },
     addTag() {
       const trimmedKey = this.tags.key.trim();
       const trimmedValue = this.tags.value.trim();
       if (trimmedKey && trimmedValue) {
-        this.tags.items.push(`${trimmedKey}:${trimmedValue}`);
+        // this.tags.items.push(`${trimmedKey}:${trimmedValue}`);
+        this.tags.items.push({
+          key: trimmedKey,
+          value: trimmedValue
+        });
         this.tags.key = ""; // Clear the input field after adding a tag
         this.tags.value = ""; // Clear the input field after adding a tag
       }
@@ -290,13 +307,15 @@ export default {
       // loading
       try {
         this.isLoading = true;
+        // console.log(`processed`, this.tags.items.map((d) => {[d.key] = d.value}))
         const vnet_data = {
           apiVersion: "packetlifter.dev/v1",
           kind: "Vnet",
           // vnet_vlan: this.selectedVnetVlan,
           metadata: {
             name: this.selectedVnetName.toLowerCase(),
-            namespace: "default"
+            namespace: "default",
+            labels: transformArrayToObject(this.tags.items),
           },
           spec: {
             name: this.selectedVnetName.toLowerCase(),
