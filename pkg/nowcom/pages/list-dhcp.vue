@@ -64,8 +64,8 @@ export default {
     async fetchData() {
       this.table.loading = true
       try {
-        // const response = await dhcpService.getAll()
-        const response = PLACEHOLDER_DATA.items;
+        const response = await dhcpService.getAll()
+        // const response = PLACEHOLDER_DATA.items;
 
         this.table.items = response.map((d) => {
           return {
