@@ -76,11 +76,19 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .timeline-container {
   overflow-x: auto;
   white-space: nowrap;
   padding: 20px 0;
+
+  // background: url('../assets/img/bg-timeline.jpg') no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  // color: #fff;
 }
 
 .timeline {
@@ -110,7 +118,7 @@ export default {
 .event-circle {
   width: 20px;
   height: 20px;
-  background-color: #007BFF;
+  background-color: #000000;
   border-radius: 50%;
   margin: 0 auto 10px;
 }
@@ -123,11 +131,12 @@ export default {
 .event-description {
   max-width: 200px;
   white-space: normal;
-  text-align: left; /* Align text to the left for better readability */
-  padding-left: 20px; /* Add some padding for the bullets */
+  text-align: left;
+  padding-left: 20px;
+  list-style-type: disc;
 }
 
 .event-description li {
-  margin-bottom: 5px; /* Add some space between list items */
+  margin-bottom: 5px;
 }
 </style>

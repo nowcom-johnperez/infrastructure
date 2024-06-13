@@ -40,4 +40,9 @@ export const transformArrayToObject = (arr: { key: string, value: string }[]) =>
       acc[item.key] = item.value;
       return acc;
     }, {});
-  }
+}
+
+export const validateString = (input: string) => {
+    const regex = /^[a-zA-Z0-9-.]+$/;
+    return regex.test(input);
+}

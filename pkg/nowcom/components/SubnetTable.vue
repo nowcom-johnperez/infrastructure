@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isValidIP } from '../services/helpers/utils'
+import { isValidIP, validateString } from '../services/helpers/utils'
 import { BadgeState } from '@components/BadgeState';
 export default {
   name: "SubnetTable",
@@ -55,6 +55,12 @@ export default {
         return 'subnet-name-required'
       }
 
+      console.log(`addressObj.name`, addressObj.name, validateString(addressObj.name))
+
+      if (!validateString(addressObj.name)) {
+        return 'subnet-name-invalid'
+      }
+
       return false
     },
 
@@ -65,6 +71,8 @@ export default {
         return "Duplicate Address"
       } else if (error === 'subnet-name-required') {
         return "Subnet Name is required"
+      } else if (error === 'subnet-name-invalid') {
+        return "Subnet Name is invalid"
       } else {
         return ""
       }

@@ -75,30 +75,6 @@
               </div>
             </div>
           </div>
-
-          <h3 class="mt-20">
-            Labels
-            <i class="fa fa-info-circle ml-5" v-clean-tooltip="tooltipLabels" aria-hidden="true"></i>
-          </h3>
-          <div>
-            <div class="row" style="align-items: center;">
-              <div>
-                <label for="key">Key</label>
-                <input type="text" name="key" v-model="tags.key" placeholder="Key"/>
-              </div>
-              <div class="ml-5 mr-5">
-                <label for="value">Value</label>
-                <input type="text" name="value" v-model="tags.value" placeholder="Value" @keydown.enter="addTag"/>
-              </div>
-              <div class="mt-15">
-                <cButton class="cbtn btn-light" @click="addTag">
-                  <i class="fa fa-plus mr-5"></i>
-                  Add Label
-                </cButton>
-              </div>
-            </div>
-          </div>
-          <Tag v-for="(tag, index) in tags.items" :key="index" :show-delete="showTagDelete(tag)" @delete="removeTag(index)" class="mt-10">{{ `${tag.key}:${tag.value}` }}</Tag>
         </div>
 
         <Modal size="lg" v-if="reviewModalState">
@@ -110,7 +86,8 @@
             <div>
               <h2>Configure</h2>
               <p>
-                Virtual Network Name: &nbsp; <span class="text-bold" :style="{ color: selectedVnetName ? '' : 'red', 'font-size': '1.3rem' }">{{ selectedVnetName || 'empty' }}</span>
+                Virtual Network Name: &nbsp; <span class="text-bold" :style="{ color: selectedVnetName && !hasInvalidVnetName ? '' : 'red', 'font-size': '1.3rem' }">{{ selectedVnetName || 'empty' }}</span>
+                <span v-if="hasInvalidVnetName" class="mt-0 error text-danger">(Invalid Vnet Name)</span>
               </p>
               <p>
                 External DNS: {{ externalDNSenabled }}
@@ -120,16 +97,6 @@
             <div class="mt-30">
               <h2>Subnet</h2>
               <SubnetTable :subnets="subnets" />
-            </div>
-            
-            <div class="mt-30">
-              <h2>Labels</h2>
-              <div>
-                <template v-if="tags.items.length > 0">
-                  <Tag v-for="(tag, index) in tags.items" class="mt-5" :key="index">{{ `${tag.key}:${tag.value}` }}</Tag>
-                </template>
-                <p v-else>No Tags</p>
-              </div>
             </div>
 
             <div class="mt-10 mb-10" v-if="apiResponse">
@@ -156,12 +123,11 @@
 <script>
 import Tabs from '../components/common/Tabs'
 import SubnetTable from '../components/SubnetTable'
-import Tag from '../components/common/Tag'
 import Loading from '../components/common/Loading'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
-import { isValidIP, transformArrayToObject } from '../services/helpers/utils'
+import { isValidIP, transformArrayToObject, validateString } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 
 export default {
@@ -183,11 +149,8 @@ export default {
       apiResponseMessage: null, // New data property to store the API response
       currentTab: 0, // Initial tab
       tabList: ['Configure'],
-      newTag: "",
       tags: {
         items: [],
-        key: "",
-        value: ""
       },
       externalDNSenabled: false,
       externalDNSsource: ''
@@ -205,13 +168,7 @@ export default {
   computed: {
     tooltipVnet() {
       return {
-        content: `VNet name is used to identify your virtual network`,
-        hideOnTargetClick: false
-      }
-    },
-    tooltipLabels() {
-      return {
-        content: `Labels accepts key:value pair`,
+        content: `Vnet Name only allows alphanumeric characters, dashes (-), and dots (.).`,
         hideOnTargetClick: false
       }
     },
@@ -222,7 +179,10 @@ export default {
       }
     },
     isInvalidForm () {
-      return !this.selectedVnetName || this.hasInvalidIPAddress || this.hasDuplicateIPAddress || this.hasInvalidSubnetName
+      return !this.selectedVnetName || this.hasInvalidIPAddress || this.hasDuplicateIPAddress || this.hasInvalidSubnetName || this.hasInvalidVnetName
+    },
+    hasInvalidVnetName () {
+      return !validateString(this.selectedVnetName)
     },
     hasDuplicateIPAddress() {
       const uniqueIPAddresses = new Set(this.subnets.map((subnet) => subnet.address));
@@ -246,8 +206,6 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
 
       const formattedDate = `${year}-${month}-${day}`;
-      // this.tags.items.push(`packetlifter.dev/owner:${this.user.username}`)
-      // this.tags.items.push(`packetlifter.dev/created:${date.toISOString()}`)
       this.tags.items.push({
         key: 'packetlifter.dev-owner',
         value: this.user.username
@@ -259,25 +217,6 @@ export default {
     }
   },
   methods: {
-    showTagDelete(tag) {
-      return !['packetlifter.dev/owner', 'packetlifter.dev/created'].some((text) => tag.key.includes(text))
-    },
-    addTag() {
-      const trimmedKey = this.tags.key.trim();
-      const trimmedValue = this.tags.value.trim();
-      if (trimmedKey && trimmedValue) {
-        // this.tags.items.push(`${trimmedKey}:${trimmedValue}`);
-        this.tags.items.push({
-          key: trimmedKey,
-          value: trimmedValue
-        });
-        this.tags.key = ""; // Clear the input field after adding a tag
-        this.tags.value = ""; // Clear the input field after adding a tag
-      }
-    },
-    removeTag(index) {
-      this.tags.items.splice(index, 1);
-    },
     showSpinner() {
       this.isLoading = true;
       // Hide the spinner after 2 seconds
@@ -307,7 +246,6 @@ export default {
       // loading
       try {
         this.isLoading = true;
-        // console.log(`processed`, this.tags.items.map((d) => {[d.key] = d.value}))
         const vnet_data = {
           apiVersion: "packetlifter.dev/v1",
           kind: "Vnet",
