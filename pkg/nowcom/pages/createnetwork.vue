@@ -26,7 +26,7 @@
           </div>
           
           <div class="checkbox-content mt-20">
-            <input type="checkbox" id="dhcp" v-model="externalDNSenabled" />
+            <input type="checkbox" id="dhcp" disabled v-model="externalDNSenabled" />
             <label for="dhcp" v-clean-tooltip="tooltipComingSoon">External DNS</label>
           </div>
 
@@ -35,9 +35,9 @@
               Configure your virtual network address space with the IPv4 and IPv6 addresses and subnets you need.
             </p>
             <p class="mt-5">
-              Define the address space of your virtual network with one or more IPv4 or IPv6 address ranges.
+              Define the address space of your virtual network with one or more IPv4 or IPv6 address ranges. <br />
               Create subnets to segment the virtual network address space into smaller ranges for use by your
-              applications.
+              applications. <br />
               When you deploy resources into a subnet, Nowcom assigns the resource an IP address from the subnet.
             </p>
             <div class="mt-20">
@@ -161,7 +161,6 @@ export default {
     Loading,
     cButton,
     Modal,
-    Tag,
     SubnetTable,
     Alert
   },
