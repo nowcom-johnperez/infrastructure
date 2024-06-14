@@ -19,6 +19,11 @@
           <template #cell:version="{row}">
             <span class="link" @click="selectVersion(row)">{{ row.version }}</span>
           </template>
+          <template #cell:notes="{row}">
+            <span>
+              {{ row.notes.slice(0, 2).join(', ') }} {{ row.notes.length > 1 ? '...' : ''}}
+            </span>
+          </template>
           <template #row-actions="row">
             <span></span>
           </template>
@@ -26,12 +31,17 @@
       </div>
     </div>
 
-    <Modal v-if="releaseNotes.showModal && releaseNotes.selected">
+    <Modal v-if="releaseNotes.showModal && releaseNotes.selected" size="fixed">
       <template v-slot:content>
-        <h2>{{ releaseNotes.selected.version }}</h2>
-        <ul>
-          <li v-for="(note, idx) in releaseNotes.selected.notes" :key="idx">{{ note }}</li>
-        </ul>
+        <div class="release-notes-card">
+          <div class="release-notes-card-header">
+            <span class="version">{{ releaseNotes.selected.version }}</span>
+            <span class="date-badge">{{ releaseNotes.selected.dateRelease }}</span>
+          </div>
+          <ul class="notes-list">
+            <li v-for="(note, idx) in releaseNotes.selected.notes" :key="idx">{{ note }}</li>
+          </ul>
+        </div>
       </template>
 
       <template v-slot:footer>
@@ -112,5 +122,44 @@ export default {
 span.link {
   color: #007bff;
   cursor: pointer;
+}
+
+.release-notes-card {
+  // border: 1px solid #ddd;
+  // border-radius: 8px;
+  padding: 10px;
+  margin: 16px 0;
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  // background-color: #fff;
+}
+.release-notes-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+.version {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.date-badge {
+  background-color: #007bff;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+}
+.notes-list {
+  list-style: none;
+  padding: 0;
+}
+.notes-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.notes-list li:last-child {
+  border-bottom: none;
 }
 </style>

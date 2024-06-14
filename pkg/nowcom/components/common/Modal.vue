@@ -53,6 +53,10 @@ export default {
   overflow-y: auto;
 }
 
+.modal.fixed {
+  min-width: 300px;
+}
+
 .modal.lg {
   width: 50%;
 }
