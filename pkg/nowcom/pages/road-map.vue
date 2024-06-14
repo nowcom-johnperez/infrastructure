@@ -7,17 +7,22 @@
 
     <div class="release-notes-container mt-10">
       <h2>Release Notes</h2>
-      <div v-if="releaseNotes.items.length > 0" class="mt-10">
-        <ul class="release-notes-list">
-          <li v-for="v in releaseNotes.items" :key="v.name" class="release-note-item mt-10">
-            <h4>{{ v.name }}</h4>
-            <ul v-if="v.list.length > 0" class="version-list">
-              <li v-for="item in v.list" :key="item.version" class="version-item">
-                <span class="link" @click="selectVersion(item)">{{ item.version }}</span>
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <div v-if="releaseNotes.items.length > 0" class="mt-20" v-for="v in releaseNotes.items" :key="v.name">
+        <SortableTable :headers="releaseNotes.headers" :rows="v.list" keyField="version">
+          <template #header-left>
+            <div class="row table-heading">
+              <h3 class="mb-0">
+                {{ v.name }}
+              </h3>
+            </div>
+          </template>
+          <template #cell:version="{row}">
+            <span class="link" @click="selectVersion(row)">{{ row.version }}</span>
+          </template>
+          <template #row-actions="row">
+            <span></span>
+          </template>
+        </SortableTable>
       </div>
     </div>
 
@@ -40,10 +45,13 @@
 import Timeline from '../components/TimelineComponent.vue'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
+import SortableTable from '@shell/components/ResourceTable.vue'
 import { RELEASE_NOTES } from '../config/release-notes'
+import { RELEASE_NOTES_HEADERS } from '../config/table'
 export default {
   name: 'ReleasePage',
   components: {
+    SortableTable,
     Timeline,
     Modal,
     cButton
@@ -53,7 +61,8 @@ export default {
       releaseNotes: {
         showModal: false,
         selected: null,
-        items: []
+        items: [],
+        headers: []
       },
 
     }
@@ -65,7 +74,7 @@ export default {
     }
   },
   mounted() {
-    console.log(`RELEASE`, RELEASE_NOTES);
+    this.releaseNotes.headers = RELEASE_NOTES_HEADERS;
     this.releaseNotes.items = RELEASE_NOTES;
   }
 }
