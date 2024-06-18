@@ -17,7 +17,7 @@ and then should hot-reload within the browser.
 
 
 Publish:
-yarn publish-pkgs -s "https://github.com/username/rancher-extension" -b "main" -f
+yarn publish-pkgs -s "username/rancher-extension" -b "main" -f
 In assets > copy index.yaml content and past it in root index.yaml
 Edit charts/nowcom/version/templates/cr.yaml
 
