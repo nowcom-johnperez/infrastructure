@@ -1,7 +1,7 @@
 // this is the definition of a "blank cluster" for Rancher Dashboard
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, CUSTOM_K8S_RESOURCE_NAME, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP } from './config/constants';
 
 export function init($plugin: any, store: any) {
   const {
@@ -17,8 +17,8 @@ export function init($plugin: any, store: any) {
 
   // // registering a top-level product
   product({
-    icon: 'apps',
-    // svg: require('@pkg/nowcom/icons/nowcom.svg'),
+    icon: 'repository',
+    // svg: require('@pkg/nowcom/assets/img/server-stack.svg'),
     inStore: 'management',
     removable: false,
     showClusterSwitcher: false,
@@ -102,10 +102,10 @@ export function init($plugin: any, store: any) {
   //     }
   //   }
   // });
-  // creating a custom page
+
+  weightType(LIST_K8, 1007, true)
   virtualType({
     label: 'Kubernetes',
-    labelKey: 'Kubernetes',
     displayName: 'Kubernetes',
     name: LIST_K8,
     route: {
@@ -117,10 +117,9 @@ export function init($plugin: any, store: any) {
     }
   });
 
-  // creating a custom page
+  weightType(LIST_NETWORK, 1006, true)
   virtualType({
     label: 'Virtual Network',
-    labelKey: 'Virtual Network',
     displayName: 'Virtual Network',
     name: LIST_NETWORK,
     route: {
@@ -132,9 +131,9 @@ export function init($plugin: any, store: any) {
     }
   });
 
+  weightType(LIST_FIREWALL, 1005, true)
   virtualType({
     label: 'Firewall',
-    labelKey: 'Firewall',
     displayName: 'Firewall',
     name: LIST_FIREWALL,
     route: {
@@ -146,9 +145,9 @@ export function init($plugin: any, store: any) {
     }
   });
 
+  weightType(LIST_DNS, 1004, true)
   virtualType({
     label: 'DNS',
-    labelKey: 'DNS',
     displayName: 'DNS',
     name: LIST_DNS,
     route: {
@@ -160,13 +159,39 @@ export function init($plugin: any, store: any) {
     }
   });
 
+  weightType(LIST_DHCP, 1003, true)
   virtualType({
     label: 'DHCP',
-    labelKey: 'DHCP',
     displayName: 'DHCP',
     name: LIST_DHCP,
     route: {
       name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  weightType(ROAD_MAP, 1002, true)
+  virtualType({
+    label: 'Road Map',
+    name: ROAD_MAP,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`,
+      params: {
+        product: PRODUCT_NAME,
+        cluster: BLANK_CLUSTER
+      }
+    }
+  });
+
+  weightType(WISH_PAGE, 1001, true)
+  virtualType({
+    label: 'Make a wish!',
+    name: WISH_PAGE,
+    route: {
+      name: `${PRODUCT_NAME}-c-cluster-${WISH_PAGE}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER
@@ -202,17 +227,17 @@ export function init($plugin: any, store: any) {
   // });
 
   // creating a custom page
-  virtualType({
-    labelKey: 'some.translation.key',
-    name: FORMS,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
+  // virtualType({
+  //   labelKey: 'some.translation.key',
+  //   name: FORMS,
+  //   route: {
+  //     name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
+  //     params: {
+  //       product: PRODUCT_NAME,
+  //       cluster: BLANK_CLUSTER
+  //     }
+  //   }
+  // });
   // const REPO = 'catalog.cattle.io.clusterrepo';
 
   // mapGroup('HOME', 'Repositories');  
@@ -245,12 +270,8 @@ export function init($plugin: any, store: any) {
   // ]);
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
   // basicType([NODE, CLUSTER], "Management");
-  basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
-  weightType(LIST_K8, 5, true)
-  weightType(LIST_NETWORK, 44, true)
-  weightType(LIST_FIREWALL, 3, true)
-  weightType(LIST_DNS, 2, true)
-  weightType(LIST_DHCP, 1, true)
-  weightGroup('Infrastructure', 1001, true)
-  
+  // basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
+  basicType([LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE]);
+  // basicType([ROAD_MAP, WISH_PAGE]);
+  // weightGroup('Infrastructure', 1001, true)
 }

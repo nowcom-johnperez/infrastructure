@@ -44,10 +44,17 @@ export default {
 }
 
 .modal {
+  max-height: 70vh;
   background: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.modal.fixed {
+  min-width: 300px;
 }
 
 .modal.lg {
@@ -65,9 +72,13 @@ export default {
 }
 
 .modal-header {
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #2f2d2d;
   padding: 10px 0;
   margin-bottom: 15px;
+}
+
+.theme-dark .modal-header {
+  border-bottom: 1px solid #fff !important;
 }
 
 .modal-content {

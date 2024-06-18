@@ -15,6 +15,10 @@
             />
             <p v-if="!isSubnetIPValid" class="text-danger" style="font-weight: bold;">Invalid IP Address</p>
         </div>
+        <div class="checkbox-content">
+            <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
+            <label for="dhcp">DHCP Enabled?</label>
+        </div>
         <div class="add-form-row">
             <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading" @click="addSubnet">
                 <template v-if="!loading">
@@ -51,6 +55,7 @@ export default {
         return {
             subnetName: '',
             subnetIP: '10.55.0.0',
+            dhcpEnabled: false,
             loading: false,
         }
     },
@@ -85,6 +90,7 @@ export default {
                     name:      subnetName,
                     address:   this.subnetIP,
                     formattedAddress: `${this.subnetIP}/24`,
+                    dhcpEnabled: this.dhcpEnabled,
                     prefix_len: 24
                 };
 

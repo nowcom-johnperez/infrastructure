@@ -34,3 +34,15 @@ export const combineArraysIntoObjects = (subnets: any, subnetNames: any) => {
 
     return combinedArray;
 }
+
+export const transformArrayToObject = (arr: { key: string, value: string }[]): { [key: string]: string } => {
+    return arr.reduce((acc: { [key: string]: string }, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+}
+
+export const validateString = (input: string) => {
+    const regex = /^[a-zA-Z0-9-.]+$/;
+    return regex.test(input);
+}

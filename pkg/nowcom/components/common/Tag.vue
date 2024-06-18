@@ -1,6 +1,8 @@
 <template>
     <div class="tag">
-        <slot></slot>
+        <span class="tag-content">
+            <slot></slot>
+        </span>
         <button v-if="showDelete" class="delete-tag" @click="$emit('delete')">&times;</button>
     </div>
 </template>
@@ -19,12 +21,19 @@ export default {
 
 <style scoped>
 .tag {
-  display: inline-block;
-  background-color: #e0e0e0;
-  color: #333;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid #0056b3; /* Rancher blue color */
+    color: #0056b3; /* Rancher blue color for text */
+    padding: 0 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    height: 40px;
+}
+
+.tag-content {
+    display: flex;
+    align-items: center;
 }
 
 .delete-tag {
@@ -34,11 +43,12 @@ export default {
     cursor: pointer;
     font-size: 1.5rem;
     margin-left: 4px;
-    width: 10px;
+    align-items: center;
+    padding: 0;
 }
 
 .delete-tag:hover {
-  color: #f00;
+    color: #f00;
 }
 
 .delete-tag:focus {
