@@ -1,5 +1,8 @@
 <template>
   <form class="mt-20" @submit.prevent="submitForm">
+    <div class="mt-10 mb-10" v-if="errorRes.show">
+      <Alert :variant="errorRes.variant" @close="errorRes.show = false">{{ errorRes.msg }}</Alert>
+    </div>
     <input type="text" v-model="subject" placeholder="What do you want?" class="mb-10">
     <textarea name="request" v-model="request" id="request-input" cols="30" rows="5" placeholder="Let us know in more detailed description"></textarea>
     <button type="submit" class="cbtn btn-primary full-width mt-10" :disabled="!request || loading">
@@ -13,14 +16,22 @@
 
 <script>
 import { wishService } from '../../services/api/wish';
-
+import Alert from '../common/Alert'
 export default {
   name: 'WishForm',
+  components: {
+    Alert
+  },
   data () {
     return {
       loading: false,
       subject: null,
-      request: null
+      request: null,
+      errorRes: {
+        show: false,
+        msg: null,
+        variant: 'error'
+      }
     }
   },
   computed: {
@@ -37,7 +48,7 @@ export default {
           apiVersion: "packetlifter.dev/v1",
           kind: "MakeWish",
           metadata: {
-            name: this.subject
+            name: this.subject.replace(/ /g, '-')
           },
           spec: {
             name: this.subject,
@@ -49,9 +60,30 @@ export default {
         this.loading = false
         this.subject = null
         this.request = null
+        this.errorRes = {
+          show: true,
+          variant: 'success',
+          msg: "Your request has been successfully added to the wishlist."
+        }
+
+        setTimeout(() => {
+          this.errorRes.show = false
+        }, 5000)
       } catch (err) {
         this.loading = false
-        console.log(err)
+        if (err.response.statusText === "" && err.response.data.reason === "AlreadyExists") {
+          this.errorRes = {
+            show: true,
+            variant: 'error',
+            msg: "It appears this issue is already listed in our wishlist."
+          }
+        } else {
+          this.errorRes = {
+            show: true,
+            variant: 'error',
+            msg: "Oops! Something went wrong!"
+          }
+        }
       }
     }
   }
