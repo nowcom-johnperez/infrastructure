@@ -11,6 +11,7 @@ import ListDHCP from '../pages/list-dhcp.vue';
 import ListDNS from '../pages/list-dns.vue';
 import ListFirewall from '../pages/list-firewall.vue';
 import ListK8s from '../pages/list-k8s.vue';
+import WishPage from '../pages/wish-page.vue';
 
 import ListNatGateway from '../pages/list-natgateway.vue';
 import CreateNatGateway from '../pages/create-natgateway.vue';
@@ -18,7 +19,7 @@ import CreateNatGateway from '../pages/create-natgateway.vue';
 import RouteTable from '../pages/routetables.vue';
 import Forms from '../pages/forms.vue';
 
-import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY, CREATE_NETWORK, ROUTE_TABLE, FORMS, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP } from '../config/constants';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY, CREATE_NETWORK, ROUTE_TABLE, FORMS, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE } from '../config/constants';
 
 const routes = [
   // // this covers the "custom page"
@@ -119,6 +120,15 @@ const routes = [
     name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`,
     path: `/${PRODUCT_NAME}/c/:cluster/${ROAD_MAP}`,
     component: RoadMap,
+    meta: {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
+  {
+    name: `${PRODUCT_NAME}-c-cluster-${WISH_PAGE}`,
+    path: `/${PRODUCT_NAME}/c/:cluster/${WISH_PAGE}`,
+    component: WishPage,
     meta: {
       product: PRODUCT_NAME,
       cluster: BLANK_CLUSTER

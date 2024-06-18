@@ -1,6 +1,6 @@
-export const PRODUCT_NAME = 'Network';
+export const PRODUCT_NAME = 'Infrastructure';
 export const PAGE_NAME = 'Home';
-export const NETWORK_HOME = 'Network';
+export const NETWORK_HOME = 'infrastructure';
 
 export const LIST_NETWORK = 'vnet';
 export const LIST_K8 = 'kubernetes';
@@ -9,6 +9,7 @@ export const LIST_DNS = 'dns';
 export const LIST_DHCP = 'dhcp';
 export const LIST_NAT_GATEWAY = 'nat.gateway';
 export const ROAD_MAP = 'roadmap';
+export const WISH_PAGE = 'wish';
 
 export const CREATE_NAT_GATEWAY = 'create.nat.gateway';
 export const CREATE_NETWORK = 'create-network';
