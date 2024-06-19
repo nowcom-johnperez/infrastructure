@@ -1,41 +1,49 @@
 <template>
     <div>
-        <h2>Add Subnet</h2>
-        <!-- ... your content for adding subnet -->
-        <div class="add-form-row">
-            <input v-model="subnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
+        <div v-if="currentNetwork?.vrf === 'express' && Object.keys(currentSub).length > 0 || !currentNetwork?.vrf">
+            <h2>Add Subnet</h2>
+            <div class="add-form-row">
+                <input v-model="subnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
+                <p v-if="!isSubnetValidName && subnetName" class="text-danger" style="font-weight: bold;">Invalid Name Format</p>
+            </div>
+            <div class="add-form-row">
+                <input
+                    v-model="subnetIP"
+                    type="text"
+                    placeholder="Enter subnet (e.g., 10.0.0.0)"
+                    pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+                    title="Please enter a valid IP address"
+                    :disabled="currentNetwork?.vrf === 'express'"
+                />
+                <p v-if="!isSubnetIPValid" class="text-danger" style="font-weight: bold;">Invalid IP Address</p>
+            </div>
+            <div class="checkbox-content">
+                <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
+                <label for="dhcp">DHCP Enabled?</label>
+            </div>
+            <div class="add-form-row">
+                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading || !isEnabledExpressAdd" @click="addSubnet">
+                    <template v-if="!loading">
+                        <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
+                    </template>
+                    <template v-else>
+                        <i class="fa fa-spinner fa-spin fa-lg mr-5"></i> Processing
+                    </template>
+                </cButton> 
+            </div>
         </div>
-        <div class="add-form-row">
-            <input
-                v-model="subnetIP"
-                type="text"
-                placeholder="Enter subnet (e.g., 10.0.0.0)"
-                pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-                title="Please enter a valid IP address"
-            />
-            <p v-if="!isSubnetIPValid" class="text-danger" style="font-weight: bold;">Invalid IP Address</p>
-        </div>
-        <div class="checkbox-content">
-            <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
-            <label for="dhcp">DHCP Enabled?</label>
-        </div>
-        <div class="add-form-row">
-            <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading" @click="addSubnet">
-                <template v-if="!loading">
-                    <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
-                </template>
-                <template v-else>
-                    <i class="fa fa-spinner fa-spin fa-lg mr-5"></i> Processing
-                </template>
-            </cButton> 
+        <div v-else class="mt-20">
+            <NotFound msg="No IP Address available" />
         </div>
     </div>
 </template>
 
 <script>
-import { isValidIP } from '../../services/helpers/utils'
+import { isValidIP, transformArrayToObject, validateString } from '../../services/helpers/utils'
 import { vNetService } from '../../services/api/vnet';
+import { expressService } from '../../services/api/express';
 import cButton from '../common/Button'
+import NotFound from '../common/NotFound'
 export default {
     name: 'AddSubnet',
     props: {
@@ -46,10 +54,15 @@ export default {
         currentNetwork: {
             type: Object,
             required: true
+        },
+        currentSub: {
+            type: Object,
+            default: () => {}
         }
     },
     components: {
-        cButton
+        cButton,
+        NotFound
     },
     data() {
         return {
@@ -59,10 +72,13 @@ export default {
             loading: false,
         }
     },
-    watcher: {
+    watch: {
         isOpen (val) {
             if (!val) this.resetForm();
-        } 
+            else {
+                this.initExpressForm()
+            }
+        },
     },
     computed: {
         isAddSubnetDisabled() {
@@ -71,15 +87,27 @@ export default {
         },
         isSubnetIPValid() {
             return isValidIP(this.subnetIP)
+        },
+        isEnabledExpressAdd() {
+            return this.currentNetwork?.vrf === 'express' && Object.keys(this.currentSub).length > 0 || !this.currentNetwork.vrf
+        },
+        isSubnetValidName() {
+            return validateString(this.subnetName)
         }
     },
     methods: {
+        initExpressForm() {
+            if (this.currentNetwork?.vrf === 'express') {
+                this.subnetName = this.currentSub.name
+                this.subnetIP = this.currentSub.address
+            }
+        },
         resetForm() {
             this.subnetName = '';
             this.subnetIP = '10.55.0.0';
             this.loading = false;
         },
-        async addSubnet() {
+        async processNormalSubnet() {
             try {
                 const network = {...this.currentNetwork};
                 this.apiError = null; // Reset error state
@@ -113,13 +141,40 @@ export default {
                 console.log('send to API', subnet_data);
                 console.log('log', network);
 
-                this.loading = true
-
                 await vNetService.patchSubnet(network.name, vnet_data);
+            } catch (error){
+                console.log(error);
+                this.loading = false;
+            }
+        },
+
+        async processExpressSubnet() {
+            const express_data = {
+                apiVersion: 'packetlifter.dev/v1',
+                kind:       'Subnet',
+                metadata:   {
+                    name:      this.currentSub.name,
+                    labels:     transformArrayToObject([{ key: 'displayName', value: this.subnetName }])
+                },
+                spec: {
+                    name:    this.currentSub.name,
+                    dhcpEnabled: this.dhcpEnabled,
+                    activated: true,
+                }
+            };
+            await expressService.patchExpressSubnet(this.currentSub.name, express_data);
+        },
+        async addSubnet() {
+            try {
+                this.loading = true
+                if (this.currentNetwork?.vrf === 'express') {
+                    await this.processExpressSubnet()
+                } else {
+                    await this.processNormalSubnet()
+                }
                 this.resetForm();
                 this.$emit('success')
             } catch(error) {
-                console.log(error);
                 this.loading = false;
                 // this.subnetResponseMessage = 'Error';
                 // Set the API error in the component

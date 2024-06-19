@@ -55,10 +55,8 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                 ]);
         
                 const parsedData = networks.data.items.map((item: any) => {
-        
                   const translatedAddressData = networkTranslations.data.items;
                   const mainTranslatedAddress = findTranslatedAddress(translatedAddressData, item.spec.name);
-        
                   const subnets = item.spec.subnets.map((subnet: any) => {
                     return {
                       address:    subnet.address,
@@ -66,6 +64,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                       name:       stripStrings(subnet.name),
                       longName:   subnet.name,
                       prefix_len: subnet.prefixLength,
+                      dhcpEnabled: subnet.dhcpEnabled,
                       translatedAddress: subnet.addressTranslation?.outside
                     }
                   });
@@ -77,7 +76,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                     cluster: 'local',
                     translatedAddress: mainTranslatedAddress?.spec?.outside
                   }
-                });
+                }).filter((item: any) => item.name !== 'express');
         
                 commit('setItems', parsedData)
             },

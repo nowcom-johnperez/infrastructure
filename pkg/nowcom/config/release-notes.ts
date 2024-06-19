@@ -1,34 +1,34 @@
 export const RELEASE_NOTES = [
-  {
-    name: "Trident",
-    list: [
-      {
-        version: '0.1.0',
-        notes: ['Initial UI Design'],
-        dateRelease: '2024-06-7'
-      },
-      {
-        version: '0.1.1',
-        notes: ['Wiki Page'],
-        dateRelease: '2024-06-10'
-      },
-      {
-        version: '0.1.2',
-        notes: ['Dev Tools Page'],
-        dateRelease: '2024-06-11'
-      },
-      {
-        version: '0.1.3',
-        notes: ['Rename Trident -> Trident Local Testing', 'Added Homepage', 'Implement Rancher Components', 'Implement Pagination for tables'],
-        dateRelease: '2024-06-12'
-      },
-      {
-        version: '0.1.4',
-        notes: ['Make a wish'],
-        dateRelease: '2024-06-13'
-      }
-    ]
-  },
+  // {
+  //   name: "Trident",
+  //   list: [
+  //     {
+  //       version: '0.1.0',
+  //       notes: ['Initial UI Design'],
+  //       dateRelease: '2024-06-7'
+  //     },
+  //     {
+  //       version: '0.1.1',
+  //       notes: ['Wiki Page'],
+  //       dateRelease: '2024-06-10'
+  //     },
+  //     {
+  //       version: '0.1.2',
+  //       notes: ['Dev Tools Page'],
+  //       dateRelease: '2024-06-11'
+  //     },
+  //     {
+  //       version: '0.1.3',
+  //       notes: ['Rename Trident -> Trident Local Testing', 'Added Homepage', 'Implement Rancher Components', 'Implement Pagination for tables'],
+  //       dateRelease: '2024-06-12'
+  //     },
+  //     {
+  //       version: '0.1.4',
+  //       notes: ['Make a wish'],
+  //       dateRelease: '2024-06-13'
+  //     }
+  //   ]
+  // },
   {
     name: "Infrastructure",
     list: [
@@ -80,6 +80,11 @@ export const RELEASE_NOTES = [
       {
         version: '0.2.8',
         notes: ['Deprecated Nat Gateway Page', 'Refactor sidebar navigation', 'Simplified form for vnet creation', 'DHCP Listing', 'Added Translated address for Virtual Network and Subnets', 'Road Map'],
+        dateRelease: '2024-06-12'
+      },
+      {
+        version: '0.2.9',
+        notes: ['Make a Wish', 'Express Networks'],
         dateRelease: '2024-06-12'
       },
     ]

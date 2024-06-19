@@ -3,6 +3,7 @@ plugin/fonts/fontawesome-webfont.674f50d2.eot
 plugin/fonts/fontawesome-webfont.af7ae505.woff2
 plugin/fonts/fontawesome-webfont.b06871f2.ttf
 plugin/fonts/fontawesome-webfont.fee66e71.woff
+plugin/img/404-error.8833efc4.jpg
 plugin/img/banner.a83d2a9b.svg
 plugin/img/banner.b321f7eb.svg
 plugin/img/decoration-cloud-big-white.8b9f479b.svg

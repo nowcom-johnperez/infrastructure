@@ -33,7 +33,31 @@
             </cButton>
           </template>
         </SortableTable>
-        </br> </br>
+      </div>
+    </div>
+
+    <div class="form-row mt-10">
+      <div class="form-column">
+        <SortableTable 
+          :headers="networkHeader" 
+          :rows="express.mainRow" 
+          keyField="name" 
+          :loading="loading"
+          >
+          <template #header-left>
+            <div class="row table-heading">
+              <h2 class="mb-0">
+                Express Network
+              </h2>
+            </div>
+          </template>
+          <template #cell:name="{row}">
+            <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
+          </template>
+          <template #row-actions="row">
+            <span></span>
+          </template>
+        </SortableTable>
       </div>
     </div>
 
@@ -49,7 +73,10 @@
         <div class="mt-10 mb-10" v-if="subnetResponse">
           <Alert :variant="subnetResponse" @close="subnetResponse = null">{{ subnetResponseMessage }}</Alert>
         </div>
-        <SortableTable v-if="selectedNetwork" :headers="subnetworkHeader" :rows="selectedNetwork.subnets" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+        <SortableTable v-if="selectedNetwork" :headers="selectedNetwork?.vrf === 'express' ? express.subHeader : subnetworkHeader" :rows="selectedNetwork.vrf && selectedNetwork.vrf === 'express' ? activatedExpressSubnets : selectedNetwork.subnets" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+          <template #cell:longName="{row}">
+            <span>{{ row.displayName || row.longName }}</span>
+          </template>
           <template #cell:dhcpEnabled="{row}">
             <BadgeState
               :color="row.dhcpEnabled ? 'bg-success' : 'bg-info'"
@@ -65,7 +92,7 @@
     </SideBar>
 
     <SideBar type="sub" :sidebar-visible="addSubnetSidebarVisible" @close="closeSubnetSidebar">
-      <AddSubnet v-if="selectedNetwork" :is-open="addSubnetSidebarVisible" :current-network="selectedNetwork" @success="subnetAddedHandler" />
+      <AddSubnet v-if="selectedNetwork" :is-open="addSubnetSidebarVisible" :current-network="selectedNetwork" :current-sub="express.nextAvailableSub" @success="subnetAddedHandler" />
     </SideBar>
 
     <!-- Modal -->
@@ -99,7 +126,8 @@
     <Modal v-if="isModalSubnetOpen">
       <template v-slot:content>
         <h2>Are you sure that you want to delete:</h2>
-        <p>Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
+        <p v-if="!selectedNetwork?.vrf">Subnet "{{ subnet_name }}" under VNET "{{ vnet_name }}"?</p>
+        <p v-else>Express Subnet "{{ express.selectedSub?.displayName || express.selectedSub?.name }}"?</p>
       </template>
 
       <template v-slot:footer>
@@ -111,7 +139,7 @@
 </template>
 
 <script>
-import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS } from '../config/table'
+import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { mapGetters } from 'vuex'
 import SortableTable from '@shell/components/ResourceTable.vue'
@@ -125,6 +153,7 @@ import AddSubnet from '../components/forms/AddSubnet'
 import { BadgeState } from '@components/BadgeState';
 
 import { PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
+import { expressService } from '../services/api/express'
 
 export default {
   name: 'ListNetwork',
@@ -169,6 +198,13 @@ export default {
       bulk: {
         items: [],
         show: false,
+      },
+      express: {
+        mainRow: [{ name: 'express', translatedAddress: '209.76.247.254/32', subnetLength: 0, vrf: 'express' }],
+        networks: [],
+        subHeader: null,
+        nextAvailableSub: {},
+        selectedSub: {}
       }
     };
   },
@@ -176,6 +212,12 @@ export default {
     ...mapGetters(PRODUCT_NAME, {
       networks: 'items',
     }),
+    activatedExpressSubnets() {
+      return this.express.networks.filter((item) => item.activated)
+    },
+    inactiveExpressSubnets() {
+      return this.express.networks.filter((item) => !item.activated)
+    }
   },
   methods: {
     async processBulkDelete () {
@@ -209,23 +251,14 @@ export default {
       }
     },
     async getSubnetByName (networkName) {
-      // const subnetRes = await vNetService.getSubnetByName(networkName);
-
-      this.selectedNetwork = null;
-
-      // this.selectedNetwork.subnets = subnetRes.data.spec.subnets.map(subnet => ({
-      //   address:    subnet.address,
-      //   formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-      //   name:       stripStrings(subnet.name),
-      //   longName:   subnet.name,
-      //   prefix_len: subnet.prefixLength,
-      //   translatedAddress: subnet.addressTranslation?.outside
-      // }));
-
-      // console.log(`subnetRes`, this.selectedNetwork.subnets)
-      await this.fetchNetworks();
-
-      this.selectedNetwork = this.networks.find((network) => network.name === networkName);
+      if (!this.selectedNetwork?.vrf) {
+        this.selectedNetwork = null;
+        await this.fetchNetworks();
+        this.selectedNetwork = this.networks.find((network) => network.name === networkName);
+      } else {
+        await this.fetchNetworks();
+        this.setSelectedExpressSub()
+      }
     },
     async subnetAddedHandler() {
       this.subnetResponse = 'success';
@@ -240,11 +273,18 @@ export default {
     closeSubnetSidebar() {
       this.addSubnetSidebarVisible = false;
     },
-    openSidebar(item) {
+    async openSidebar(item) {
       // Update the item with the fetched data
       this.subnetResponse = null;
       this.selectedNetwork = item;
       this.sidebarVisible = true;
+
+      this.setSelectedExpressSub()
+    },
+    setSelectedExpressSub() {
+      if (this.selectedNetwork?.vrf === 'express') {
+        this.express.nextAvailableSub = this.inactiveExpressSubnets.length > 0 ? this.inactiveExpressSubnets[0] : {}
+      }
     },
     closeSidebar() {
       this.selectedNetwork = null;
@@ -271,6 +311,10 @@ export default {
       this.subnet_address = address;
       this.subnet_prefix_len = prefix_len;
 
+      if (this.selectedNetwork?.vrf === 'express') {
+        this.express.selectedSub = this.activatedExpressSubnets.find((item) => item.name === name)
+      }
+
       // Open the modal
       this.isModalSubnetOpen = true;
     },
@@ -284,6 +328,23 @@ export default {
       // Fetch the network list from your API
       try {
         await this.$store.dispatch(`${PRODUCT_NAME}/findAll`)
+        const res = await expressService.getAllNetworks()
+        this.express.networks = res.filter((item) => {
+          return item.spec.vrf === 'express'
+        }).map((item) => {
+          return {
+            address: item.spec.address,
+            formattedAddress: `${item.spec.address}/${item.spec.prefixLength}`,
+            displayName: item.metadata.labels?.displayName || '',
+            name: item.spec.name,
+            longName: item.spec.name,
+            prefix_len: item.spec.prefixLength,
+            dhcpEnabled: item.spec.dhcpEnabled,
+            translatedAddress: '',
+            activated: item.spec.activated
+          }
+        })
+        this.express.mainRow[0].subnetLength = this.activatedExpressSubnets.length
       } catch (error) {
         console.error('Error fetching Network List:', error);
       }
@@ -313,51 +374,56 @@ export default {
         // Set the API error in the component
         this.apiError = error.response ? error.response.data : error.message;
         this.apiResponse = 1; // Reset response state
-      } finally {
-        
       }
     },
 
     async deleteSubnet() {
       try {
-        console.log(
-          `Delete Subnet Endpoint, ${ this.vnet_name }, ${ this.subnet_name }, ${ this.subnet_id }`
-        );
-        this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
-        console.log('new subnet', this.selectedNetwork.subnet);
-
-        const vnet_data = {
-          apiVersion: 'packetlifter.dev/v1',
-          kind:       'Vnet',
-          // vnet_vlan: this.selectedVnetVlan,
-          metadata:   {
-            name:      this.vnet_name.toLowerCase(),
-            namespace: 'default'
-          },
-          spec: {
-            name:    this.vnet_name.toLowerCase(),
-            subnets: this.selectedNetwork.subnets,
-          }
-        };
-
-        this.loading = true;
-        // Close the modal before deletion
         this.closeModalSubnet();
-        await this.$store.dispatch(`${PRODUCT_NAME}/deleteSubnet`, {
-          vnetName: this.vnet_name,
-          vnetData: vnet_data
-        })
-        this.loading = false;
+        this.loading = true;
+        if (!this.selectedNetwork?.vrf) {
+          this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
+          const vnet_data = {
+            apiVersion: 'packetlifter.dev/v1',
+            kind:       'Vnet',
+            // vnet_vlan: this.selectedVnetVlan,
+            metadata:   {
+              name:      this.vnet_name.toLowerCase(),
+              namespace: 'default'
+            },
+            spec: {
+              name:    this.vnet_name.toLowerCase(),
+              subnets: this.selectedNetwork.subnets,
+            }
+          };
 
-        // defines what kind of component should the notification show
-        this.subnetResponse = 'error';
-        this.subnetResponseMessage = `Successfully deleted subnet: ${this.subnet_name}`;
+          
+          await this.$store.dispatch(`${PRODUCT_NAME}/deleteSubnet`, {
+            vnetName: this.vnet_name,
+            vnetData: vnet_data
+          })
+          this.subnetResponse = 'error';
+          this.subnetResponseMessage = `Successfully deleted subnet: ${this.subnet_name}`;
+        } else {
+          const name = this.express.selectedSub?.name
+          const express_data = {
+              apiVersion: 'packetlifter.dev/v1',
+              kind:       'Subnet',
+              metadata:   {
+                name
+              },
+              spec: {
+                name,
+                activated: false,
+              }
+          };
+          await expressService.patchExpressSubnet(name, express_data);
+          this.subnetResponse = 'error';
+          this.subnetResponseMessage = `Successfully deleted express subnet: ${this.express.selectedSub?.displayName || this.express.selectedSub?.name}`;
+        }
+        this.loading = false
 
         await this.getSubnetByName(this.vnet_name);
-
-        // Update the selectedNetwork with the selected vnet_name
-        this.selectedNetwork.vnet_name = this.vnet_name;
-        
       } catch (error) {
         // Handle any errors here
         console.error('Error deleting network:', error);
@@ -373,6 +439,7 @@ export default {
     this.networkHeader = SORTABLE_NETWORK_HEADERS;
     this.subnetworkHeader = SORTABLE_SUB_NETWORK_HEADERS;
     this.vnetButtons = VNET_BUTTONS;
+    this.express.subHeader = SORTABLE_SUB_NETWORK_EXPRESS_HEADERS;
   },
   mounted() {
     // Fetch the VLAN list and network list when the component is mounted
