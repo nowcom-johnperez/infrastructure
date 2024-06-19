@@ -77,6 +77,30 @@ const SORTABLE_SUB_NETWORK_HEADERS: SortableHeaderType[] = [
     // }
 ];
 
+const SORTABLE_SUB_NETWORK_EXPRESS_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'longName',
+        label: 'Subnet Name',
+        sort: ['longName'],
+        search: ['longName'],
+        width: 50,
+    },
+    {
+        name: 'formattedAddress',
+        label: 'Network Address',
+        sort: ['formattedAddress'],
+        search: ['formattedAddress'],
+        width: 30
+    },
+    {
+        name: 'dhcpEnabled',
+        label: 'DHCP',
+        sort: ['dhcpEnabled'],
+        search: ['dhcpEnabled'],
+        width: 30
+    },
+];
+
 const DHCP_HEADERS: SortableHeaderType[] = [
     {
         name: 'name',
@@ -136,4 +160,4 @@ const RELEASE_NOTES_HEADERS: SortableHeaderType[] = [
 ];
 
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS }
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS }

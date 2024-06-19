@@ -15,7 +15,7 @@
       </div>
     </template>
     <template v-slot:content>
-      <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque suscipit turpis luctus luctus condimentum. Cras sollicitudin consequat arcu, et auctor felis convallis vitae. Donec ultricies nibh eget ipsum rhoncus, non tristique tortor scelerisque. Mauris ut dapibus enim. Morbi ut eleifend velit. Sed sodales enim vel augue tincidunt aliquam. Suspendisse sollicitudin finibus nulla eu gravida. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+      <p class="mb-10">We value your input and are eager to hear your suggestions, ideas, and feedback. Please use this form to share your thoughts with us. Your feedback helps us improve and better serve you.</p>
       <WishForm />
     </template>
   </Modal>

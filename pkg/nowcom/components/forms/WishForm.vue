@@ -4,7 +4,7 @@
       <Alert :variant="errorRes.variant" @close="errorRes.show = false">{{ errorRes.msg }}</Alert>
     </div>
     <input type="text" v-model="subject" placeholder="What do you want?" class="mb-10">
-    <textarea name="request" v-model="request" id="request-input" cols="30" rows="5" placeholder="Let us know in more detailed description"></textarea>
+    <textarea name="request" v-model="request" id="request-input" cols="30" rows="5" placeholder="Let us know more in detailed description"></textarea>
     <button type="submit" class="cbtn btn-primary full-width mt-10" :disabled="!request || loading">
       <span v-if="loading">
         <i class="fa fa-spinner fa-spin mr-10"></i> Sending...

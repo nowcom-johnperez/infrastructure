@@ -6,13 +6,9 @@ import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST
 export function init($plugin: any, store: any) {
   const {
     product,
-    configureType,
     virtualType,
     basicType,
     weightType,
-    weightGroup,
-    mapGroup,
-    headers
   } = $plugin.DSL(store, PRODUCT_NAME);
 
   // // registering a top-level product
@@ -103,141 +99,36 @@ export function init($plugin: any, store: any) {
   //   }
   // });
 
-  weightType(LIST_K8, 1007, true)
-  virtualType({
-    label: 'Kubernetes',
-    displayName: 'Kubernetes',
-    name: LIST_K8,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_K8}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
+  const vt = [
+    { name: LIST_K8, label: 'Kubernetes', displayName: 'Kubernetes', weight: 7 },
+    { name: LIST_NETWORK, label: 'Virtual Network', displayName: 'Virtual Network', weight: 6 },
+    { name: LIST_FIREWALL, label: 'Firewall', displayName: 'Firewall', weight: 5 },
+    { name: LIST_DHCP, label: 'DHCP', displayName: 'DHCP', weight: 4 },
+    { name: LIST_DNS, label: 'DNS', displayName: 'DNS', weight: 3 },
+    { name: ROAD_MAP, label: 'Road Map', displayName: 'Road Map', weight: 2242 },
+    { name: WISH_PAGE, label: 'Make a wish!', displayName: 'Make a wish!', weight: 1 },
+  ]
+
+  vt.sort((a, b) => b.weight - a.weight);
+
+  vt.forEach(v => {
+    weightType(v.name, v.weight, true);
+    virtualType({
+      label: v.label,
+      displayName: v.displayName,
+      name: v.name,
+      route: {
+        name: `${PRODUCT_NAME}-c-cluster-${v.name}`,
+        params: {
+          product: PRODUCT_NAME,
+          cluster: BLANK_CLUSTER
+        }
       }
-    }
-  });
+    })
+  })
 
-  weightType(LIST_NETWORK, 1006, true)
-  virtualType({
-    label: 'Virtual Network',
-    displayName: 'Virtual Network',
-    name: LIST_NETWORK,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
+  basicType(vt.map(v => v.name));
 
-  weightType(LIST_FIREWALL, 1005, true)
-  virtualType({
-    label: 'Firewall',
-    displayName: 'Firewall',
-    name: LIST_FIREWALL,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_FIREWALL}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
-
-  weightType(LIST_DNS, 1004, true)
-  virtualType({
-    label: 'DNS',
-    displayName: 'DNS',
-    name: LIST_DNS,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_DNS}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
-
-  weightType(LIST_DHCP, 1003, true)
-  virtualType({
-    label: 'DHCP',
-    displayName: 'DHCP',
-    name: LIST_DHCP,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
-
-  weightType(ROAD_MAP, 1002, true)
-  virtualType({
-    label: 'Road Map',
-    name: ROAD_MAP,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
-
-  weightType(WISH_PAGE, 1001, true)
-  virtualType({
-    label: 'Make a wish!',
-    name: WISH_PAGE,
-    route: {
-      name: `${PRODUCT_NAME}-c-cluster-${WISH_PAGE}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER
-      }
-    }
-  });
-  // creating a custom page
-  // virtualType({
-  //   label: 'NAT Gateway',
-  //   labelKey: 'NAT Gateway',
-  //   displayName: 'NAT Gateway',
-  //   name: LIST_NAT_GATEWAY,
-  //   route: {
-  //     name: `${PRODUCT_NAME}-c-cluster-${LIST_NAT_GATEWAY}`,
-  //     params: {
-  //       product: PRODUCT_NAME,
-  //       cluster: BLANK_CLUSTER
-  //     }
-  //   }
-  // });
-
-  // creating a custom page
-  // virtualType({
-  //   labelKey: 'some.translation.key',
-  //   name: ROUTE_TABLE,
-  //   route: {
-  //     name: `${PRODUCT_NAME}-c-cluster-${ROUTE_TABLE}`,
-  //     params: {
-  //       product: PRODUCT_NAME,
-  //       cluster: BLANK_CLUSTER
-  //     }
-  //   }
-  // });
-
-  // creating a custom page
-  // virtualType({
-  //   labelKey: 'some.translation.key',
-  //   name: FORMS,
-  //   route: {
-  //     name: `${PRODUCT_NAME}-c-cluster-${FORMS}`,
-  //     params: {
-  //       product: PRODUCT_NAME,
-  //       cluster: BLANK_CLUSTER
-  //     }
-  //   }
-  // });
   // const REPO = 'catalog.cattle.io.clusterrepo';
 
   // mapGroup('HOME', 'Repositories');  
@@ -271,7 +162,7 @@ export function init($plugin: any, store: any) {
   // basicType([LIST_NETWORK, ROUTE_TABLE], "Network");
   // basicType([NODE, CLUSTER], "Management");
   // basicType(['Network', LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP], "Infrastructure");
-  basicType([LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE]);
+  // basicType([LIST_K8, LIST_NETWORK, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE]);
   // basicType([ROAD_MAP, WISH_PAGE]);
   // weightGroup('Infrastructure', 1001, true)
 }
