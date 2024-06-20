@@ -6,35 +6,6 @@
       <Alert :variant="apiResponse" @close="apiResponse = null">{{ apiResponseMessage }}</Alert>
     </div>
     <GroupButtons :list="vnetButtons" @action="actionHandler"/>
-    <div class="form-row mt-10">
-      <div class="form-column">
-        <SortableTable 
-          :headers="networkHeader" 
-          :rows="networks" 
-          :paging="true" 
-          :rowActionsWidth="10" 
-          :rows-per-page="5" 
-          keyField="name"
-          :loading="loading"
-          :tableActions="true"
-          :rowActions="true"
-          >
-          <template #header-left>
-            <cButton class="cbtn btn-primary block" @click="initBulkDelete" :disabled="loading">
-              <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
-            </cButton>
-          </template>
-          <template #cell:name="{row}">
-            <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
-          </template>
-          <template #row-actions="row">
-            <cButton class="cbtn btn-primary" @click="openModal(row.row)" :disabled="loading">
-              <span class="fa fa-trash fa-lg mr-5"></span> Delete
-            </cButton>
-          </template>
-        </SortableTable>
-      </div>
-    </div>
 
     <div class="form-row mt-10">
       <div class="form-column">
@@ -56,6 +27,46 @@
           </template>
           <template #row-actions="row">
             <span></span>
+          </template>
+        </SortableTable>
+      </div>
+    </div>
+
+    <div class="form-row mt-10">
+      <div class="form-column">
+        <SortableTable 
+          :headers="networkHeader" 
+          :rows="networks" 
+          :paging="true" 
+          :rowActionsWidth="10" 
+          :rows-per-page="5" 
+          keyField="name"
+          :loading="loading"
+          :tableActions="true"
+          :rowActions="true"
+          >
+          <template #header-left>
+            <div class="row table-heading">
+              <h2 class="mb-0">
+                Virtual Network
+              </h2>
+              <cButton class="cbtn btn-light block mr-10 ml-10" @click="actionHandler('create')" :disabled="loading">
+                <span class="fa fa-plus fa-lg mr-5"></span> Create
+              </cButton>
+
+              <cButton class="cbtn btn-primary block" @click="initBulkDelete" :disabled="loading">
+                <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
+              </cButton>              
+            </div>
+            
+          </template>
+          <template #cell:name="{row}">
+            <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
+          </template>
+          <template #row-actions="row">
+            <cButton class="cbtn btn-primary" @click="openModal(row.row)" :disabled="loading">
+              <span class="fa fa-trash fa-lg mr-5"></span> Delete
+            </cButton>
           </template>
         </SortableTable>
       </div>
