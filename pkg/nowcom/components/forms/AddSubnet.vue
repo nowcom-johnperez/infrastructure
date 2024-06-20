@@ -97,7 +97,7 @@ export default {
             return validateString(this.subnetName)
         },
         hasDuplicateIP() {
-            return this.currentNetwork.subnets.find((subnet) => subnet.address === this.subnetIP)
+            return !this.currentNetwork.vrf && this.currentNetwork.subnets.find((subnet) => subnet.address === this.subnetIP)
         }
     },
     methods: {
