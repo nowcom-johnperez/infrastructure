@@ -16,13 +16,14 @@
                     :disabled="currentNetwork?.vrf === 'express'"
                 />
                 <p v-if="!isSubnetIPValid" class="text-danger" style="font-weight: bold;">Invalid IP Address</p>
+                <p v-if="subnetName && hasDuplicateIP && !loading" class="text-danger" style="font-weight: bold;">Duplicate IP Address</p>
             </div>
             <div class="checkbox-content">
                 <input type="checkbox" id="dhcp" v-model="dhcpEnabled" />
                 <label for="dhcp">DHCP Enabled?</label>
             </div>
             <div class="add-form-row">
-                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading || !isEnabledExpressAdd || !isSubnetValidName" @click="addSubnet">
+                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading || !isEnabledExpressAdd || !isSubnetValidName || hasDuplicateIP" @click="addSubnet">
                     <template v-if="!loading">
                         <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
                     </template>
@@ -70,6 +71,7 @@ export default {
             subnetIP: '10.0.0.0',
             dhcpEnabled: false,
             loading: false,
+            tempNetwork: {}
         }
     },
     watch: {
@@ -93,6 +95,9 @@ export default {
         },
         isSubnetValidName() {
             return validateString(this.subnetName)
+        },
+        hasDuplicateIP() {
+            return this.currentNetwork.subnets.find((subnet) => subnet.address === this.subnetIP)
         }
     },
     methods: {
@@ -104,18 +109,18 @@ export default {
         },
         resetForm() {
             this.subnetName = '';
-            this.subnetIP = '10.55.0.0';
+            this.subnetIP = '10.0.0.0';
             this.loading = false;
         },
         async processNormalSubnet() {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const network = {...this.currentNetwork};
+                    this.tempNetwork = {...this.currentNetwork};
                     this.apiError = null; // Reset error state
                     // v0.2
                     const subnetName = this.subnetName.toLowerCase();
                     const subnet_data = {
-                        longName: `${network.name}-${subnetName}-${this.subnetIP}-24`,
+                        longName: `${this.tempNetwork.name}-${subnetName}-${this.subnetIP}-24`,
                         name:      subnetName,
                         address:   this.subnetIP,
                         formattedAddress: `${this.subnetIP}/24`,
@@ -123,25 +128,28 @@ export default {
                         prefix_len: 24
                     };
 
-                    network.subnets.push(subnet_data);
+                    this.tempNetwork.subnets.push(subnet_data);
 
                     const vnet_data = {
                         apiVersion: 'packetlifter.dev/v1',
                         kind:       'Vnet',
                         // vnet_vlan: this.selectedVnetVlan,
                         metadata:   {
-                            name:      network.name.toLowerCase(),
+                            name:      this.tempNetwork.name.toLowerCase(),
                             namespace: 'default'
                         },
                         spec: {
-                            name:    network.name.toLowerCase(),
-                            subnets: network.subnets,
+                            name:    this.tempNetwork.name.toLowerCase(),
+                            subnets: this.tempNetwork.subnets,
                         }
                     };
 
-                    await vNetService.patchSubnet(network.name, vnet_data);
+                    await vNetService.patchSubnet(this.tempNetwork.name, vnet_data);
                     resolve('success');
                 } catch (error){
+                    // remove the added name
+                    const index = this.tempNetwork.subnets.findIndex((subnet) => subnet.name === this.subnetName.toLowerCase())
+                    this.tempNetwork.subnets.splice(index, 1);
                     reject(error);
                 }
             })
