@@ -38,3 +38,6 @@ Release v0.2.9
 - Added DHCP for subnets
 - Implement Store for network
 - Added Bulk Delete for networks
+
+Release v0.2.10
+- Update API URL
