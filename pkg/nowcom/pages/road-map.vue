@@ -8,7 +8,7 @@
     <div class="release-notes-container mt-10">
       <h2>Release Notes</h2>
       <div v-if="releaseNotes.items.length > 0" class="mt-20" v-for="v in releaseNotes.items" :key="v.name">
-        <SortableTable :headers="releaseNotes.headers" :rows="v.list" keyField="version">
+        <SortableTable :headers="releaseNotes.headers" :rows="v.list" keyField="dateRelease">
           <template #header-left>
             <div class="row table-heading">
               <h3 class="mb-0">
@@ -81,6 +81,9 @@ export default {
     selectVersion(rn) {
       this.releaseNotes.selected = rn
       this.releaseNotes.showModal = true
+    },
+    sortVersion(list) {
+      return list.sort((a, b) => new Date(b.dateRelease) - new Date(a.dateRelease));
     }
   },
   mounted() {

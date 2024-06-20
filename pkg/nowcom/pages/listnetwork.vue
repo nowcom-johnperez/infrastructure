@@ -1,7 +1,7 @@
 <!-- eslint-disable no-console -->
 <template>
   <div class="base">
-    <h1 class="text-label">Virtual Network</h1>
+    <h1 class="text-label">Network</h1>
     <div class="mt-10 mb-10" v-if="apiResponse">
       <Alert :variant="apiResponse" @close="apiResponse = null">{{ apiResponseMessage }}</Alert>
     </div>
