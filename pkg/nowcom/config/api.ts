@@ -1,7 +1,8 @@
 // api.ts
 export const NETWORK_URL = 'https://10.54.46.200:8000/';
 // export const NETWORK_URL_V2 = 'https://10.55.12.114:6443/';
-export const NETWORK_URL_V2 = 'https://packetlifter-int.hankeyinvestments.com:6443/';
+export const NETWORK_URL_V2 = 'https://packetlifter-int.hankeyinvestments.com/';
+// export const NETWORK_URL_V2 = 'https://test-pl-proxy.hankeyinvestments.com/';
 // export const RANCHER_DIRECT_URL = 'https://10.55.12.50/';
 // export const RANCHER_DIRECT_URL = 'https://10.55.12.111/';
 export const RANCHER_DIRECT_URL = 'https://els-cybraindev.hankeyinvestments.com/';
