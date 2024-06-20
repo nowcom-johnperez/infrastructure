@@ -129,6 +129,7 @@ import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
 import { isValidIP, transformArrayToObject, validateString } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
+import { stripErrorMessage } from '../services/helpers/utils'
 
 export default {
   name: "CreateNetwork",
@@ -138,7 +139,7 @@ export default {
       reviewModalState: false,
       subnets: [
         {
-          address: "10.55.0.0",
+          address: "10.0.0.0",
           name: "default",
           dhcpEnabled: false,
         }
@@ -232,7 +233,7 @@ export default {
     addSubnet() {
       // Add a new empty subnet field
       this.subnets.push({
-        address: "10.55.0.0",
+        address: "10.0.0.0",
         name: "",
         dhcpEnabled: false,
       })
@@ -272,10 +273,9 @@ export default {
         if (e.reason === 'AlreadyExists') {
           this.apiResponseMessage = `${e?.details?.name} network already exist`;
         } else {
-          this.apiResponseMessage = "Oops! Something went wrong!";
+          this.apiResponseMessage = stripErrorMessage(e.message);
         }
         this.isLoading = false;
-        
         this.apiResponse = 'error';
       }
     },

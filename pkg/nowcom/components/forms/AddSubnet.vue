@@ -22,7 +22,7 @@
                 <label for="dhcp">DHCP Enabled?</label>
             </div>
             <div class="add-form-row">
-                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading || !isEnabledExpressAdd" @click="addSubnet">
+                <cButton class="cbtn btn-light" :disabled="isAddSubnetDisabled || loading || !isEnabledExpressAdd || !isSubnetValidName" @click="addSubnet">
                     <template v-if="!loading">
                         <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
                     </template>
@@ -67,7 +67,7 @@ export default {
     data() {
         return {
             subnetName: '',
-            subnetIP: '10.55.0.0',
+            subnetIP: '10.0.0.0',
             dhcpEnabled: false,
             loading: false,
         }
@@ -108,61 +108,69 @@ export default {
             this.loading = false;
         },
         async processNormalSubnet() {
-            try {
-                const network = {...this.currentNetwork};
-                this.apiError = null; // Reset error state
-                // v0.2
-                const subnetName = this.subnetName.toLowerCase();
-                const subnet_data = {
-                    longName: `${network.name}-${subnetName}-${this.subnetIP}-24`,
-                    name:      subnetName,
-                    address:   this.subnetIP,
-                    formattedAddress: `${this.subnetIP}/24`,
-                    dhcpEnabled: this.dhcpEnabled,
-                    prefix_len: 24
-                };
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const network = {...this.currentNetwork};
+                    this.apiError = null; // Reset error state
+                    // v0.2
+                    const subnetName = this.subnetName.toLowerCase();
+                    const subnet_data = {
+                        longName: `${network.name}-${subnetName}-${this.subnetIP}-24`,
+                        name:      subnetName,
+                        address:   this.subnetIP,
+                        formattedAddress: `${this.subnetIP}/24`,
+                        dhcpEnabled: this.dhcpEnabled,
+                        prefix_len: 24
+                    };
 
-                network.subnets.push(subnet_data);
+                    network.subnets.push(subnet_data);
 
-                const vnet_data = {
-                    apiVersion: 'packetlifter.dev/v1',
-                    kind:       'Vnet',
-                    // vnet_vlan: this.selectedVnetVlan,
-                    metadata:   {
-                        name:      network.name.toLowerCase(),
-                        namespace: 'default'
-                    },
-                    spec: {
-                        name:    network.name.toLowerCase(),
-                        subnets: network.subnets,
-                    }
-                };
+                    const vnet_data = {
+                        apiVersion: 'packetlifter.dev/v1',
+                        kind:       'Vnet',
+                        // vnet_vlan: this.selectedVnetVlan,
+                        metadata:   {
+                            name:      network.name.toLowerCase(),
+                            namespace: 'default'
+                        },
+                        spec: {
+                            name:    network.name.toLowerCase(),
+                            subnets: network.subnets,
+                        }
+                    };
 
-                console.log('send to API', subnet_data);
-                console.log('log', network);
-
-                await vNetService.patchSubnet(network.name, vnet_data);
-            } catch (error){
-                console.log(error);
-                this.loading = false;
-            }
+                    await vNetService.patchSubnet(network.name, vnet_data);
+                    resolve('success');
+                } catch (error){
+                    reject(error);
+                }
+            })
+            
         },
 
         async processExpressSubnet() {
-            const express_data = {
-                apiVersion: 'packetlifter.dev/v1',
-                kind:       'Subnet',
-                metadata:   {
-                    name:      this.currentSub.name,
-                    labels:     transformArrayToObject([{ key: 'displayName', value: this.subnetName }])
-                },
-                spec: {
-                    name:    this.currentSub.name,
-                    dhcpEnabled: this.dhcpEnabled,
-                    activated: true,
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const express_data = {
+                        apiVersion: 'packetlifter.dev/v1',
+                        kind:       'Subnet',
+                        metadata:   {
+                            name:      this.currentSub.name,
+                            labels:     transformArrayToObject([{ key: 'displayName', value: this.subnetName }])
+                        },
+                        spec: {
+                            name:    this.currentSub.name,
+                            dhcpEnabled: this.dhcpEnabled,
+                            activated: true,
+                        }
+                    };
+                    await expressService.patchExpressSubnet(this.currentSub.name, express_data);
+                    resolve("success");
+                } catch (error) {
+                    reject(error)
                 }
-            };
-            await expressService.patchExpressSubnet(this.currentSub.name, express_data);
+            })
+            
         },
         async addSubnet() {
             try {
@@ -176,9 +184,7 @@ export default {
                 this.$emit('success')
             } catch(error) {
                 this.loading = false;
-                // this.subnetResponseMessage = 'Error';
-                // Set the API error in the component
-                // this.apiError = 'Error creating Subnet';
+                this.$emit('error', error.response?.data?.message);
             }
         },
     }

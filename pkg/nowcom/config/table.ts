@@ -118,7 +118,7 @@ const DHCP_HEADERS: SortableHeaderType[] = [
     },
     {
         name: 'available',
-        label: 'Available / Used',
+        label: 'Used / Available',
         sort: ['available'],
         search: ['available'],
         width: 10

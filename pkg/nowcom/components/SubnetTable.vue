@@ -55,8 +55,6 @@ export default {
         return 'subnet-name-required'
       }
 
-      console.log(`addressObj.name`, addressObj.name, validateString(addressObj.name))
-
       if (!validateString(addressObj.name)) {
         return 'subnet-name-invalid'
       }
