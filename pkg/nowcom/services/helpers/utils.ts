@@ -46,3 +46,11 @@ export const validateString = (input: string) => {
     const regex = /^[a-zA-Z0-9-.]+$/;
     return regex.test(input);
 }
+
+export const stripErrorMessage = (errorMessage: string) => {
+    const parts = errorMessage.split('denied the request: ');
+    if (parts.length > 1) {
+        return parts[1].trim();
+    }
+    return errorMessage;
+}

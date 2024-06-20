@@ -6,10 +6,6 @@ export const expressService = {
         return res.data.items
     },
 
-    getNearestSubnetIPAvailable: async () => {
-
-    },
-
     getNetworkTranslations: async () => {
         return await INSTANCE_V2.get(`/apis/packetlifter.dev/v1/addresstranslations`)
     },

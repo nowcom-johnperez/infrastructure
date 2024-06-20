@@ -1,0 +1,2 @@
+(("undefined"!==typeof self?self:this)["webpackJsonpnowcom_0_2_10"]=("undefined"!==typeof self?self:this)["webpackJsonpnowcom_0_2_10"]||[]).push([[0],{"1be0":function(e,s,n){"use strict";n.r(s);var t=function(){var e=this,s=e._self._c;return s("div",[s("h1",[e._v(e._s(e.value.name))]),s("h3",[e._v(e._s(e.value.version))])])},f=[],u={props:{value:{type:Object,required:!0}}},l=u,o=n("d802"),_=Object(o["a"])(l,t,f,!1,null,"f80f62b0",null);s["default"]=_.exports}}]);
+//# sourceMappingURL=nowcom-0.2.10.umd.min.detail.js.map

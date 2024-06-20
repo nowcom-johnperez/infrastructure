@@ -27,7 +27,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
     return {
         state() {
             return {
-                items: []
+                items: [],
             }
         },
         getters: {
@@ -54,21 +54,22 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                     vNetService.getNetworkTranslations()
                 ]);
         
-                const parsedData = networks.data.items.map((item: any) => {
+                const parsedData = networks.data.items.filter((item: any) => item.spec.name !== 'express').map((item: any) => {
                   const translatedAddressData = networkTranslations.data.items;
                   const mainTranslatedAddress = findTranslatedAddress(translatedAddressData, item.spec.name);
                   const subnets = item.spec.subnets.map((subnet: any) => {
                     return {
                       address:    subnet.address,
                       formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-                      name:       stripStrings(subnet.name),
+                      name:       subnet.name,
+                    //   longName:   stripStrings(subnet.name),
                       longName:   subnet.name,
                       prefix_len: subnet.prefixLength,
                       dhcpEnabled: subnet.dhcpEnabled,
                       translatedAddress: subnet.addressTranslation?.outside
                     }
                   });
-        
+
                   return {
                     name:    item.spec.name,
                     subnets,
@@ -76,9 +77,24 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                     cluster: 'local',
                     translatedAddress: mainTranslatedAddress?.spec?.outside
                   }
-                }).filter((item: any) => item.name !== 'express');
+                });
         
                 commit('setItems', parsedData)
+            },
+            async getSubnets({ commit }: any, networkName: string) {
+                const res: any = await vNetService.getSubnetByName(networkName);
+                return res.data?.spec?.subnets.map((subnet: any) => {
+                    return {
+                        address:    subnet.address,
+                        formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
+                        name:       subnet.name,
+                        //   longName:   stripStrings(subnet.name),
+                        longName:   subnet.name,
+                        prefix_len: subnet.prefixLength,
+                        dhcpEnabled: subnet.dhcpEnabled,
+                        translatedAddress: subnet.addressTranslation?.outside
+                    }
+                })
             },
             async create({ commit }: any, data: any) {
                 return await vNetService.createNetwork(data);

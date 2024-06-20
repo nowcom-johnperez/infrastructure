@@ -87,6 +87,11 @@ export const RELEASE_NOTES = [
         notes: ['Make a Wish', 'Express Networks'],
         dateRelease: '2024-06-12'
       },
+      {
+        version: '0.2.10',
+        notes: ['Update API URL', 'Update Error Handlers for Form', 'Set 10.0.0.0 for Normal Subnet', 'Fix hydration issue for Network', 'Rename Virtual Network to Network'],
+        dateRelease: '2024-06-20'
+      }
     ]
   }
 ]

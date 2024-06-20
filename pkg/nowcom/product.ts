@@ -101,12 +101,12 @@ export function init($plugin: any, store: any) {
 
   const vt = [
     { name: LIST_K8, label: 'Kubernetes', displayName: 'Kubernetes', weight: 7 },
-    { name: LIST_NETWORK, label: 'Virtual Network', displayName: 'Virtual Network', weight: 6 },
+    { name: LIST_NETWORK, label: 'Network', displayName: 'Network', weight: 6 },
     { name: LIST_FIREWALL, label: 'Firewall', displayName: 'Firewall', weight: 5 },
     { name: LIST_DHCP, label: 'DHCP', displayName: 'DHCP', weight: 4 },
     { name: LIST_DNS, label: 'DNS', displayName: 'DNS', weight: 3 },
-    { name: ROAD_MAP, label: 'Road Map', displayName: 'Road Map', weight: 2242 },
-    { name: WISH_PAGE, label: 'Make a wish!', displayName: 'Make a wish!', weight: 1 },
+    { name: ROAD_MAP, label: 'Road Map', displayName: 'Road Map', weight: 2 },
+    { name: WISH_PAGE, label: 'Make a wish!', displayName: 'Make a wish!', weight: 0 },
   ]
 
   vt.sort((a, b) => b.weight - a.weight);

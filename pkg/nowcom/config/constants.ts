@@ -2,7 +2,7 @@ export const PRODUCT_NAME = 'Infrastructure';
 export const PAGE_NAME = 'Home';
 export const NETWORK_HOME = 'infrastructure';
 
-export const LIST_NETWORK = 'vnet';
+export const LIST_NETWORK = 'network';
 export const LIST_K8 = 'kubernetes';
 export const LIST_FIREWALL = 'firewall';
 export const LIST_DNS = 'dns';

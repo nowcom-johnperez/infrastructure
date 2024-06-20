@@ -71,12 +71,11 @@ export default {
           return {
             name: d.metadata.name,
             subnet: d.spec.ipv4Config.cidr,
-            available: `${d.status.ipv4.available}/${d.status.ipv4.used }`,
+            available: `${d.status.ipv4.used }/${d.status.ipv4.available}`,
             utilization: this.getUtilization(d.status.ipv4) + " %"
           }
         })
       } catch (err) {
-        console.log(`err`, err)
         this.response = {
           show: true,
           message: 'Fetching DHCP Data: Oops! Something went wrong!',
