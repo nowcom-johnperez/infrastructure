@@ -270,6 +270,7 @@ export default {
     },
     async getSubnetByName (networkName) {
       if (!this.selectedNetwork?.vrf) {
+        this.subnetsListing = [];
         this.subnetsListing = await this.$store.dispatch(`${PRODUCT_NAME}/getSubnets`, networkName);
         const index = this.networks.findIndex((vnet) => vnet.name === networkName);
         if (index >= 0) {

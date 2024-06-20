@@ -61,8 +61,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                     return {
                       address:    subnet.address,
                       formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-                      name:       subnet.name,
-                    //   longName:   stripStrings(subnet.name),
+                      name:       stripStrings(item.spec.name, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
                       longName:   subnet.name,
                       prefix_len: subnet.prefixLength,
                       dhcpEnabled: subnet.dhcpEnabled,
@@ -87,8 +86,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
                     return {
                         address:    subnet.address,
                         formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-                        name:       subnet.name,
-                        //   longName:   stripStrings(subnet.name),
+                        name:       stripStrings(networkName, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
                         longName:   subnet.name,
                         prefix_len: subnet.prefixLength,
                         dhcpEnabled: subnet.dhcpEnabled,

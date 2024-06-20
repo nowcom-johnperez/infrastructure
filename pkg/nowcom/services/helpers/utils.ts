@@ -1,16 +1,18 @@
 export const isValidIP = (ip: string) => {
-    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[1-9][0-9]?|0)$/;
+    // const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[1-9][0-9]?|0)$/;
+    const ipRegex = /^10\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.0$/;
     return ipRegex.test(ip);
 }
 
-export const stripStrings = (input: string) => {
-    const firstDashIndex = input.indexOf("-");
-    if (firstDashIndex === -1) return input;
-
-    const secondDashIndex = input.indexOf("-", firstDashIndex + 1);
-    if (secondDashIndex === -1) return input;
-
-    return input.substring(firstDashIndex + 1, secondDashIndex);
+export const stripStrings = (networkName: string, subnetName: string, addressSub: string) => {
+    const prefix = `${networkName}-`;
+    const suffix = `-${addressSub}`;
+    
+    if (subnetName.startsWith(prefix) && subnetName.endsWith(suffix)) {
+        const stripped = subnetName.slice(prefix.length, -suffix.length);
+        return stripped;
+    }
+    return subnetName;
 }
 
 export const findTranslatedAddress = (addressList: any[], addressName: string) => {
