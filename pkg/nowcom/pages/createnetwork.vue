@@ -207,15 +207,25 @@ export default {
 
       const formattedDate = `${year}-${month}-${day}`;
       this.tags.items.push({
-        key: 'packetlifter.dev-owner',
+        key: 'packetlifter.dev/owner-username',
         value: this.user.username
       });
       this.tags.items.push({
-        key: 'packetlifter.dev-created',
+        key: 'packetlifter.dev/owner-name',
+        value: this.user.name.replace(" ", "_")
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/owner-id',
+        value: this.user.id
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/owner-uuid',
+        value: this.user.uuid
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/created',
         value: formattedDate
       });
-
-      console.log(`tags`, this.tags.items, this.user)
     }
   },
   methods: {
@@ -262,7 +272,6 @@ export default {
             subnets: this.subnets,
           }
         };
-        console.log(`vnet_data`, vnet_data);
         await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
         this.apiResponse = 'success';
         this.apiResponseMessage = "VNET Successfully Added";
