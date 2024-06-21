@@ -212,7 +212,7 @@ export default {
       });
       this.tags.items.push({
         key: 'packetlifter.dev/owner-name',
-        value: this.user.name.replace(" ", "_")
+        value: this.user.name.replace(/ /g, "_")
       });
       this.tags.items.push({
         key: 'packetlifter.dev/owner-id',
