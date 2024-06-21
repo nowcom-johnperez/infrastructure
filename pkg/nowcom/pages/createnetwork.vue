@@ -214,6 +214,8 @@ export default {
         key: 'packetlifter.dev-created',
         value: formattedDate
       });
+
+      console.log(`tags`, this.tags.items, this.user)
     }
   },
   methods: {
@@ -260,6 +262,7 @@ export default {
             subnets: this.subnets,
           }
         };
+        console.log(`vnet_data`, vnet_data);
         await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
         this.apiResponse = 'success';
         this.apiResponseMessage = "VNET Successfully Added";
