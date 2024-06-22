@@ -48,7 +48,7 @@ export default {
           apiVersion: "packetlifter.dev/v1",
           kind: "MakeWish",
           metadata: {
-            name: this.subject.replace(/ /g, '-')
+            name: this.subject.toLowerCase().replace(/ /g, '-')
           },
           spec: {
             name: this.subject,
@@ -71,7 +71,7 @@ export default {
         }, 5000)
       } catch (err) {
         this.loading = false
-        if (err.response.statusText === "" && err.response.data.reason === "AlreadyExists") {
+        if (err.response?.statusText === "" && err.response?.data?.reason === "AlreadyExists") {
           this.errorRes = {
             show: true,
             variant: 'error',
