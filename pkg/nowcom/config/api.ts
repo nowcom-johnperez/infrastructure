@@ -24,14 +24,16 @@ export const getConfig = () => {
         NETWORK_URL_V2: 'https://packetlifter-int.hankeyinvestments.com/',
         RANCHER_DIRECT_URL: 'https://els-clouddev.hankeyinvestments.com/',
         BEARERTOKEN: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkZqQWRlY1hLdmljV2JZZzlmN2E3OF9FaXloZVdmS0xwV1IwaEVSWTIyYmMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjY1ZGQ4YWRiLWJiN2EtNGEzMi05MmY4LTgzY2YxMjc0Y2QzNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.llN8vtd4OCnORzzoENFR75HvKQTHsOjAs0As7pMtwwqHtCHaQrn1rRI6Lp8x7ct2xqrr4i86MjVHlYbExQecAsk31u6NnDkqJPgsNqYkvy5TcV6pIx7r6cCjG4Se6AEnF74p6sZoyDijEcIYV93Qt3nRkwZPqHu1Q8qU89nB4ncjBof9J8o4al-ctLKB9HfX14myxsor0Za7NclezvZx_WySpyLd0oHvkkeYg_EOC4pI77iPN6dwwTFGJ4OEsxL_jGK61C4pDfTSCjUTiP2wY6wfH04rdbBIuU82_6I34BRJGPZDIsUNv_IhaLJp6e4Gz0F0HjjGpu9vEdjK01Xzcg',
-        RANCHER_BEARERTOKEN: 'token-dwz8m:vlbqpmct5sn2tbzf22t68w6hdrlqg9z9zt9bkp4tn6q274njqk4nlc'
+        RANCHER_BEARERTOKEN: 'token-dwz8m:vlbqpmct5sn2tbzf22t68w6hdrlqg9z9zt9bkp4tn6q274njqk4nlc',
+        CLUSTER: 'c-m-kl24rgkc'
       };
     } else {
       config = {
         NETWORK_URL_V2: 'https://packetlifter-int.hankeyinvestments.com/',
         RANCHER_DIRECT_URL: 'https://els-cybraindev.hankeyinvestments.com/',
         BEARERTOKEN: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkZqQWRlY1hLdmljV2JZZzlmN2E3OF9FaXloZVdmS0xwV1IwaEVSWTIyYmMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjY1ZGQ4YWRiLWJiN2EtNGEzMi05MmY4LTgzY2YxMjc0Y2QzNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.llN8vtd4OCnORzzoENFR75HvKQTHsOjAs0As7pMtwwqHtCHaQrn1rRI6Lp8x7ct2xqrr4i86MjVHlYbExQecAsk31u6NnDkqJPgsNqYkvy5TcV6pIx7r6cCjG4Se6AEnF74p6sZoyDijEcIYV93Qt3nRkwZPqHu1Q8qU89nB4ncjBof9J8o4al-ctLKB9HfX14myxsor0Za7NclezvZx_WySpyLd0oHvkkeYg_EOC4pI77iPN6dwwTFGJ4OEsxL_jGK61C4pDfTSCjUTiP2wY6wfH04rdbBIuU82_6I34BRJGPZDIsUNv_IhaLJp6e4Gz0F0HjjGpu9vEdjK01Xzcg',
-        RANCHER_BEARERTOKEN: 'token-tcs46:brqknm659wwtjm5r8gpz6tr5m4jrhz4vdrfkgt9lgfgv8nt2vbkkrw'
+        RANCHER_BEARERTOKEN: 'token-tcs46:brqknm659wwtjm5r8gpz6tr5m4jrhz4vdrfkgt9lgfgv8nt2vbkkrw',
+        CLUSTER: 'c-m-qcvh2r78'
       };
     }
   } else {
@@ -40,7 +42,8 @@ export const getConfig = () => {
       NETWORK_URL_V2: 'https://packetlifter-int.hankeyinvestments.com/',
       RANCHER_DIRECT_URL: 'https://els-cybraindev.hankeyinvestments.com/',
       BEARERTOKEN: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkZqQWRlY1hLdmljV2JZZzlmN2E3OF9FaXloZVdmS0xwV1IwaEVSWTIyYmMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjY1ZGQ4YWRiLWJiN2EtNGEzMi05MmY4LTgzY2YxMjc0Y2QzNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.llN8vtd4OCnORzzoENFR75HvKQTHsOjAs0As7pMtwwqHtCHaQrn1rRI6Lp8x7ct2xqrr4i86MjVHlYbExQecAsk31u6NnDkqJPgsNqYkvy5TcV6pIx7r6cCjG4Se6AEnF74p6sZoyDijEcIYV93Qt3nRkwZPqHu1Q8qU89nB4ncjBof9J8o4al-ctLKB9HfX14myxsor0Za7NclezvZx_WySpyLd0oHvkkeYg_EOC4pI77iPN6dwwTFGJ4OEsxL_jGK61C4pDfTSCjUTiP2wY6wfH04rdbBIuU82_6I34BRJGPZDIsUNv_IhaLJp6e4Gz0F0HjjGpu9vEdjK01Xzcg',
-      RANCHER_BEARERTOKEN: 'token-tcs46:brqknm659wwtjm5r8gpz6tr5m4jrhz4vdrfkgt9lgfgv8nt2vbkkrw'
+      RANCHER_BEARERTOKEN: 'token-tcs46:brqknm659wwtjm5r8gpz6tr5m4jrhz4vdrfkgt9lgfgv8nt2vbkkrw',
+      CLUSTER: 'c-m-qcvh2r78'
     };
   }
 
