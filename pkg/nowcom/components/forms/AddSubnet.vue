@@ -130,6 +130,13 @@ export default {
 
                     this.tempNetwork.subnets.push(subnet_data);
 
+                    const subs = this.tempNetwork.subnets.map((sub) => {
+                        return {
+                            name: sub.name,
+                            address: sub.address
+                        }
+                    })
+
                     const vnet_data = {
                         apiVersion: 'packetlifter.dev/v1',
                         kind:       'Vnet',
@@ -140,7 +147,7 @@ export default {
                         },
                         spec: {
                             name:    this.tempNetwork.name.toLowerCase(),
-                            subnets: this.tempNetwork.subnets,
+                            subnets: subs,
                         }
                     };
 
@@ -192,6 +199,7 @@ export default {
                 this.$emit('success')
             } catch(error) {
                 this.loading = false;
+                console.log(`error`, error)
                 this.$emit('error', error.response?.data?.message);
             }
         },

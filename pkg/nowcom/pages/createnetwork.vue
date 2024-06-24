@@ -207,11 +207,23 @@ export default {
 
       const formattedDate = `${year}-${month}-${day}`;
       this.tags.items.push({
-        key: 'packetlifter.dev-owner',
+        key: 'packetlifter.dev/owner-username',
         value: this.user.username
       });
       this.tags.items.push({
-        key: 'packetlifter.dev-created',
+        key: 'packetlifter.dev/owner-name',
+        value: this.user.name.replace(/ /g, "_")
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/owner-id',
+        value: this.user.id
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/owner-uuid',
+        value: this.user.uuid
+      });
+      this.tags.items.push({
+        key: 'packetlifter.dev/created',
         value: formattedDate
       });
     }
