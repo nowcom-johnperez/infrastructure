@@ -130,6 +130,8 @@ import Alert from '../components/common/Alert'
 import { isValidIP, transformArrayToObject, validateString } from '../services/helpers/utils'
 import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 import { stripErrorMessage } from '../services/helpers/utils'
+import { getConfig } from '../config/api';
+const { API_VERSION, API } = getConfig()
 
 export default {
   name: "CreateNetwork",
@@ -207,23 +209,23 @@ export default {
 
       const formattedDate = `${year}-${month}-${day}`;
       this.tags.items.push({
-        key: 'packetlifter.io/owner-username',
+        key: `${API}/owner-username`,
         value: this.user.username
       });
       this.tags.items.push({
-        key: 'packetlifter.io/owner-name',
+        key: `${API}/owner-name`,
         value: this.user.name.replace(/ /g, "_")
       });
       this.tags.items.push({
-        key: 'packetlifter.io/owner-id',
+        key: `${API}/owner-id`,
         value: this.user.id
       });
       this.tags.items.push({
-        key: 'packetlifter.io/owner-uuid',
+        key: `${API}/owner-uuid`,
         value: this.user.uuid
       });
       this.tags.items.push({
-        key: 'packetlifter.io/created',
+        key: `${API}/created`,
         value: formattedDate
       });
     }
@@ -259,7 +261,7 @@ export default {
       try {
         this.isLoading = true;
         const vnet_data = {
-          apiVersion: "packetlifter.io/v1",
+          apiVersion: `${API}/${API_VERSION}`,
           kind: "Vnet",
           // vnet_vlan: this.selectedVnetVlan,
           metadata: {

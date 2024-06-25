@@ -16,7 +16,9 @@
 
 <script>
 import { wishService } from '../../services/api/wish';
+import { getConfig } from '../../config/api';
 import Alert from '../common/Alert'
+const { API_VERSION, API } = getConfig()
 export default {
   name: 'WishForm',
   components: {
@@ -45,7 +47,7 @@ export default {
       try {
         this.loading = true
         const payload = {
-          apiVersion: "packetlifter.io/v1",
+          apiVersion: `${API}/${API_VERSION}`,
           kind: "MakeWish",
           metadata: {
             name: this.subject.toLowerCase().replace(/ /g, '-')

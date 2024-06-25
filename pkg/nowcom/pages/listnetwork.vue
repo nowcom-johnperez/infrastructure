@@ -166,6 +166,8 @@ import { BadgeState } from '@components/BadgeState';
 import { PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
 import { expressService } from '../services/api/express'
 import { stripErrorMessage } from '../services/helpers/utils'
+import { getConfig } from '../config/api';
+const { API_VERSION, API } = getConfig()
 
 export default {
   name: 'ListNetwork',
@@ -402,7 +404,7 @@ export default {
         if (!this.selectedNetwork?.vrf) {
           this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
           const vnet_data = {
-            apiVersion: 'packetlifter.io/v1',
+            apiVersion: `${API}/${API_VERSION}`,
             kind:       'Vnet',
             // vnet_vlan: this.selectedVnetVlan,
             metadata:   {
@@ -425,7 +427,7 @@ export default {
         } else {
           const name = this.express.selectedSub?.name
           const express_data = {
-              apiVersion: 'packetlifter.io/v1',
+              apiVersion: `${API}/${API_VERSION}`,
               kind:       'Subnet',
               metadata:   {
                 name
