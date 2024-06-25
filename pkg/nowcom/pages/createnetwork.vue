@@ -207,23 +207,23 @@ export default {
 
       const formattedDate = `${year}-${month}-${day}`;
       this.tags.items.push({
-        key: 'packetlifter.dev/owner-username',
+        key: 'packetlifter.io/owner-username',
         value: this.user.username
       });
       this.tags.items.push({
-        key: 'packetlifter.dev/owner-name',
+        key: 'packetlifter.io/owner-name',
         value: this.user.name.replace(/ /g, "_")
       });
       this.tags.items.push({
-        key: 'packetlifter.dev/owner-id',
+        key: 'packetlifter.io/owner-id',
         value: this.user.id
       });
       this.tags.items.push({
-        key: 'packetlifter.dev/owner-uuid',
+        key: 'packetlifter.io/owner-uuid',
         value: this.user.uuid
       });
       this.tags.items.push({
-        key: 'packetlifter.dev/created',
+        key: 'packetlifter.io/created',
         value: formattedDate
       });
     }
@@ -259,7 +259,7 @@ export default {
       try {
         this.isLoading = true;
         const vnet_data = {
-          apiVersion: "packetlifter.dev/v1",
+          apiVersion: "packetlifter.io/v1",
           kind: "Vnet",
           // vnet_vlan: this.selectedVnetVlan,
           metadata: {
