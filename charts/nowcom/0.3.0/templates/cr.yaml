@@ -8,5 +8,5 @@ spec:
   plugin:
     name: {{ include "extension-server.fullname" . }}
     version: {{ (semver (default .Chart.AppVersion .Values.plugin.versionOverride)).Original }}
-    endpoint: https://gitlab.com/nowcom/infrard/rancher-nowcom-extension/main/extensions/nowcom/0.3.0
+    endpoint: https://raw.githubusercontent.com/nowcom-johnperez/infrastructure/main/extensions/nowcom/0.3.0
     noCache: {{ .Values.plugin.noCache }}
