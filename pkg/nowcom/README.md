@@ -45,3 +45,7 @@ Release v0.2.10
 - Set 10.0.0.0 for Normal Subnet
 - Fix hydration issue for Network
 - Rename Virtual Network to Network
+
+Release v0.3.0
+- Update API URL packetlifter.dev -> packetlifter.io
+- implement correct sidebar links order

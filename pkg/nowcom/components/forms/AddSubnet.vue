@@ -138,7 +138,7 @@ export default {
                     })
 
                     const vnet_data = {
-                        apiVersion: 'packetlifter.dev/v1',
+                        apiVersion: 'packetlifter.io/v1',
                         kind:       'Vnet',
                         // vnet_vlan: this.selectedVnetVlan,
                         metadata:   {
@@ -167,7 +167,7 @@ export default {
             return new Promise(async (resolve, reject) => {
                 try {
                     const express_data = {
-                        apiVersion: 'packetlifter.dev/v1',
+                        apiVersion: 'packetlifter.io/v1',
                         kind:       'Subnet',
                         metadata:   {
                             name:      this.currentSub.name,

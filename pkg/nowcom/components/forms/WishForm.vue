@@ -45,7 +45,7 @@ export default {
       try {
         this.loading = true
         const payload = {
-          apiVersion: "packetlifter.dev/v1",
+          apiVersion: "packetlifter.io/v1",
           kind: "MakeWish",
           metadata: {
             name: this.subject.toLowerCase().replace(/ /g, '-')

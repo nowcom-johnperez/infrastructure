@@ -402,7 +402,7 @@ export default {
         if (!this.selectedNetwork?.vrf) {
           this.selectedNetwork.subnets = this.selectedNetwork.subnets.filter(subnet => subnet.name !== this.subnet_name);
           const vnet_data = {
-            apiVersion: 'packetlifter.dev/v1',
+            apiVersion: 'packetlifter.io/v1',
             kind:       'Vnet',
             // vnet_vlan: this.selectedVnetVlan,
             metadata:   {
@@ -425,7 +425,7 @@ export default {
         } else {
           const name = this.express.selectedSub?.name
           const express_data = {
-              apiVersion: 'packetlifter.dev/v1',
+              apiVersion: 'packetlifter.io/v1',
               kind:       'Subnet',
               metadata:   {
                 name
