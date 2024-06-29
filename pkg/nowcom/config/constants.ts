@@ -1,4 +1,5 @@
 export const PRODUCT_NAME = 'Infrastructure';
+export const PRODUCT_STORE = 'infrastructure';
 export const PAGE_NAME = 'Home';
 export const NETWORK_HOME = 'infrastructure';
 

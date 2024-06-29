@@ -1,5 +1,5 @@
 import { CoreStoreConfig, CoreStoreSpecifics } from '@shell/core/types';
-import { PRODUCT_NAME } from '../config/constants';
+import { PRODUCT_STORE } from '../config/constants';
 import actions from './actions'
 import mutations from './mutations'
 
@@ -24,7 +24,7 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
     }
 }
 
-const config: CoreStoreConfig = { namespace: PRODUCT_NAME };
+const config: CoreStoreConfig = { namespace: PRODUCT_STORE };
 
 export default {
     specifics: vnetExtensionFactory(),
