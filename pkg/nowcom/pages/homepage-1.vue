@@ -26,7 +26,7 @@ import { RESET_CARDS_ACTION, SET_LOGIN_ACTION } from '@shell/config/page-actions
 
 export default {
   name:       'HomePage1',
-//   layout:     'home',
+  layout:     'plain',
   components: {
     Banner,
     BannerGraphic,

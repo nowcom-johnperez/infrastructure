@@ -3,7 +3,7 @@ import ListResource from '@shell/pages/c/_cluster/_product/_resource/index.vue';
 import CreateResource from '@shell/pages/c/_cluster/_product/_resource/create.vue';
 import ViewResource from '@shell/pages/c/_cluster/_product/_resource/_id.vue';
 import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_namespace/_id.vue';
-import HomePage from '../pages/homepage.vue';
+import HomePage from '../pages/home.vue';
 import ListNetwork from '../pages/listnetwork.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
 import RoadMap from '../pages/road-map.vue';
@@ -23,16 +23,15 @@ import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_NAT_GATEWAY, CREATE_NAT_GATEWAY,
 
 const routes = [
   // // this covers the "custom page"
-  // {
-  //   name:      `home`,
-  //   path:      `/home`,
-  //   component: HomePage,
-  //   meta:      {
-  //     product: PRODUCT_NAME,
-  //     cluster: BLANK_CLUSTER
-  //   },
-  // },
-  // this covers the "custom page"
+  {
+    name:      `home`,
+    path:      `/home`,
+    component: HomePage,
+    meta:      {
+      product: PRODUCT_NAME,
+      cluster: BLANK_CLUSTER
+    },
+  },
   {
     name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
     path: `/${PRODUCT_NAME}/c/:cluster/${HOME}`,
