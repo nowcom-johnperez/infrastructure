@@ -33,15 +33,15 @@ const routes = [
       cluster: BLANK_CLUSTER
     },
   },
-  {
-    name:      `login`,
-    path:      `/auth/login`,
-    component: LoginPage,
-    meta:      {
-      product: PRODUCT_NAME,
-      cluster: BLANK_CLUSTER
-    },
-  },
+  // {
+  //   name:      `login`,
+  //   path:      `/auth/login`,
+  //   component: LoginPage,
+  //   meta:      {
+  //     product: PRODUCT_NAME,
+  //     cluster: BLANK_CLUSTER
+  //   },
+  // },
   {
     name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
     path: `/${PRODUCT_NAME}/c/:cluster/${HOME}`,
