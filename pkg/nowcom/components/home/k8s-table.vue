@@ -249,7 +249,7 @@ export default {
                 :headers="clusterHeaders"
                 :loading="!kubeClusters"
                 :paging="true" 
-                :rows-per-page="5" 
+                :rows-per-page="10" 
               >
                 <template #header-left>
                   <div class="row table-heading">
