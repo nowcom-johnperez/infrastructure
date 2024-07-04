@@ -5,7 +5,7 @@ plugin/fonts/fontawesome-webfont.fee66e71.woff
 plugin/img/404-error.8833efc4.jpg
 plugin/img/fontawesome-webfont.912ec66d.svg
 plugin/img/loading.f6ba3a8a.png
-plugin/img/nowcom-animated.82f941ec.gif
+plugin/img/trident-banner.35fe802d.gif
 plugin/img/under-development.f1e2955b.png
 plugin/nowcom-0.3.0.umd.min.2.js
 plugin/nowcom-0.3.0.umd.min.2.js.map

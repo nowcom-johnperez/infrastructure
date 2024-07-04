@@ -4,6 +4,7 @@ import CreateResource from '@shell/pages/c/_cluster/_product/_resource/create.vu
 import ViewResource from '@shell/pages/c/_cluster/_product/_resource/_id.vue';
 import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_namespace/_id.vue';
 import HomePage from '../pages/home.vue';
+import LoginPage from '../pages/auth/login.vue';
 import ListNetwork from '../pages/listnetwork.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
 import RoadMap from '../pages/road-map.vue';
@@ -32,6 +33,15 @@ const routes = [
       cluster: BLANK_CLUSTER
     },
   },
+  // {
+  //   name:      `login`,
+  //   path:      `/auth/login`,
+  //   component: LoginPage,
+  //   meta:      {
+  //     product: PRODUCT_NAME,
+  //     cluster: BLANK_CLUSTER
+  //   },
+  // },
   {
     name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
     path: `/${PRODUCT_NAME}/c/:cluster/${HOME}`,
