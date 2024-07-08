@@ -243,7 +243,7 @@ export default {
       if (this.bulk.show) {
         this.loading = true;
         for(const vnetName of this.bulk.items) {
-          await this.$store.dispatch(`${PRODUCT_NAME}/deleteNetwork`, vnetName);
+          await this.$store.dispatch(`${PRODUCT_STORE}/deleteNetwork`, vnetName);
         }
         this.loading = false;
         this.bulk.show = false;
@@ -266,14 +266,14 @@ export default {
       if (action === 'create') {
         this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ CREATE_NETWORK }`);
       } else if (action === 'refresh') {
-        this.$store.dispatch(`${PRODUCT_NAME}/reset`);
+        this.$store.dispatch(`${PRODUCT_STORE}/reset`);
         this.fetchNetworks();
       }
     },
     async getSubnetByName (networkName) {
       if (!this.selectedNetwork?.vrf) {
         this.subnetsListing = [];
-        this.subnetsListing = await this.$store.dispatch(`${PRODUCT_NAME}/getSubnets`, networkName);
+        this.subnetsListing = await this.$store.dispatch(`${PRODUCT_STORE}/getSubnets`, networkName);
         const index = this.networks.findIndex((vnet) => vnet.name === networkName);
         if (index >= 0) {
           this.networks[index].subnetLength = this.subnetsListing.length;
@@ -354,7 +354,7 @@ export default {
     async fetchNetworks() {
       // console.log('fetching networks');
       try {
-        await this.$store.dispatch(`${PRODUCT_NAME}/findAll`)
+        await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
         const res = await expressService.getAllNetworks()
         this.express.networks = res.filter((item) => {
           return item.spec.vrf === 'express'
@@ -383,7 +383,7 @@ export default {
       try {
         this.loading = true;
         this.closeModal();
-        await this.$store.dispatch(`${PRODUCT_NAME}/deleteNetwork`, this.selectedVnetName);
+        await this.$store.dispatch(`${PRODUCT_STORE}/deleteNetwork`, this.selectedVnetName);
         this.loading = false;
         this.apiResponse = 'success';
         this.apiResponseMessage = `You have successfully deleted VNET: ${this.selectedVnetName}`;
@@ -418,7 +418,7 @@ export default {
           };
 
           
-          await this.$store.dispatch(`${PRODUCT_NAME}/deleteSubnet`, {
+          await this.$store.dispatch(`${PRODUCT_STORE}/deleteSubnet`, {
             vnetName: this.vnet_name,
             vnetData: vnet_data
           })

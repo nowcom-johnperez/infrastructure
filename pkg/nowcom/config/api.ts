@@ -21,7 +21,8 @@ export const getConfig = () => {
     RANCHER_BEARERTOKEN: 'token-tcs46:brqknm659wwtjm5r8gpz6tr5m4jrhz4vdrfkgt9lgfgv8nt2vbkkrw',
     CLUSTER: 'c-m-qcvh2r78',
     API_VERSION: 'v1',
-    API: 'packetlifter.dev'
+    API: 'packetlifter.dev',
+    TRIDENT_API: 'trident.dev'
   };
 
   if (typeof window !== 'undefined') {
