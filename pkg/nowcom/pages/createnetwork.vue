@@ -274,7 +274,7 @@ export default {
             subnets: this.subnets,
           }
         };
-        await this.$store.dispatch(`${PRODUCT_NAME}/create`, vnet_data);
+        await this.$store.dispatch(`${PRODUCT_STORE}/create`, vnet_data);
         this.apiResponse = 'success';
         this.apiResponseMessage = "VNET Successfully Added";
         this.isLoading = false;

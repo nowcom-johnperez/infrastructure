@@ -18,7 +18,7 @@
 import { wishService } from '../../services/api/wish';
 import { getConfig } from '../../config/api';
 import Alert from '../common/Alert'
-const { API_VERSION, API } = getConfig()
+const { API_VERSION, TRIDENT_API } = getConfig()
 export default {
   name: 'WishForm',
   components: {
@@ -47,14 +47,15 @@ export default {
       try {
         this.loading = true
         const payload = {
-          apiVersion: `${API}/${API_VERSION}`,
+          apiVersion: `${TRIDENT_API}/${API_VERSION}`,
           kind: "MakeWish",
           metadata: {
             name: this.subject.toLowerCase().replace(/ /g, '-')
           },
           spec: {
-            name: this.subject,
-            description: this.request,
+            description: this.subject,
+            message: this.request,
+            user: this.user.user || this.user.username || this.user.id || this.user.uuid
           }
         };
 
