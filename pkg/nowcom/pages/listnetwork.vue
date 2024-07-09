@@ -163,7 +163,7 @@ import Alert from '../components/common/Alert'
 import AddSubnet from '../components/forms/AddSubnet'
 import { BadgeState } from '@components/BadgeState';
 
-import { PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
+import { PRODUCT_STORE, PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
 import { expressService } from '../services/api/express'
 import { stripErrorMessage } from '../services/helpers/utils'
 import { getConfig } from '../config/api';
@@ -222,7 +222,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(PRODUCT_NAME, {
+    ...mapGetters(PRODUCT_STORE, {
       networks: 'items',
     }),
     activatedExpressSubnets() {

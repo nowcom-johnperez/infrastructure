@@ -128,7 +128,7 @@ import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import Alert from '../components/common/Alert'
 import { isValidIP, transformArrayToObject, validateString } from '../services/helpers/utils'
-import { PRODUCT_NAME, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
+import { PRODUCT_NAME, PRODUCT_STORE, LIST_NETWORK, BLANK_CLUSTER } from '../config/constants'
 import { stripErrorMessage } from '../services/helpers/utils'
 import { getConfig } from '../config/api';
 const { API_VERSION, API } = getConfig()
