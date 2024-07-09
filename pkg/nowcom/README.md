@@ -49,3 +49,7 @@ Release v0.2.10
 Release v0.3.0
 - Update API URL packetlifter.dev -> packetlifter.io
 - implement correct sidebar links order
+- Homepage redesign banner
+
+Release v0.3.1
+- Make a wish new API implementation
