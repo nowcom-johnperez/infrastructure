@@ -55,7 +55,7 @@ export default {
           spec: {
             description: this.subject,
             message: this.request,
-            user: this.user.user || this.user.username || this.user.id || this.user.uuid
+            user: this.user.name || this.user.username || this.user.id || this.user.uuid
           }
         };
 

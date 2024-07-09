@@ -142,12 +142,12 @@
 <script>
 import https from "https";
 import axios from "axios";
-import { NETWORK_URL, NETWORKS, NETWORK_URL_V2 } from "../config/api.ts";
-
-const INSTANCE = axios.create({
-    baseURL: NETWORK_URL,
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
-});
+import { getConfig } from "../config/api.ts";
+const { NETWORK_URL_V2 } = getConfig()
+// const INSTANCE = axios.create({
+//     baseURL: NETWORK_URL,
+//     httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
+// });
 
 const INSTANCE_V2 = axios.create({
     baseURL: NETWORK_URL_V2,

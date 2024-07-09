@@ -102,7 +102,7 @@ import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
 import Modal from '../components/common/Modal'
 import { NAT_BUTTONS } from '../config/buttons'
-import { VNET_HEADERS, SUB_VNET_HEADERS } from '../config/table'
+import { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS } from '../config/table'
 import { natService } from '../services/api/nat';
 
 const PRODUCT_NAME = "Network";
@@ -400,8 +400,8 @@ export default {
     },
     created() {
         this.natGatewayButtons = NAT_BUTTONS;
-        this.vnetHeaders = VNET_HEADERS;
-        this.subVnetHeaders = SUB_VNET_HEADERS;
+        this.vnetHeaders = SORTABLE_NETWORK_HEADERS;
+        this.subVnetHeaders = SORTABLE_SUB_NETWORK_HEADERS;
     },
     mounted() {
         // Fetch the VLAN list and network list when the component is mounted
