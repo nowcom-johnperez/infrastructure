@@ -159,5 +159,57 @@ const RELEASE_NOTES_HEADERS: SortableHeaderType[] = [
     },
 ];
 
+const RULES_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'priority',
+        label: 'Priority',
+        sort: ['priority'],
+        search: ['priority'],
+        width: 10,
+    },
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+        width: 10,
+    },
+    {
+        name: 'port',
+        label: 'Port',
+        sort: ['port'],
+        search: ['port'],
+        width: 10
+    },
+    {
+        name: 'protocol',
+        label: 'Protocol',
+        sort: ['protocol'],
+        search: ['protocol'],
+        width: 10
+    },
+    {
+        name: 'source',
+        label: 'Source',
+        sort: ['source'],
+        search: ['source'],
+        width: 10
+    },
+    {
+        name: 'destination',
+        label: 'Destination',
+        sort: ['destination'],
+        search: ['destination'],
+        width: 10
+    },
+    {
+        name: 'action',
+        label: 'Action',
+        sort: ['action'],
+        search: ['action'],
+        width: 10
+    },
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS }
+
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS }

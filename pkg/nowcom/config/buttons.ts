@@ -27,7 +27,7 @@ const VNET_BUTTONS = [
     },
 ];
 
-const NAT_BUTTONS = [
+const FIREWALL_BUTTONS = [
     {
         label: 'Create',
         type: 'button',
@@ -43,4 +43,4 @@ const NAT_BUTTONS = [
 ];
 
 
-export { ButtonInterface, VNET_BUTTONS, NAT_BUTTONS }
+export { ButtonInterface, VNET_BUTTONS, FIREWALL_BUTTONS }
