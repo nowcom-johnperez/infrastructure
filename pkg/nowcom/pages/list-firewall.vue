@@ -149,6 +149,7 @@ export default {
     },
     async fetchNetworks() {
       try {
+        this.loading = true
         await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
         await this.fetchExpressNetworks()
       } catch (error) {
@@ -156,6 +157,8 @@ export default {
           title: 'Error',
           message: 'Fetching Virtual Network Data: Oops! Something went wrong!',
         })
+      } finally {
+        this.loading = false
       }
     },
      // async getSubnetByName (networkName) {

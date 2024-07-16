@@ -354,6 +354,7 @@ export default {
     async fetchNetworks() {
       // console.log('fetching networks');
       try {
+        this.loading = true
         await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
         const res = await expressService.getAllNetworks()
         this.express.networks = res.filter((item) => {
@@ -376,6 +377,7 @@ export default {
         this.apiResponse = 'error'
         this.apiResponseMessage = 'Fetching Virtual Network Data: Oops! Something went wrong!';
       } finally {
+        this.loading = false;
         this.hideAlertMessage();
       }
     },
