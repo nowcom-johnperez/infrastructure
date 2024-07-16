@@ -83,7 +83,6 @@ export default {
     actionHandler (action) {
       if (action === 'create') {
         this.sidebar.show = true
-        // this.$router.push(`/${ PRODUCT_NAME }/c/${ BLANK_CLUSTER }/${ CREATE_NETWORK }`);
       } else if (action === 'refresh') {
         this.fetchData()
       }
