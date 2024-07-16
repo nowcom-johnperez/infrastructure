@@ -1,5 +1,5 @@
 <template>
-  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="priority" :loading="loading">
+  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
     <template #cell:longName="{row}">
       <span>{{ row.displayName || row.longName }}</span>
     </template>

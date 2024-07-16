@@ -51,7 +51,7 @@
       <div class="add-form-row mt-15">
         <label for="priority">Priority</label>
         <input
-          v-model="form.priority"
+          v-model.number="form.priority"
           type="text"
           placeholder=""
           class="mt-5"

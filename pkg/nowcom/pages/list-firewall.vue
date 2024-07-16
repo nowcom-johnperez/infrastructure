@@ -89,8 +89,16 @@ export default {
     inactiveExpressSubnets() {
       return this.express.networks.filter((item) => !item.activated)
     },
+    transformedNetworks() {
+      return this.networks.map((network) => {
+        return {
+          ...network,
+          subnets: network.subnets.map((subnet) => subnet.name)
+        }
+      })
+    },
     combinedExpressAndVnets () {
-      return [...this.express.mainRow, ...this.networks]
+      return [...this.express.mainRow, ...this.transformedNetworks]
     },
     allVnets() {
       return this.combinedExpressAndVnets.map((network) => network.name)
