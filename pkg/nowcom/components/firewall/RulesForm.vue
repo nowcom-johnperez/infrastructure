@@ -20,7 +20,17 @@
 
       <!-- subnet from selected vnet  -->
 
-      <LabeledSelect v-if="form.source === 'Vnet'" :options="vnets" v-model="form.sourceVnet" label="Virtual Network" class="mt-15"/>
+      <div v-if="form.source === 'Vnet'" class="add-form-row mt-15">
+        <label for="sourcePort">Virtual Network</label>
+        <input
+          :value="vnetId"
+          type="text"
+          disabled
+          class="mt-5"
+        />
+      </div>
+
+      <!-- <LabeledSelect v-if="form.source === 'Vnet'" :options="vnets" v-model="form.sourceVnet" label="Virtual Network" class="mt-15"/> -->
       <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Subnets" class="mt-15"/>
 
       <!-- <div class="add-form-row mt-15">
@@ -178,11 +188,9 @@ export default {
       if (this.form.source === 'IP Address') {
         payload.sourceIpAddress = this.form.sourceIp.split(/,\s*/);
       }
-      if (this.form.source === 'Vnet') {
-        payload.sourceVnet = this.form.sourceVnet;
-      }
+
       if (this.form.source === 'Subnet') {
-        payload.sourceSubnet = this.form.sourceSubnet;
+        payload.sourceSubnet = this.form.sourceSubnet.split(/,\s*/);
       }
 
       const firewallData = {
@@ -206,7 +214,7 @@ export default {
         this.$store.dispatch('growl/error', {
           title: 'Error',
           message: 'Error Saving Firewall Rules',
-        })
+        }, { root: true })
       } finally {
         this.saving = false
       }
