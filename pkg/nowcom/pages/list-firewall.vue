@@ -11,7 +11,7 @@
       <div class="form-column">
         <SortableTable 
           :headers="networkHeader" 
-          :rows="[...express.mainRow, ...networks]" 
+          :rows="combinedExpressAndVnets" 
           :paging="true" 
           :rowActionsWidth="10" 
           :rows-per-page="5" 
@@ -32,7 +32,7 @@
     </div>
 
     <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
-      <InboundOutboundListing v-if="selectedNetwork" :vnet="selectedNetwork" />
+      <InboundOutboundListing v-if="selectedNetwork" :vnet="selectedNetwork" :vnets="allVnets" />
     </SideBar>
   </div>
 </template>
@@ -52,7 +52,7 @@ import { PRODUCT_STORE, PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../c
 import { expressService } from '../services/api/express'
 
 export default {
-  name: 'ListNetwork',
+  name: 'ListFirewall',
   components: {
     SortableTable,
     cButton,
@@ -67,7 +67,7 @@ export default {
       loading: false,
       networkHeader: [],
       express: {
-        mainRow: [{ name: 'express', translatedAddress: '209.76.247.250/32', subnetLength: 0, vrf: 'express' }],
+        mainRow: [{ name: 'express', translatedAddress: '209.76.247.250/32', subnetLength: 0, vrf: 'express', subnets: [] }],
         networks: [],
       },
       response: {
@@ -88,6 +88,12 @@ export default {
     },
     inactiveExpressSubnets() {
       return this.express.networks.filter((item) => !item.activated)
+    },
+    combinedExpressAndVnets () {
+      return [...this.express.mainRow, ...this.networks]
+    },
+    allVnets() {
+      return this.combinedExpressAndVnets.map((network) => network.name)
     }
   },
   methods: {
@@ -125,6 +131,7 @@ export default {
           }
         })
         this.express.mainRow[0].subnetLength = this.activatedExpressSubnets.length
+        this.express.mainRow[0].subnets = this.express.networks.map((d) => d.name)
       } catch (error) {
         this.$store.dispatch('growl/error', {
           title: 'Error',

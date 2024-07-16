@@ -1,7 +1,14 @@
 <template>
-  <SortableTable :headers="headers" :rows="outbound" :rowActionsWidth="10" :rows-per-page="5" keyField="priority" :loading="loading">
+  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="priority" :loading="loading">
     <template #cell:longName="{row}">
       <span>{{ row.displayName || row.longName }}</span>
+    </template>
+    <template #cell:action="{row}">
+      <span>
+        <i v-if="row.action === 'Allow'" class="fa fa-check mr-5" aria-hidden="true" style="color: green"></i>
+        <i v-else class="fa fa-close mr-5" aria-hidden="true" style="color: red"></i>
+        {{ row.action }}
+      </span>
     </template>
     <template #row-actions="row">
       <cButton class="cbtn btn-primary" :disabled="loading || !row.isEnabled">
@@ -22,6 +29,10 @@ export default {
     vnetId: {
       type: String,
       required: true
+    },
+    items: {
+      type: Array,
+      required: true
     }
   },
   components: {
@@ -32,7 +43,6 @@ export default {
   data() {
     return {
       loading: false,
-      outbound: [],
       headers: []
     }
   },
