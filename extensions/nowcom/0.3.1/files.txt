@@ -4,6 +4,7 @@ plugin/fonts/fontawesome-webfont.b06871f2.ttf
 plugin/fonts/fontawesome-webfont.fee66e71.woff
 plugin/img/404-error.8833efc4.jpg
 plugin/img/fontawesome-webfont.912ec66d.svg
+plugin/img/harvester.765f68bd.png
 plugin/img/loading.f6ba3a8a.png
 plugin/img/trident-banner.35fe802d.gif
 plugin/img/under-development.f1e2955b.png
