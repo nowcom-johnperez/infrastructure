@@ -14,6 +14,7 @@
           placeholder="10.0.0.0/24"
           class="mt-5"
         />
+        <span v-if="errors.sourceIp" class="text-danger">{{ errors.sourceIp }}</span>
       </div>
 
       <div v-if="form.source === 'Vnet'" class="add-form-row mt-15">
@@ -48,6 +49,7 @@
           placeholder="10.0.0.0/24"
           class="mt-5"
         />
+        <span v-if="errors.destinationIp" class="text-danger">{{ errors.destinationIp }}</span>
       </div>
 
       <div v-if="form.destination === 'Vnet'" class="add-form-row mt-15">
@@ -72,6 +74,7 @@
           placeholder=""
           class="mt-5"
         />
+        <span v-if="errors.destinationPortRanges" class="text-danger">{{ errors.destinationPortRanges }}</span>
       </div>
 
       <RadioButtons class="mt-15" :options="['Allow', 'Deny']" v-model="form.action" name="action" title="Action"/>
@@ -84,6 +87,7 @@
           placeholder=""
           class="mt-5"
         />
+        <span v-if="errors.priority" class="text-danger">{{ errors.priority }}</span>
       </div>
 
       <div class="add-form-row mt-15">
@@ -94,6 +98,7 @@
           placeholder=""
           class="mt-5"
         />
+        <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
       </div>
 
       <div class="add-form-row mt-15">
@@ -126,7 +131,7 @@
 import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
 import RadioButtons from '../common/RadioButtons.vue';
 import cButton from '../common/Button'
-import { isIP, isRange } from 'range_check';
+import { ip } from '@form-validation/validator-ip';
 import { firewallService } from '../../services/api/firewall'
 import { getConfig } from '../../config/api';
 const { API_VERSION, API } = getConfig();
@@ -191,15 +196,67 @@ export default {
       if (!this.form.name) this.errors.name = 'Name is required'
       if (!this.form.source) this.errors.source = 'Source is required'
       if (!this.form.destination) this.errors.destination = 'Destination is required'
-      if (this.priority < 0 || this.priority > 999) this.errors.priority = 'Priority value must be from 1-999.'
-      if (!this.priority) this.errors.priority = 'Priority is required'
+      if (this.form.priority < 0 || this.form.priority > 999) this.errors.priority = 'Priority value must be from 1-999.'
+      if (!this.form.priority) this.errors.priority = 'Priority is required'
       // max to 65535
 
-      // ip /8-32
+      if (this.form.source === 'IP Address') {
+        if (!this.form.sourceIp) this.errors.sourceIp = 'Source IP is required'
+        else {
+          const sourceIPList = this.form.sourceIp.split(/,\s*/);
+
+          sourceIPList.some((ipv4) => {
+            const sourceIp = ip().validate({
+              value: ipv4,
+              options: {
+                  ipv6: false,
+                  message: `The value ${ipv4} is not valid IP v4`,
+              },
+            });
+            if (!sourceIp.valid) this.errors.sourceIp = sourceIp.message
+            return !sourceIp.valid
+          })
+          
+        }
+      }
+
+      if (this.form.destination === 'IP Address') {
+        if (!this.form.destinationIp) this.errors.destinationIp = 'Destination IP is required'
+        else {
+          const destinationIPList = this.form.destinationIp.split(/,\s*/);
+
+          destinationIPList.some((ipv4) => {
+            const sourceIp = ip().validate({
+              value: ipv4,
+              options: {
+                  ipv6: false,
+                  message: `The value ${ipv4} is not valid IP v4`,
+              },
+            });
+            if (!sourceIp.valid) this.errors.destinationIp = sourceIp.message
+            return !sourceIp.valid
+          })
+        }
+      }
+
+      if (this.form.application === 'custom') {
+        const destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
+        destinationPortRanges.some((port) => {
+          const isValid = port < 0 || port < 65535
+
+          if (!isValid) this.errors.destinationPortRanges = `Invalid Port: ${port}`
+
+          return isValid
+        })
+      }
+
+      const patternName = /^[a-z][-a-z0-9_]*$/;
+      if (!patternName.test(this.form.name)) this.errors.name = 'Name is invalid'
 
       return Object.keys(this.errors).length === 0
     },
     async save() {
+      if (!this.validation()) return
       const payload = {
         name:    this.form.name.toLowerCase(),
         direction: this.ruleType,
@@ -241,8 +298,6 @@ export default {
           },
           spec: payload
       };
-      
-      console.log(`firewallData`, firewallData)
 
       try {
         this.saving = true

@@ -2139,6 +2139,18 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@form-validation/core@2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@form-validation/core/-/core-2.4.0.tgz#81c0c5812712956d035249879e71b3cdcfc88b10"
+  integrity sha512-uZxBCtgJMt6iiW9T/tWtlBQbbbvysdHayzZxD424NFqozMOXqPYeA3xh8TH7bXh0vvpYc0+YGHl2LwA68tFd1w==
+
+"@form-validation/validator-ip@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@form-validation/validator-ip/-/validator-ip-2.4.0.tgz#4a24623861bc30d10edbaff3e5db42147e33a5df"
+  integrity sha512-FlE9sEoeT0Xm2JNy93GgykMb69985uZRvh/swmnEJds2kbZOnt970g/+J23y4b6zbvRUpr+OeM/zOsELi6M5YQ==
+  dependencies:
+    "@form-validation/core" "2.4.0"
+
 "@formatjs/intl-unified-numberformat@^3.2.0":
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-unified-numberformat/-/intl-unified-numberformat-3.3.7.tgz#9995a24568908188e716d81a1de5b702b2ee00e2"
@@ -9964,11 +9976,6 @@ ip-regex@^2.1.0:
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-2.1.0.tgz#fa78bf5d2e6913c911ce9f819ee5146bb6d844e9"
   integrity sha512-58yWmlHpp7VYfcdTwMTvwMmqx/Elfxjd9RXTDyMsbL7lLWmhMylLEqiYVLKuLzOZqVgiWXD9MfR62Vv89VRxkw==
 
-ip6@^0.2.10:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/ip6/-/ip6-0.2.10.tgz#19c07f70b68e1f3b40685d69c8cec0ea9e4ec0fd"
-  integrity sha512-1LdpyKjhvepd6EbAU6rW4g14vuYtx5TnJX9TfZZBhsM6DsyPQLNzW12rtbUqXBMwqFrLVV/Gcxv0GNFvJp2cYA==
-
 ip@^1.1.0, ip@^1.1.5:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.8.tgz#ae05948f6b075435ed3307acce04629da8cdbf48"
@@ -9978,11 +9985,6 @@ ipaddr.js@1.9.1, ipaddr.js@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
-
-ipaddr.js@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.2.0.tgz#d33fa7bac284f4de7af949638c9d68157c6b92e8"
-  integrity sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==
 
 is-absolute-url@^2.0.0:
   version "2.1.0"
@@ -14017,14 +14019,6 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
-
-range_check@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/range_check/-/range_check-3.0.0.tgz#53d477309e169c15c256c04eeac11a2e9ee09fd4"
-  integrity sha512-YOtpjOyrdlr7ZrML7OTr/0OHiluJ9LRG7hdXudVrDyT7MbP2Hqre+tZNI9EaoPFlCk+ZQIkhpuQeaxvF7jQXkQ==
-  dependencies:
-    ip6 "^0.2.10"
-    ipaddr.js "^2.2.0"
 
 raw-body@2.4.0:
   version "2.4.0"
