@@ -182,10 +182,10 @@ const RULES_HEADERS: SortableHeaderType[] = [
         width: 10
     },
     {
-        name: 'protocol',
-        label: 'Protocol',
-        sort: ['protocol'],
-        search: ['protocol'],
+        name: 'application',
+        label: 'Application',
+        sort: ['application'],
+        search: ['application'],
         width: 10
     },
     {

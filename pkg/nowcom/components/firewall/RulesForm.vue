@@ -4,24 +4,20 @@
     <p class="mt-0">{{ vnetId }}</p>
 
     <div class="mt-30 rules-form-container">
-      <LabeledSelect :options="listing.source" v-model="form.source" label="Source" />
+      <LabeledSelect :options="listing.source" v-model="form.source" label="Source" required/>
 
       <div v-if="form.source === 'IP Address'" class="add-form-row mt-15">
-        <label for="sourcePort">Source IP addresses/CIDR ranges</label>
+        <label for="sourceIP">Source IP addresses/CIDR ranges <span class="text-danger">*</span></label>
         <input
           v-model="form.sourceIp"
           type="text"
-          placeholder="10.0.0.0/24 or 2001:1234::/64"
+          placeholder="10.0.0.0/24"
           class="mt-5"
         />
       </div>
 
-      <!-- vnet selection -->
-
-      <!-- subnet from selected vnet  -->
-
       <div v-if="form.source === 'Vnet'" class="add-form-row mt-15">
-        <label for="sourcePort">Virtual Network</label>
+        <label for="sourceVirtualNetwork">Source Virtual Network</label>
         <input
           :value="vnetId"
           type="text"
@@ -30,8 +26,7 @@
         />
       </div>
 
-      <!-- <LabeledSelect v-if="form.source === 'Vnet'" :options="vnets" v-model="form.sourceVnet" label="Virtual Network" class="mt-15"/> -->
-      <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Subnets" class="mt-15"/>
+      <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required/>
 
       <!-- <div class="add-form-row mt-15">
         <label for="sourcePort">Source Port Ranges</label>
@@ -43,11 +38,34 @@
         />
       </div> -->
 
-      <LabeledSelect :options="listing.source" v-model="form.destination" label="Destination" class="mt-15"/>
+      <LabeledSelect :options="listing.source" v-model="form.destination" label="Destination" class="mt-15" required/>
+
+      <div v-if="form.destination === 'IP Address'" class="add-form-row mt-15">
+        <label for="destinationIp">Destination IP addresses/CIDR ranges <span class="text-danger">*</span></label>
+        <input
+          v-model="form.destinationIp"
+          type="text"
+          placeholder="10.0.0.0/24"
+          class="mt-5"
+        />
+      </div>
+
+      <div v-if="form.destination === 'Vnet'" class="add-form-row mt-15">
+        <label for="destinationVirtualNetwork">Destination Virtual Network</label>
+        <input
+          :value="vnetId"
+          type="text"
+          disabled
+          class="mt-5"
+        />
+      </div>
+
+      <LabeledSelect v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required/>
+
       <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15"/>
 
       <div v-if="form.application === 'custom'" class="add-form-row mt-15">
-        <label for="destinatinoPortRanges">Destination Port Ranges</label>
+        <label for="destinatinoPortRanges">Destination Port Ranges <span class="text-danger">*</span></label>
         <input
           v-model="form.destinationPortRanges"
           type="text"
@@ -59,7 +77,7 @@
       <RadioButtons class="mt-15" :options="['Allow', 'Deny']" v-model="form.action" name="action" title="Action"/>
 
       <div class="add-form-row mt-15">
-        <label for="priority">Priority</label>
+        <label for="priority">Priority <span class="text-danger">*</span></label>
         <input
           v-model.number="form.priority"
           type="text"
@@ -69,7 +87,7 @@
       </div>
 
       <div class="add-form-row mt-15">
-        <label for="name">Name</label>
+        <label for="name">Name <span class="text-danger">*</span></label>
         <input
           v-model="form.name"
           type="text"
@@ -108,6 +126,7 @@
 import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
 import RadioButtons from '../common/RadioButtons.vue';
 import cButton from '../common/Button'
+import { isIP, isRange } from 'range_check';
 import { firewallService } from '../../services/api/firewall'
 import { getConfig } from '../../config/api';
 const { API_VERSION, API } = getConfig();
@@ -142,16 +161,14 @@ export default {
       listing: {
         source:           ['Any', 'IP Address', 'Subnet', 'Vnet'],
         application:      [],
-        sourceServiceTag: ['Internet', 'Virtual Network', 'AzureLoadBalancer', 'ActionGroup', 'ApiManagement', 'AppService', 'AzureBackup', 'AzureBotService', 'AzureCloud'],
       },
       form: {
         source:                'Any',
         sourceIp:              '',
-        sourceVnet:            '',
         sourceSubnet:          '',
-        sourceServiceTag:      'Internet',
-        sourcePort:            '*',
         destination:           'Any',
+        destinationIp:         '',
+        destinationSubnet:     '',
         application:           'custom',
         destinationPortRanges: '8080',
         protocol:              'Any',
@@ -159,7 +176,8 @@ export default {
         priority:              110,
         name:                  '',
         description:           ''
-      }
+      },
+      errors: {}
     }
   },
   computed: {
@@ -168,6 +186,19 @@ export default {
     }
   },
   methods: {
+    validation() {
+      this.errors = {}
+      if (!this.form.name) this.errors.name = 'Name is required'
+      if (!this.form.source) this.errors.source = 'Source is required'
+      if (!this.form.destination) this.errors.destination = 'Destination is required'
+      if (this.priority < 0 || this.priority > 999) this.errors.priority = 'Priority value must be from 1-999.'
+      if (!this.priority) this.errors.priority = 'Priority is required'
+      // max to 65535
+
+      // ip /8-32
+
+      return Object.keys(this.errors).length === 0
+    },
     async save() {
       const payload = {
         name:    this.form.name.toLowerCase(),
@@ -181,16 +212,24 @@ export default {
         priority: this.form.priority,
       }
 
-      if (this.form.application === 'custom') {
-        payload.destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
-      }
-
       if (this.form.source === 'IP Address') {
         payload.sourceIpAddress = this.form.sourceIp.split(/,\s*/);
       }
 
       if (this.form.source === 'Subnet') {
         payload.sourceSubnet = this.form.sourceSubnet.split(/,\s*/);
+      }
+
+      if (this.form.destination === 'IP Address') {
+        payload.destinationIpAddress = this.form.destinationIp.split(/,\s*/);
+      }
+
+      if (this.form.destination === 'Subnet') {
+        payload.destinationSubnet = this.form.destinationSubnet.split(/,\s*/);
+      }
+
+      if (this.form.application === 'custom') {
+        payload.destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
       }
 
       const firewallData = {

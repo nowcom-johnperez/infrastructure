@@ -2,7 +2,7 @@
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 // import { IPlugin } from '@rancher/shell/core/types';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WIKI_PAGE } from './config/constants';
 
 export function init($plugin: any, store: any) {
   const {
@@ -100,6 +100,7 @@ export function init($plugin: any, store: any) {
   // });
 
   const vt = [
+    { name: WIKI_PAGE, label: 'Wiki', displayName: 'Wiki', weight: 8 },
     { name: LIST_K8, label: 'Kubernetes', displayName: 'Kubernetes', weight: 7 },
     { name: LIST_NETWORK, label: 'Network', displayName: 'Network', weight: 6 },
     { name: LIST_FIREWALL, label: 'Firewall', displayName: 'Firewall', weight: 5 },
