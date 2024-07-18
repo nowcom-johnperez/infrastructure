@@ -27,8 +27,9 @@
         />
       </div>
 
-      <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required multiple/>
+      <LabeledSelect id="sourceSubnet" name="sourceSubnet" ref="sourceSubnet" v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required multiple/>
       <span v-if="errors.sourceSubnet" class="text-danger">{{ errors.sourceSubnet }}</span>
+      
       <!-- <div class="add-form-row mt-15">
         <label for="sourcePort">Source Port Ranges</label>
         <input
@@ -62,7 +63,7 @@
         />
       </div>
 
-      <LabeledSelect v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required multiple />
+      <LabeledSelect id="destinationSubnet" v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required multiple />
       <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
 
       <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15" multiple/>
@@ -362,21 +363,20 @@ export default {
     populateData() {
       if (this.isEditMode) {
         // populate data
-        console.log(`rowdata`, this.rowData)
-        this.form = {
-          source:                this.rowData.source,
-          sourceIp:              this.rowData.sourceIpAddress.join(', '),
-          sourceSubnet:          this.rowData.sourceSubnet,
-          destination:           this.rowData.destination,
-          destinationIp:         this.rowData.destinationIpAddress.join(', '),
-          destinationSubnet:     this.rowData.destinationSubnet,
-          application:           this.rowData.application,
-          destinationPortRanges: this.rowData.destinationPortRanges.join(', '),
-          action:                this.rowData.action,
-          priority:              this.rowData.priority,
-          name:                  this.rowData.name,
-          description:           this.rowData.description
-        }
+        this.form.source = this.rowData.source
+        if (this.form.source === 'IP Address') this.form.sourceIp = this.rowData.sourceIpAddress.join(', ')
+        this.form.destination = this.rowData.destination
+        if (this.form.destination === 'IP Address') this.form.destinationIp = this.rowData.destinationIpAddress.join(', ')
+        this.form.application = this.rowData.application
+        if (this.form.application.includes('custom')) this.form.destinationPortRanges = this.rowData.destinationPortRanges.join(', ')
+        this.form.action = this.rowData.action
+        this.form.name = this.rowData.name
+        this.form.description = this.rowData.description
+
+        setTimeout(() => {
+          if (this.form.source === 'Subnet') this.form.sourceSubnet = this.rowData.sourceSubnet
+          if (this.form.destination === 'Subnet') this.form.destinationSubnet = this.rowData.destinationSubnet
+        }, 500)
       }
     }
   },
