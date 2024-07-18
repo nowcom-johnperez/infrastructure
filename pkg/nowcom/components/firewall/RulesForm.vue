@@ -27,7 +27,7 @@
         />
       </div>
 
-      <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required/>
+      <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required multiple/>
       <span v-if="errors.sourceSubnet" class="text-danger">{{ errors.sourceSubnet }}</span>
       <!-- <div class="add-form-row mt-15">
         <label for="sourcePort">Source Port Ranges</label>
@@ -62,12 +62,12 @@
         />
       </div>
 
-      <LabeledSelect v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required/>
+      <LabeledSelect v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required multiple />
       <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
 
-      <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15"/>
+      <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15" multiple/>
 
-      <div v-if="form.application === 'custom'" class="add-form-row mt-15">
+      <div v-if="form.application.includes('custom')" class="add-form-row mt-15">
         <label for="destinatinoPortRanges">Destination Port Ranges <span class="text-danger">*</span></label>
         <input
           v-model="form.destinationPortRanges"
@@ -177,11 +177,11 @@ export default {
       form: {
         source:                'Any',
         sourceIp:              '',
-        sourceSubnet:          '',
+        sourceSubnet:          [],
         destination:           'Any',
         destinationIp:         '',
-        destinationSubnet:     '',
-        application:           'custom',
+        destinationSubnet:     [],
+        application:           ['custom'],
         destinationPortRanges: '8080',
         protocol:              'Any',
         action:                'Allow',
@@ -234,7 +234,7 @@ export default {
       }
 
       if (this.form.source === 'Subnet') {
-        if (!this.form.sourceSubnet) this.errors.sourceSubnet = 'Source Subnet is required'
+        if (this.form.sourceSubnet.length === 0) this.errors.sourceSubnet = 'Source Subnet is required'
       }
 
       if (this.form.destination === 'IP Address') {
@@ -257,10 +257,10 @@ export default {
       }
 
       if (this.form.destination === 'Subnet') {
-        if (!this.form.destinationSubnet) this.errors.destinationSubnet = 'Destination Subnet is required'
+        if (this.form.destinationSubnet.length === 0) this.errors.destinationSubnet = 'Destination Subnet is required'
       }
 
-      if (this.form.application === 'custom') {
+      if (this.form.application.includes('custom')) {
         const destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
         destinationPortRanges.some((port) => {
           const isValid = port < 0 || port < 65535
@@ -284,7 +284,7 @@ export default {
         vnet: this.vnetId,
         source: this.form.source,
         destination: this.form.destination,
-        application: this.form.application.split(/,\s*/),
+        application: this.form.application,
         action: this.form.action,
         description: this.form.description,
         priority: this.form.priority,
@@ -295,7 +295,7 @@ export default {
       }
 
       if (this.form.source === 'Subnet') {
-        payload.sourceSubnet = this.form.sourceSubnet.split(/,\s*/);
+        payload.sourceSubnet = this.form.sourceSubnet;
       }
 
       if (this.form.destination === 'IP Address') {
@@ -303,10 +303,10 @@ export default {
       }
 
       if (this.form.destination === 'Subnet') {
-        payload.destinationSubnet = this.form.destinationSubnet.split(/,\s*/);
+        payload.destinationSubnet = this.form.destinationSubnet;
       }
 
-      if (this.form.application === 'custom') {
+      if (this.form.application.includes('custom')) {
         payload.destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
       }
 
