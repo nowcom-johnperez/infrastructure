@@ -7,24 +7,37 @@
 
       <div class="tab-content-container mt-10">
         <div class="tab-content" :class="{ 'show': currentTabIndex === 0 }">
-          <InboundTable :vnet-id="vnet.name" :items="getInboundRules" />
+          <InboundTable v-if="!loading" :loading="loading" :vnet-id="vnet.name" :items="getInboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
           
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-          <OutboundTable :vnet-id="vnet.name" :items="getOutboundRules" />
+          <OutboundTable v-if="!loading" :loading="loading" :vnet-id="vnet.name" :items="getOutboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
         </div>
       </div>
     </div>
 
     <SideBar type="sub" :sidebar-visible="sidebar.show" @close="closeForm">
-      <RulesForm v-if="sidebar.show" :rule-type="currentTabIndex === 0 ? 'inbound' : 'outbound'" :vnet-id="vnet.name" @onClose="closeForm" :vnets="vnets" :subnets="vnet.subnets"/>
+      <RulesForm v-if="sidebar.show" :rule-type="currentTabIndex === 0 ? 'inbound' : 'outbound'" :vnet-id="vnet.name" @onClose="closeForm" :vnets="vnets" :subnets="vnet.subnets" :row-data="selectedRow"/>
     </SideBar>
+
+    <Modal v-if="deleteModal.show">
+      <template v-slot:content>
+        <h2>Delete?</h2>
+        <p>Are you sure that you want to delete {{ selectedRow.direction }} rule "{{ selectedRow.name }}"?</p>
+      </template>
+
+      <template v-slot:footer>
+        <cButton class="cbtn btn-danger" @click="deleteRule" :disabled="deleteModal.loading" label="Yes" />
+        <cButton class="cbtn btn-light" @click="closeModal" :disabled="deleteModal.loading" label="No" />
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
 import SideBar from '../Sidebar'
+import Modal from '../common/Modal'
 import InboundTable from './InboundTable'
 import OutboundTable from './OutboundTable'
 import RulesForm from './RulesForm'
@@ -52,17 +65,24 @@ export default {
     Tabs,
     InboundTable,
     OutboundTable,
-    RulesForm
+    RulesForm,
+    Modal
   },
   data() {
     return {
+      loading: false,
       firewallButtons: [],
       headers: [],
       currentTabIndex: 0,
       sidebar: {
         show: false,
       },
-      firewallRules: []
+      firewallRules: [],
+      selectedRow: {},
+      deleteModal: {
+        show: false,
+        loading: false,
+      }
     }
   },
   computed: {
@@ -74,14 +94,52 @@ export default {
     }
   },
   methods: {
+    async deleteRule () {
+      try {
+        this.deleteModal.loading = true
+
+        await firewallService.deleteFirewall(this.selectedRow.metadata.name)
+        this.$store.dispatch('growl/success', {
+          title: 'Deleted',
+          message: `Successfully deleted ${this.selectedRow.direction} rule: ${this.selectedRow.name}`,
+        }, { root: true })
+        this.closeModal()
+        await this.fetchData()
+      } catch (error) {
+        this.$store.dispatch('growl/error', {
+          title: 'Error',
+          message: 'Error Deleting Firewall Rule',
+        }, { root: true })
+      } finally {
+        this.deleteModal.loading = false
+      }
+    },
+    closeModal() {
+      this.selectedRow = {}
+      this.deleteModal.show = false
+    },
+    handleDeleteClick (row) {
+      this.selectedRow = row
+      this.deleteModal.show = true
+    },
+    handleRowClick (row) {
+      this.selectedRow = row
+      this.sidebar.show = true
+    },
     rulesMapper(data) {
-      return data.spec
+      return {
+        ...data.spec,
+        metadata: {
+          ...data.metadata
+        }
+      }
     },
     setTab (tabIndex) {
       this.currentTabIndex = tabIndex
     },
     actionHandler (action) {
       if (action === 'create') {
+        this.selectedRow = {}
         this.sidebar.show = true
       } else if (action === 'refresh') {
         this.fetchData()
@@ -92,8 +150,10 @@ export default {
       this.sidebar.show = false
     },
     async fetchData () {
+      this.loading = true
       const res = await firewallService.getFirewallRules()
       this.firewallRules = res.data.items
+      this.loading = false
     }
   },
   async mounted() {

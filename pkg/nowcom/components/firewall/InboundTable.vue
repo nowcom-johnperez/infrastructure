@@ -1,7 +1,8 @@
 <template>
-  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
-    <template #cell:longName="{row}">
-      <span>{{ row.displayName || row.longName }}</span>
+  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading" defaultSortBy="priority" defaultSortOrder="asc">
+    <template #cell:name="{row}">
+      <a v-if="row.priority <= 999" href="#" @click.prevent="onRowClick(row)">{{ row.name || row.longName }}</a>
+      <span v-else>{{ row.name || row.longName }}</span>
     </template>
     <template #cell:action="{row}">
       <span>
@@ -10,8 +11,8 @@
         {{ row.action }}
       </span>
     </template>
-    <template #row-actions="row">
-      <cButton class="cbtn btn-primary" :disabled="loading || !row.isEnabled">
+    <template #row-actions="{row}">
+      <cButton class="cbtn btn-primary" :disabled="loading || row.priority > 999" @click="onDeleteClick(row)">
         <span class="fa fa-trash fa-lg mr-5"></span> Delete
       </cButton>
     </template>
@@ -26,6 +27,10 @@ import cButton from '../common/Button'
 export default {
   name: 'Inbound',
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     vnetId: {
       type: String,
       required: true
@@ -42,8 +47,15 @@ export default {
   },
   data() {
     return {
-      loading: false,
       headers: []
+    }
+  },
+  methods: {
+    onRowClick(row) {
+      this.$emit('onRowClick', row)
+    },
+    onDeleteClick(row) {
+      this.$emit('onDeleteClick', row)
     }
   },
   created() {

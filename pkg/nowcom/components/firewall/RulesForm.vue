@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-label">Add {{ ruleType }} security rule</h1>
+    <h1 class="text-label">{{ labelHeader }} {{ ruleType }} security rule</h1>
     <p class="mt-0">{{ vnetId }}</p>
 
     <div class="mt-30 rules-form-container">
@@ -28,7 +28,7 @@
       </div>
 
       <LabeledSelect v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required/>
-
+      <span v-if="errors.sourceSubnet" class="text-danger">{{ errors.sourceSubnet }}</span>
       <!-- <div class="add-form-row mt-15">
         <label for="sourcePort">Source Port Ranges</label>
         <input
@@ -63,6 +63,7 @@
       </div>
 
       <LabeledSelect v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required/>
+      <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
 
       <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15"/>
 
@@ -113,7 +114,8 @@
       <div class="add-form-row mt-15 mb-30">
         <cButton class="cbtn btn-primary" :disabled="saving || !isFormComplete" @click="save">
           <template v-if="!saving">
-            <i class="fa fa-plus fa-lg mr-5"></i> Add
+            <span v-if="!isEditMode"><i class="fa fa-plus fa-lg mr-5"></i> Add</span>
+            <span v-else><i class="fa fa-pencil fa-lg mr-5"></i> Update</span>
           </template>
           <template v-else>
             <i class="fa fa-spinner fa-spin fa-lg mr-5"></i> Processing
@@ -153,6 +155,10 @@ export default {
     subnets: {
       type: Array,
       required: true,
+    },
+    rowData: {
+      type: Object,
+      default: () => {}
     }
   },
   components: {
@@ -186,9 +192,15 @@ export default {
     }
   },
   computed: {
+    isEditMode() {
+      return Object.keys(this.rowData).length > 0
+    },
+    labelHeader() {
+      return !this.isEditMode ? 'Add' : 'Edit'
+    },
     isFormComplete() {
       return this.form.name && this.form.source && this.form.destination ? true : false
-    }
+    },
   },
   methods: {
     validation() {
@@ -220,6 +232,10 @@ export default {
         }
       }
 
+      if (this.form.source === 'Subnet') {
+        if (!this.form.sourceSubnet) this.errors.sourceSubnet = 'Source Subnet is required'
+      }
+
       if (this.form.destination === 'IP Address') {
         if (!this.form.destinationIp) this.errors.destinationIp = 'Destination IP is required'
         else {
@@ -237,6 +253,10 @@ export default {
             return !sourceIp.valid
           })
         }
+      }
+
+      if (this.form.destination === 'Subnet') {
+        if (!this.form.destinationSubnet) this.errors.destinationSubnet = 'Destination Subnet is required'
       }
 
       if (this.form.application === 'custom') {
@@ -289,19 +309,32 @@ export default {
         payload.destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
       }
 
-      const firewallData = {
-          apiVersion: `${API}/${API_VERSION}`,
-          kind:       'SecurityRule',
-          metadata:   {
-              name:      this.form.name.toLowerCase(),
-              namespace: 'default'
-          },
-          spec: payload
-      };
-
       try {
         this.saving = true
-        await firewallService.createFirewall(firewallData)
+
+        if (this.isEditMode) {
+          const updateFirewallData = {
+            apiVersion: `${API}/${API_VERSION}`,
+            kind:       'SecurityRule',
+            metadata:   {
+              ...this.rowData.metadata
+            },
+            spec: payload
+          };
+          await firewallService.updateFirewall(this.rowData.metadata.name, updateFirewallData)
+        } else {
+          const firewallData = {
+            apiVersion: `${API}/${API_VERSION}`,
+            kind:       'SecurityRule',
+            metadata:   {
+                name:      this.form.name.toLowerCase(),
+                namespace: 'default'
+            },
+            spec: payload
+          };
+          await firewallService.createFirewall(firewallData)
+        }
+
         this.closeForm()
       } catch (err) {
         console.error(err);
@@ -319,10 +352,31 @@ export default {
     },
     closeForm() {
       this.$emit('onClose')
+    },
+    populateData() {
+      if (this.isEditMode) {
+        // populate data
+        console.log(`rowdata`, this.rowData)
+        this.form = {
+          source:                this.rowData.source,
+          sourceIp:              this.rowData.sourceIpAddress.join(', '),
+          sourceSubnet:          this.rowData.sourceSubnet.join(', '),
+          destination:           this.rowData.destination,
+          destinationIp:         this.rowData.destinationIpAddress.join(', '),
+          destinationSubnet:     this.rowData.destinationSubnet.join(', '),
+          application:           this.rowData.application.join(),
+          destinationPortRanges: this.rowData.destinationPortRanges.join(', '),
+          action:                this.rowData.action,
+          priority:              this.rowData.priority,
+          name:                  this.rowData.name,
+          description:           this.rowData.description
+        }
+      }
     }
   },
   mounted() {
     this.fetchApplicationList()
+    this.populateData()
   }
 }
 </script>

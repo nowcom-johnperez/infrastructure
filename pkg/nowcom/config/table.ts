@@ -175,10 +175,10 @@ const RULES_HEADERS: SortableHeaderType[] = [
         width: 10,
     },
     {
-        name: 'port',
+        name: 'destinationPortRanges',
         label: 'Port',
-        sort: ['port'],
-        search: ['port'],
+        sort: ['destinationPortRanges'],
+        search: ['destinationPortRanges'],
         width: 10
     },
     {
