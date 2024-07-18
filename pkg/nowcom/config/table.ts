@@ -211,5 +211,29 @@ const RULES_HEADERS: SortableHeaderType[] = [
     },
 ];
 
+const SORTABLE_FIREWALL_NETWORK_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+        width: 10,
+    },
+    {
+        name: 'translatedAddress',
+        label: 'Translated Address',
+        sort: ['translatedAddress'],
+        search: ['translatedAddress'],
+        width: 10
+    },
+    {
+        name: 'inbound',
+        label: 'Inbound | Outbound',
+        sort: ['inbound', 'outbound'],
+        search: ['inbound', 'outbound'],
+        width: 10
+    }
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS }
+
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS }

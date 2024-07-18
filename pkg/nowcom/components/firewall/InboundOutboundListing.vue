@@ -7,12 +7,12 @@
 
       <div class="tab-content-container mt-10">
         <div class="tab-content" :class="{ 'show': currentTabIndex === 0 }">
-          <InboundTable v-if="!loading" :loading="loading" :vnet-id="vnet.name" :items="getInboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
+          <InboundTable v-if="!loading" :vnet-id="vnet.name" :items="getInboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
           
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-          <OutboundTable v-if="!loading" :loading="loading" :vnet-id="vnet.name" :items="getOutboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
+          <OutboundTable v-if="!loading" :vnet-id="vnet.name" :items="getOutboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@
     <div class="form-row mt-10">
       <div class="form-column">
         <SortableTable 
+          v-if="!loading"
           :headers="networkHeader" 
           :rows="combinedExpressAndVnets" 
           :paging="true" 
@@ -23,11 +24,15 @@
           <template #cell:name="{row}">
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
           </template>
+          <template #cell:inbound="{row}">
+            <span>{{ row.inbound }} | {{ row.outbound }}</span>
+          </template>
           <template #row-actions="row">
             <!-- currently disabled -->
             <span></span>
           </template>
         </SortableTable>
+        <Loading v-if="loading" label="Loading data... Please wait..." />
       </div>
     </div>
 
@@ -38,7 +43,8 @@
 </template>
 
 <script>
-import { SORTABLE_SUB_NETWORK_HEADERS, SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS } from '../config/table'
+import Loading from '@shell/components/Loading';
+import { SORTABLE_FIREWALL_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { mapGetters } from 'vuex'
 import SortableTable from '@shell/components/ResourceTable.vue'
@@ -50,10 +56,12 @@ import InboundOutboundListing from '../components/firewall/InboundOutboundListin
 
 import { PRODUCT_STORE, PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../config/constants'
 import { expressService } from '../services/api/express'
+import { firewallService } from '../services/api/firewall'
 
 export default {
   name: 'ListFirewall',
   components: {
+    Loading,
     SortableTable,
     cButton,
     GroupButtons,
@@ -66,6 +74,7 @@ export default {
       filters: { name: { value: '', keys: ['longName'] } },
       loading: false,
       networkHeader: [],
+      firewallRules: [],
       express: {
         mainRow: [{ name: 'express', translatedAddress: '209.76.247.250/32', subnetLength: 0, vrf: 'express', subnets: [] }],
         networks: [],
@@ -76,7 +85,8 @@ export default {
         msg: '',
       },
       sidebarVisible: false,
-      selectedNetwork: null
+      selectedNetwork: null,
+      transformedNetworks: []
     };
   },
   computed: {
@@ -86,19 +96,9 @@ export default {
     activatedExpressSubnets() {
       return this.express.networks.filter((item) => item.activated)
     },
-    inactiveExpressSubnets() {
-      return this.express.networks.filter((item) => !item.activated)
-    },
-    transformedNetworks() {
-      return this.networks.map((network) => {
-        return {
-          ...network,
-          subnets: network.subnets.map((subnet) => subnet.name)
-        }
-      })
-    },
     combinedExpressAndVnets () {
-      return [...this.express.mainRow, ...this.transformedNetworks]
+      // return [...this.express.mainRow, ...this.transformedNetworks]
+      return [...this.transformedNetworks]
     },
     allVnets() {
       return this.combinedExpressAndVnets.map((network) => network.name)
@@ -119,6 +119,8 @@ export default {
     },
     closeSidebar () {
       this.sidebarVisible = false
+      this.selectedNetwork = null
+      this.fetchNetworks()
     },
     async fetchExpressNetworks() {
       try {
@@ -143,7 +145,7 @@ export default {
       } catch (error) {
         this.$store.dispatch('growl/error', {
           title: 'Error',
-          message: 'Fetching Express Network Data: Oops! Something went wrong!',
+          message: 'Fetching Express Network Data: Something went wrong!',
         })
       }
     },
@@ -151,36 +153,49 @@ export default {
       try {
         this.loading = true
         await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
-        await this.fetchExpressNetworks()
+        // await this.fetchExpressNetworks()
+
+        this.transformedNetworks = this.networks.map((network) => {
+          return {
+            ...network,
+            subnets: network.subnets.map((subnet) => subnet.longName),
+            inbound: 0,
+            outbound: 0,
+          }
+        })
+
+        await this.fetchSecurityRules()
       } catch (error) {
         this.$store.dispatch('growl/error', {
           title: 'Error',
-          message: 'Fetching Virtual Network Data: Oops! Something went wrong!',
+          message: 'Fetching Virtual Network Data: Something went wrong!',
         })
       } finally {
         this.loading = false
       }
     },
-     // async getSubnetByName (networkName) {
-    //   if (!this.selectedNetwork?.vrf) {
-    //     this.subnetsListing = [];
-    //     this.subnetsListing = await this.$store.dispatch(`${PRODUCT_STORE}/getSubnets`, networkName);
-    //     const index = this.networks.findIndex((vnet) => vnet.name === networkName);
-    //     if (index >= 0) {
-    //       this.networks[index].subnetLength = this.subnetsListing.length;
-    //       this.networks[index].subnets = this.subnetsListing;
-    //     }
-    //   } else {
-    //     await this.fetchNetworks();
-    //     this.setSelectedExpressSub()
-    //   }
-    // },
+    async fetchSecurityRules() {
+      try {
+        const res = await firewallService.getFirewallRules()
+        this.firewallRules = res.data.items
+
+        this.transformedNetworks.forEach((network, index) => {
+          const inbound = this.firewallRules.filter((rule) => rule.spec.vnet === network.name && rule.spec.direction === 'inbound').length
+          const outbound = this.firewallRules.filter((rule) => rule.spec.vnet === network.name && rule.spec.direction === 'outbound').length
+          this.transformedNetworks[index].inbound = inbound
+          this.transformedNetworks[index].outbound = outbound
+        })
+      } catch (error) {
+        this.$store.dispatch('growl/error', {
+          title: 'Error',
+          message: 'Fetching Security Rules: Something went wrong!',
+        })
+      }
+    }
   },
   created() {
-    this.networkHeader = SORTABLE_NETWORK_HEADERS;
-    this.subnetworkHeader = SORTABLE_SUB_NETWORK_HEADERS;
+    this.networkHeader = SORTABLE_FIREWALL_NETWORK_HEADERS;
     this.firewallButtons = VNET_BUTTONS;
-    this.express.subHeader = SORTABLE_SUB_NETWORK_EXPRESS_HEADERS;
   },
   mounted() {
     this.fetchNetworks();

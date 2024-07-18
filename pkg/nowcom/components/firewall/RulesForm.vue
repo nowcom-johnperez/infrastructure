@@ -97,6 +97,7 @@
           v-model="form.name"
           type="text"
           placeholder=""
+          :disabled="isEditMode"
           class="mt-5"
         />
         <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
@@ -278,7 +279,7 @@ export default {
     async save() {
       if (!this.validation()) return
       const payload = {
-        name:    this.form.name.toLowerCase(),
+        name:    this.vnetId + '-' + this.form.name.toLowerCase(),
         direction: this.ruleType,
         vnet: this.vnetId,
         source: this.form.source,
@@ -311,23 +312,28 @@ export default {
 
       try {
         this.saving = true
-
+        
         if (this.isEditMode) {
-          const updateFirewallData = {
+          // override set only name no need to append vnetId
+          payload.name = this.form.name
+
+          const firewallData = {
             apiVersion: `${API}/${API_VERSION}`,
             kind:       'SecurityRule',
             metadata:   {
-              ...this.rowData.metadata
+                name:      this.rowData.metadata.name,
+                namespace: 'default'
             },
             spec: payload
           };
-          await firewallService.updateFirewall(this.rowData.metadata.name, updateFirewallData)
+
+          await firewallService.updateFirewall(this.rowData.metadata.name, firewallData)
         } else {
           const firewallData = {
             apiVersion: `${API}/${API_VERSION}`,
             kind:       'SecurityRule',
             metadata:   {
-                name:      this.form.name.toLowerCase(),
+                name:      this.vnetId + '-' + this.form.name.toLowerCase(),
                 namespace: 'default'
             },
             spec: payload
