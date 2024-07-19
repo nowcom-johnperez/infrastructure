@@ -100,7 +100,7 @@ export function init($plugin: any, store: any) {
   // });
 
   const vt = [
-    { name: WIKI_PAGE, label: 'Wiki', displayName: 'Wiki', weight: 8 },
+    // { name: WIKI_PAGE, label: 'Wiki', displayName: 'Wiki', weight: 8 },
     { name: LIST_K8, label: 'Kubernetes', displayName: 'Kubernetes', weight: 7 },
     { name: LIST_NETWORK, label: 'Network', displayName: 'Network', weight: 6 },
     { name: LIST_FIREWALL, label: 'Firewall', displayName: 'Firewall', weight: 5 },
