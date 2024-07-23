@@ -101,7 +101,7 @@ import cButton from '../components/common/Button'
 import SideBar from '../components/Sidebar'
 import GroupButtons from '../components/common/GroupButtons'
 import Modal from '../components/common/Modal'
-import { NAT_BUTTONS } from '../config/buttons'
+// import { NAT_BUTTONS } from '../config/buttons'
 import { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS } from '../config/table'
 import { natService } from '../services/api/nat';
 
@@ -399,7 +399,7 @@ export default {
         },
     },
     created() {
-        this.natGatewayButtons = NAT_BUTTONS;
+        // this.natGatewayButtons = NAT_BUTTONS;
         this.vnetHeaders = SORTABLE_NETWORK_HEADERS;
         this.subVnetHeaders = SORTABLE_SUB_NETWORK_HEADERS;
     },

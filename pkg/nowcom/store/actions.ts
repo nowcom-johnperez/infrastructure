@@ -7,14 +7,14 @@ export default {
         vNetService.getNetworkTranslations()
     ]);
 
-    const parsedData = networks.data.items.filter((item: any) => item.spec.name !== 'express').map((item: any) => {
+    const parsedData = networks.data.items.filter((item: any) => item.metadata.name !== 'express').map((item: any) => {
       const translatedAddressData = networkTranslations.data.items;
-      const mainTranslatedAddress = findTranslatedAddress(translatedAddressData, item.spec.name);
+      const mainTranslatedAddress = findTranslatedAddress(translatedAddressData, item.metadata.name);
       const subnets = item.spec.subnets.map((subnet: any) => {
         return {
           address:    subnet.address,
           formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-          name:       stripStrings(item.spec.name, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
+          name:       stripStrings(item.metadata.name, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
           longName:   subnet.name,
           prefix_len: subnet.prefixLength,
           dhcpEnabled: subnet.dhcpEnabled,
@@ -23,7 +23,7 @@ export default {
       });
 
       return {
-        name:    item.spec.name,
+        name:    item.metadata.name,
         subnets,
         subnetLength: subnets.length,
         cluster: 'local',

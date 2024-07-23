@@ -355,7 +355,7 @@ export default {
     },
     async fetchApplicationList() {
       const res = await firewallService.getApplicationList()
-      this.listing.application = res.data.items.map((d) => d.spec.name)
+      this.listing.application = res.data.items.map((d) => d.metadata.name)
     },
     closeForm() {
       this.$emit('onClose')
