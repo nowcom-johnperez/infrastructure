@@ -3,7 +3,7 @@
         <div v-if="currentNetwork?.vrf === 'express' && Object.keys(currentSub).length > 0 || !currentNetwork?.vrf">
             <h2>Add Subnet</h2>
             <div class="add-form-row">
-                <input v-model="subnetName" type="text" placeholder="Subnet Name" title="Subnet Name" />
+                <input v-model="subnetName" type="text" placeholder="Subnet Name" title="Subnet Name" :disabled="currentNetwork?.vrf === 'express'" />
                 <p v-if="!isSubnetValidName && subnetName" class="text-danger" style="font-weight: bold;">Invalid Name Format</p>
             </div>
             <div class="add-form-row">
