@@ -19,8 +19,10 @@
       </span>
     </template>
     <template #row-actions="{row}">
-      <cButton class="cbtn btn-primary" :disabled="row.priority > 999" v-clean-tooltip="unavailableTooltipButton" @click="onDeleteClick(row)">
-        <span class="fa fa-trash fa-lg mr-5"></span> Delete
+      <cButton class="cbtn btn-primary" :disabled="row.priority > 999" @click="onDeleteClick(row)">
+        <span class="fa fa-trash fa-lg mr-5"></span>
+        <span v-if="row.priority > 999" v-clean-tooltip="unavailableTooltipButton">Delete</span>
+        <span v-else>Delete</span>
       </cButton>
     </template>
   </SortableTable>
