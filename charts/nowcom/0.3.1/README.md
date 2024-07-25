@@ -55,3 +55,5 @@ Release v0.3.1
 - Make a wish new API implementation
 - Firewall API Integration
 - Fixed Subnet Names for express
+- Move Translation Address to Firewall
+- Error Handling improvements
