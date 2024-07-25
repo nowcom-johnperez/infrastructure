@@ -149,18 +149,22 @@ export default {
         })
       }
     },
+    async fetchSubnetTranslations() {
+      return await expressService.getAllNetworks()
+    },
     async fetchNetworks() {
       try {
         this.loading = true
         await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
         // await this.fetchExpressNetworks()
-
+        const subnets = await this.fetchSubnetTranslations()
         this.transformedNetworks = this.networks.map((network) => {
           return {
             ...network,
             subnets: network.subnets.map((subnet) => subnet.longName),
             inbound: 0,
             outbound: 0,
+            subnetTranslatedAddress: subnets.filter((subnet) => subnet.spec.vrf === network.name && subnet.spec.addressTranslation).map((subnet) => { return { longName: subnet.metadata.name, formattedAddress: subnet.spec.addressTranslation?.inside, translatedAddress: subnet.spec.addressTranslation?.outside}})
           }
         })
 

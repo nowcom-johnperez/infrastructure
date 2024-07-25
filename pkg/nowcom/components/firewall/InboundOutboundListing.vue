@@ -3,16 +3,20 @@
     <h2 class="text-label">{{ vnet.name }}</h2>
     <GroupButtons class="w-100" :list="firewallButtons" @action="actionHandler"/>
     <div class="mt-10">
-      <Tabs :list="['Inbound Security Rules', 'Outbound Security Rules']" :current="currentTabIndex" @set-active="setTab"/>
+      <Tabs :list="['Inbound Security Rules', 'Outbound Security Rules', 'Translations']" :current="currentTabIndex" @set-active="setTab"/>
 
-      <div class="tab-content-container mt-10">
+      <div class="tab-content-container mt-40">
         <div class="tab-content" :class="{ 'show': currentTabIndex === 0 }">
-          <InboundTable v-if="!loading" :vnet-id="vnet.name" :items="getInboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
+          <RulesTable v-if="!loading" :vnet-id="vnet.name" :items="getInboundRules" @onCreateClick="actionHandler" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
           
         </div>
 
         <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-          <OutboundTable v-if="!loading" :vnet-id="vnet.name" :items="getOutboundRules" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
+          <RulesTable v-if="!loading" :vnet-id="vnet.name" :items="getOutboundRules" @onCreateClick="actionHandler" @onDeleteClick="handleDeleteClick" @onRowClick="handleRowClick"/>
+        </div>
+
+        <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
+          <RulesSubnetTable v-if="!loading" :items="vnet.subnetTranslatedAddress"/>
         </div>
       </div>
     </div>
@@ -38,14 +42,15 @@
 <script>
 import SideBar from '../Sidebar'
 import Modal from '../common/Modal'
-import InboundTable from './InboundTable'
-import OutboundTable from './OutboundTable'
+import RulesTable from './RulesTable'
+import RulesSubnetTable from './RulesSubnetTable'
 import RulesForm from './RulesForm'
 import cButton from '../common/Button'
 import GroupButtons from '../common/GroupButtons'
 import Tabs from '../common/Tabs'
 import { FIREWALL_BUTTONS } from '../../config/buttons'
 import { firewallService } from '../../services/api/firewall'
+import { PRODUCT_STORE } from '../../config/constants'
 export default {
   name: 'FirewallListing',
   props: {
@@ -63,8 +68,8 @@ export default {
     cButton,
     GroupButtons,
     Tabs,
-    InboundTable,
-    OutboundTable,
+    RulesTable,
+    RulesSubnetTable,
     RulesForm,
     Modal
   },
@@ -78,6 +83,7 @@ export default {
         show: false,
       },
       firewallRules: [],
+      subnets: [],
       selectedRow: {},
       deleteModal: {
         show: false,
@@ -131,7 +137,8 @@ export default {
         ...data.spec,
         metadata: {
           ...data.metadata
-        }
+        },
+        name: data.metadata.name
       }
     },
     setTab (tabIndex) {
@@ -154,7 +161,7 @@ export default {
       const res = await firewallService.getFirewallRules()
       this.firewallRules = res.data.items
       this.loading = false
-    }
+    },
   },
   async mounted() {
     this.firewallButtons = FIREWALL_BUTTONS

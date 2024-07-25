@@ -54,13 +54,13 @@ const SORTABLE_SUB_NETWORK_HEADERS: SortableHeaderType[] = [
         search: ['formattedAddress'],
         width: 30
     },
-    {
-        name: 'translatedAddress',
-        label: 'Translated Address',
-        sort: ['translatedAddress'],
-        search: ['translatedAddress'],
-        width: 30
-    },
+    // {
+    //     name: 'translatedAddress',
+    //     label: 'Translated Address',
+    //     sort: ['translatedAddress'],
+    //     search: ['translatedAddress'],
+    //     width: 30
+    // },
     {
         name: 'dhcpEnabled',
         label: 'DHCP',
@@ -235,5 +235,29 @@ const SORTABLE_FIREWALL_NETWORK_HEADERS: SortableHeaderType[] = [
     }
 ];
 
+const RULES_SUBNET_TRANSLATIONS: SortableHeaderType[] = [
+    {
+        name: 'longName',
+        label: 'Subnet Name',
+        sort: ['longName'],
+        search: ['longName'],
+        width: 50,
+    },
+    {
+        name: 'formattedAddress',
+        label: 'Network Address',
+        sort: ['formattedAddress'],
+        search: ['formattedAddress'],
+        width: 30
+    },
+    {
+        name: 'translatedAddress',
+        label: 'Translated Address',
+        sort: ['translatedAddress'],
+        search: ['translatedAddress'],
+        width: 30
+    },
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS }
+
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS }

@@ -28,12 +28,12 @@ const VNET_BUTTONS = [
 ];
 
 const FIREWALL_BUTTONS = [
-    {
-        label: 'Create',
-        type: 'button',
-        icon: 'fa-plus',
-        action: 'create'
-    },
+    // {
+    //     label: 'Create',
+    //     type: 'button',
+    //     icon: 'fa-plus',
+    //     action: 'create'
+    // },
     {
         label: 'Refresh',
         type: 'button',

@@ -135,7 +135,8 @@ export default {
                     const subs = this.tempNetwork.subnets.map((sub) => {
                         return {
                             name: sub.name,
-                            address: sub.address
+                            address: sub.address,
+                            dhcpEnabled: sub.dhcpEnabled
                         }
                     })
 

@@ -393,7 +393,7 @@ export default {
       } catch (error) {
         this.loading = false;
         this.apiResponse = 'error'
-        this.apiResponseMessage = error.response ? error.response?.data?.message : error.message;
+        this.apiResponseMessage = error.response ? stripErrorMessage(error.response?.data?.message) : stripErrorMessage(error.message);
       } finally {
         this.hideAlertMessage();
       }
@@ -448,7 +448,7 @@ export default {
       } catch (error) {
         this.loading = false;
         // Set the API error in the component
-        this.subnetResponseMessage = error.response ? stripErrorMessage(error.response?.data?.message) : error.message;
+        this.subnetResponseMessage = error.response ? stripErrorMessage(error.response?.data?.message) : stripErrorMessage(error.message);
         this.subnetResponse = 'error';
       } finally {
         this.hideAlertMessage();

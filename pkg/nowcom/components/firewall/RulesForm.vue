@@ -82,13 +82,19 @@
       <RadioButtons class="mt-15" :options="['Allow', 'Deny']" v-model="form.action" name="action" title="Action"/>
 
       <div class="add-form-row mt-15">
-        <label for="priority">Priority <span class="text-danger">*</span></label>
+        <label for="priority">Priority 
+          <span class="text-danger mr-5">*</span>
+          <span class="info-icon" v-clean-tooltip="tooltipPriority">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </span>
+        </label>
         <input
           v-model.number="form.priority"
           type="text"
           placeholder=""
           class="mt-5"
         />
+        
         <span v-if="errors.priority" class="text-danger">{{ errors.priority }}</span>
       </div>
 
@@ -202,6 +208,12 @@ export default {
     },
     isFormComplete() {
       return this.form.name && this.form.source && this.form.destination ? true : false
+    },
+    tooltipPriority() {
+      return {
+        content: `Priority tooltip placeholder`,
+        hideOnTargetClick: false
+      }
     },
   },
   methods: {

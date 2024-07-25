@@ -50,7 +50,14 @@ export const validateString = (input: string) => {
 }
 
 export const stripErrorMessage = (errorMessage: string) => {
-    const parts = errorMessage.split('denied the request: ');
+    const phrase = 'denied the request: ';
+    const parts = errorMessage.split(phrase);
+    if (parts.length > 2) {
+        // Join everything from the second "denied the request:" onward
+        return parts.slice(2).join(phrase).trim();
+    }
+
+    // Return the message after the last "denied the request:" if there are at least two parts
     if (parts.length > 1) {
         return parts[1].trim();
     }
