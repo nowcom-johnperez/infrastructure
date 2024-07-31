@@ -11,6 +11,23 @@
       <a v-if="row.priority <= 999" href="#" @click.prevent="onRowClick(row)">{{ row.name || row.longName }}</a>
       <span v-else>{{ row.name || row.longName }}</span>
     </template>
+    <template #cell:application="{row}">
+      <!-- <table class="inside-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Ports</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="app in row.application">
+            <td>{{ app.name }}</td>
+            <td>{{ app.ports.join(',') }}</td>
+          </tr>
+        </tbody>
+      </table> -->
+      <span v-for="app in row.application" :key="`${app.name}-${row.name}`" class="formatted-cell">{{ app.name }}: {{ app.ports.join(', ') }}</span>
+    </template>
     <template #cell:action="{row}">
       <span>
         <i v-if="row.action === 'Allow'" class="fa fa-check mr-5" aria-hidden="true" style="color: green"></i>
@@ -79,3 +96,36 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.formatted-cell {
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: .9rem;
+}
+.inside-table {
+  outline: 1px solid #f2f2f2;
+  font-size: .9em;
+  thead {
+    tr {
+      border-bottom: 1px solid #DCDEE7;
+      background-color: #F4F5FA;
+    }
+
+    th {
+      padding: 10px 20px;
+    }
+  }
+
+  tbody {
+    tr {
+      border: 1px solid #f2f2f2;
+    }
+
+    td {
+      padding: 10px 20px;
+      text-align: center;
+    }
+  }
+}
+</style>

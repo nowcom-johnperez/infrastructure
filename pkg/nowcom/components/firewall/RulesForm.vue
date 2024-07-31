@@ -297,7 +297,11 @@ export default {
         vnet: this.vnetId,
         source: this.form.source,
         destination: this.form.destination,
-        application: this.form.application,
+        application: this.form.application.map((app) => {
+          return {
+            name: app
+          }
+        }) || [],
         action: this.form.action,
         description: this.form.description,
         priority: this.form.priority,
