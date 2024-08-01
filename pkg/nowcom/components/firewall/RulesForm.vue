@@ -66,7 +66,8 @@
       <LabeledSelect id="destinationSubnet" v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required multiple />
       <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
 
-      <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15" multiple/>
+      <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15" multiple required/>
+      <span v-if="errors.application" class="text-danger">{{ errors.application }}</span>
 
       <div v-if="form.application.includes('custom')" class="add-form-row mt-15">
         <label for="destinatinoPortRanges">Destination Port Ranges <span class="text-danger">*</span></label>
@@ -188,7 +189,7 @@ export default {
         destination:           'Any',
         destinationIp:         '',
         destinationSubnet:     [],
-        application:           ['custom'],
+        application:           [],
         destinationPortRanges: '8080',
         protocol:              'Any',
         action:                'Allow',
@@ -224,6 +225,7 @@ export default {
       if (!this.form.destination) this.errors.destination = 'Destination is required'
       if (this.form.priority < 0 || this.form.priority > 999) this.errors.priority = 'Priority value must be from 1-999.'
       if (!this.form.priority) this.errors.priority = 'Priority is required'
+      if (!this.form.application || this.form.application.length === 0) this.errors.application = 'Application is required'
       // max to 65535
 
       if (this.form.source === 'IP Address') {
@@ -324,7 +326,7 @@ export default {
       }
 
       if (this.form.application.includes('custom')) {
-        payload.destinationPortRanges = this.form.destinationPortRanges.split(/,\s*/);
+        payload.port = this.form.destinationPortRanges.split(/,\s*/);
       }
 
       try {

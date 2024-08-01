@@ -26,7 +26,10 @@
           </tr>
         </tbody>
       </table> -->
-      <span v-for="app in row.application" :key="`${app.name}-${row.name}`" class="formatted-cell">{{ app.name }}: {{ app.ports.join(', ') }}</span>
+      <span v-for="(app, index) in row.application" :key="`${app.name}-${row.name}`" class="formatted-cell">
+        <span class="info-hover" v-clean-tooltip="app.ports.join(', ')">{{ app.name }}</span><span v-if="index !== row.application.length - 1">,</span>
+        <br v-if="index !== row.application.length - 1" />
+      </span>
     </template>
     <template #cell:action="{row}">
       <span>
@@ -103,29 +106,7 @@ export default {
   font-family: monospace;
   font-size: .9rem;
 }
-.inside-table {
-  outline: 1px solid #f2f2f2;
-  font-size: .9em;
-  thead {
-    tr {
-      border-bottom: 1px solid #DCDEE7;
-      background-color: #F4F5FA;
-    }
-
-    th {
-      padding: 10px 20px;
-    }
-  }
-
-  tbody {
-    tr {
-      border: 1px solid #f2f2f2;
-    }
-
-    td {
-      padding: 10px 20px;
-      text-align: center;
-    }
-  }
+.info-hover {
+  cursor: help;
 }
 </style>
