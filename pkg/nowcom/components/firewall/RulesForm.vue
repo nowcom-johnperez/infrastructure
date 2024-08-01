@@ -385,16 +385,18 @@ export default {
         if (this.form.source === 'IP Address') this.form.sourceIp = this.rowData.sourceIpAddress.join(', ')
         this.form.destination = this.rowData.destination
         if (this.form.destination === 'IP Address') this.form.destinationIp = this.rowData.destinationIpAddress.join(', ')
-        this.form.application = this.rowData.application
+        this.form.application = this.rowData.application.map((app) => app.name)
         if (this.form.application.includes('custom')) this.form.destinationPortRanges = this.rowData.destinationPortRanges.join(', ')
         this.form.action = this.rowData.action
         this.form.name = this.rowData.name
         this.form.description = this.rowData.description
 
-        setTimeout(() => {
-          if (this.form.source === 'Subnet') this.form.sourceSubnet = this.rowData.sourceSubnet
-          if (this.form.destination === 'Subnet') this.form.destinationSubnet = this.rowData.destinationSubnet
-        }, 500)
+        this.$nextTick(() => {
+          setTimeout(() => {
+            if (this.form.source === 'Subnet') this.form.sourceSubnet = this.rowData.sourceSubnet
+            if (this.form.destination === 'Subnet') this.form.destinationSubnet = this.rowData.destinationSubnet
+          }, 500)
+        })
       }
     }
   },
