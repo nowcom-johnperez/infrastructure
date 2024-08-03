@@ -8,7 +8,7 @@
     <div class="release-notes-container mt-10">
       <h2>Release Notes</h2>
       <div v-if="releaseNotes.items.length > 0" class="mt-20" v-for="v in releaseNotes.items" :key="v.name">
-        <SortableTable :headers="releaseNotes.headers" :rows="v.list" keyField="dateRelease">
+        <SortableTable :headers="releaseNotes.headers" :rows="v.list" keyField="name" defaultSortBy="dateRelease" defaultSortOrder="asc">
           <template #header-left>
             <div class="row table-heading">
               <h3 class="mb-0">
@@ -56,8 +56,8 @@ import Timeline from '../components/TimelineComponent.vue'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import SortableTable from '@shell/components/ResourceTable.vue'
-import { RELEASE_NOTES } from '../config/release-notes'
 import { RELEASE_NOTES_HEADERS } from '../config/table'
+import README from '../README.md'
 export default {
   name: 'ReleasePage',
   components: {
@@ -84,11 +84,52 @@ export default {
     },
     sortVersion(list) {
       return list.sort((a, b) => new Date(b.dateRelease) - new Date(a.dateRelease));
+    },
+    parseReadme(content) {
+      const lines = content.split('\n')
+      const releases = []
+
+      let currentRelease = null
+
+      lines.forEach(line => {
+        const versionMatch = line.match(/^Release (v\d+\.\d+\.\d+) \((\d{4})-(\d{2})-(\d{2})\)$/)
+        if (versionMatch) {
+          const [ , version, year, month, day] = versionMatch;
+          const formattedDate = `${year}-${month}-${day}`
+          if (currentRelease) {
+            releases.push(currentRelease)
+          }
+
+          currentRelease = {
+            version: version,
+            dateRelease: formattedDate,
+            notes: []
+          }
+        } else if (line.startsWith('- ') && currentRelease) {
+          currentRelease.notes.push(line.substring(2))
+        }
+      })
+
+      if (currentRelease) {
+        releases.push(currentRelease)
+      }
+
+      this.releaseNotes.items = [
+        {
+          name: 'Infrastructure',
+          list: releases
+        }
+      ]
+
+      console.log(`releaseNotes`, this.releaseNotes.items, releases)
     }
   },
-  mounted() {
+  async mounted() {
+    this.parseReadme(README.body)
     this.releaseNotes.headers = RELEASE_NOTES_HEADERS;
-    this.releaseNotes.items = RELEASE_NOTES;
+  },
+  created() {
+    
   }
 }
 </script>

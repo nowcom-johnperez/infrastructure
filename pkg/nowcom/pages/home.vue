@@ -2,7 +2,7 @@
   <div class="rebranded">
     <div class="row mb-20 full-width logo-handler">
       <div class="col image-handler">
-        <img src="../assets/img/trident-banner.gif" alt="NOWCOM">
+        <img src="../assets/img/trident.gif" alt="NOWCOM">
       </div>
     </div>
 
