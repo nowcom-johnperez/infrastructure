@@ -57,7 +57,7 @@ import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import SortableTable from '@shell/components/ResourceTable.vue'
 import { RELEASE_NOTES_HEADERS } from '../config/table'
-import README from '../README.md'
+import README from '@pkg/nowcom/README.md'
 export default {
   name: 'ReleasePage',
   components: {
@@ -86,46 +86,53 @@ export default {
       return list.sort((a, b) => new Date(b.dateRelease) - new Date(a.dateRelease));
     },
     parseReadme(content) {
-      const lines = content.split('\n')
-      const releases = []
+      if (content) {
+        const lines = content?.split('\n')
+        const releases = []
 
-      let currentRelease = null
+        let currentRelease = null
 
-      lines.forEach(line => {
-        const versionMatch = line.match(/^Release (v\d+\.\d+\.\d+) \((\d{4})-(\d{2})-(\d{2})\)$/)
-        if (versionMatch) {
-          const [ , version, year, month, day] = versionMatch;
-          const formattedDate = `${year}-${month}-${day}`
-          if (currentRelease) {
-            releases.push(currentRelease)
+        lines.forEach(line => {
+          const versionMatch = line.match(/^Release (v\d+\.\d+\.\d+) \((\d{4})-(\d{2})-(\d{2})\)$/)
+          if (versionMatch) {
+            const [ , version, year, month, day] = versionMatch;
+            const formattedDate = `${year}-${month}-${day}`
+            if (currentRelease) {
+              releases.push(currentRelease)
+            }
+
+            currentRelease = {
+              version: version,
+              dateRelease: formattedDate,
+              notes: []
+            }
+          } else if (line.startsWith('- ') && currentRelease) {
+            currentRelease.notes.push(line.substring(2))
           }
+        })
 
-          currentRelease = {
-            version: version,
-            dateRelease: formattedDate,
-            notes: []
-          }
-        } else if (line.startsWith('- ') && currentRelease) {
-          currentRelease.notes.push(line.substring(2))
+        if (currentRelease) {
+          releases.push(currentRelease)
         }
-      })
 
-      if (currentRelease) {
-        releases.push(currentRelease)
+        this.releaseNotes.items = [
+          {
+            name: 'Infrastructure',
+            list: releases
+          }
+        ]
       }
-
-      this.releaseNotes.items = [
-        {
-          name: 'Infrastructure',
-          list: releases
-        }
-      ]
-
-      console.log(`releaseNotes`, this.releaseNotes.items, releases)
     }
   },
   async mounted() {
-    this.parseReadme(README.body)
+    if (typeof README === 'string') {
+      const res = await fetch(README)
+      const text = await res.text();
+      this.parseReadme(text)
+    } else {
+      this.parseReadme(README.body)
+    }
+    
     this.releaseNotes.headers = RELEASE_NOTES_HEADERS;
   },
   created() {
