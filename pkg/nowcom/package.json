@@ -2,12 +2,12 @@
   "name": "nowcom",
   "description": "Nowcom Infrastructure Network Automation",
   "icon": "https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "rancher": {
     "annotations": {
-      "catalog.cattle.io/kube-version": ">= 1.16.0-0",
-      "catalog.cattle.io/rancher-version": ">= 2.7.0-0"
+      "catalog.cattle.io/rancher-version": ">= 2.9.0",
+      "catalog.cattle.io/ui-extensions-version": ">= 2.0.1"
     }
   },
   "scripts": {

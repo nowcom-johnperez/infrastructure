@@ -4,7 +4,8 @@
     <p class="mt-0">{{ vnetId }}</p>
 
     <div class="mt-30 rules-form-container">
-      <LabeledSelect :options="listing.source" v-model="form.source" label="Source" required/>
+      <label for="source">Source <span class="text-danger">*</span></label>
+      <Select :options="listing.source" v-model="form.source" class="mt-5" required/>
 
       <div v-if="form.source === 'IP Address'" class="add-form-row mt-15">
         <label for="sourceIP">Source IP addresses/CIDR ranges <span class="text-danger">*</span></label>
@@ -27,8 +28,11 @@
         />
       </div>
 
-      <LabeledSelect id="sourceSubnet" name="sourceSubnet" ref="sourceSubnet" v-if="form.source === 'Subnet'" :options="subnets" v-model="form.sourceSubnet" label="Source Subnets" class="mt-15" required multiple/>
-      <span v-if="errors.sourceSubnet" class="text-danger">{{ errors.sourceSubnet }}</span>
+      <div v-if="form.source === 'Subnet'" class="mt-15">
+        <label for="sourceSubnet">Source Subnet <span class="text-danger">*</span></label>
+        <Select id="sourceSubnet" name="sourceSubnet" ref="sourceSubnet" :options="subnets" v-model="form.sourceSubnet" class="mt-5" required multiple/>
+        <span v-if="errors.sourceSubnet" class="text-danger">{{ errors.sourceSubnet }}</span>
+      </div>
       
       <!-- <div class="add-form-row mt-15">
         <label for="sourcePort">Source Port Ranges</label>
@@ -40,7 +44,10 @@
         />
       </div> -->
 
-      <LabeledSelect :options="listing.source" v-model="form.destination" label="Destination" class="mt-15" required/>
+      <div class="mt-15">
+        <label for="destination">Destination <span class="text-danger">*</span></label>
+        <Select :options="listing.source" v-model="form.destination" label="Destination" class="mt-5" required/>
+      </div>
 
       <div v-if="form.destination === 'IP Address'" class="add-form-row mt-15">
         <label for="destinationIp">Destination IP addresses/CIDR ranges <span class="text-danger">*</span></label>
@@ -63,11 +70,17 @@
         />
       </div>
 
-      <LabeledSelect id="destinationSubnet" v-if="form.destination === 'Subnet'" :options="subnets" v-model="form.destinationSubnet" label="Destination Subnets" class="mt-15" required multiple />
-      <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
+      <div v-if="form.destination === 'Subnet'" class="mt-15">
+        <label for="destinationSubnet">Destination Subnets <span class="text-danger">*</span></label>
+        <Select id="destinationSubnet"  :options="subnets" v-model="form.destinationSubnet" class="mt-5" required multiple />
+        <span v-if="errors.destinationSubnet" class="text-danger">{{ errors.destinationSubnet }}</span>
+      </div>
 
-      <LabeledSelect :options="listing.application" v-model="form.application" label="Application" class="mt-15" multiple required/>
-      <span v-if="errors.application" class="text-danger">{{ errors.application }}</span>
+      <div class="mt-15">
+        <label for="application">Application <span class="text-danger">*</span></label>
+        <Select :options="listing.application" v-model="form.application" class="mt-5" multiple required/>
+        <span v-if="errors.application" class="text-danger">{{ errors.application }}</span>
+      </div>
 
       <div v-if="form.application.includes('custom')" class="add-form-row mt-15">
         <label for="destinatinoPortRanges">Destination Port Ranges <span class="text-danger">*</span></label>
@@ -139,7 +152,7 @@
 </template>
 
 <script>
-import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
+import Select from '@shell/components/form/Select.vue';
 import RadioButtons from '../common/RadioButtons.vue';
 import cButton from '../common/Button'
 import { ip } from '@form-validation/validator-ip';
@@ -171,7 +184,7 @@ export default {
     }
   },
   components: {
-    LabeledSelect,
+    Select,
     RadioButtons,
     cButton
   },

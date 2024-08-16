@@ -47,7 +47,7 @@ import ListNamespace from '@shell/pages/c/_cluster/_product/namespaces.vue';
 import Home from '@shell/pages/home.vue';
 
 import axios from 'axios';
-import { BASE_URL, VLAN_LIST_URL } from '../config/api.ts';
+import { BASE_URL, VLAN_LIST_URL } from '../../config/api.js';
 import { CAPI, CATALOG, type, NODE, POD  } from '@shell/config/types';
 
 

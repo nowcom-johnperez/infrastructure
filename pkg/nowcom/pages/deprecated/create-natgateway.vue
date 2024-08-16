@@ -142,7 +142,7 @@
 <script>
 import https from "https";
 import axios from "axios";
-import { getConfig } from "../config/api.ts";
+import { getConfig } from "../../config/api.ts";
 const { NETWORK_URL_V2 } = getConfig()
 // const INSTANCE = axios.create({
 //     baseURL: NETWORK_URL,
