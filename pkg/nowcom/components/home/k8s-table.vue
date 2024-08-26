@@ -185,7 +185,7 @@ export default {
     },
 
     cpuAllocatable(cluster) {
-      return parseSi(cluster.status.allocatable?.cpu);
+      return parseSi(cluster.status?.allocatable?.cpu);
     },
     memoryAllocatable(cluster) {
       const parsedAllocatable = (parseSi(cluster.status.allocatable?.memory) || 0).toString();
