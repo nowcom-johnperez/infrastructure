@@ -23,3 +23,6 @@ appLauncher:
   filter: Filter
   aToZ: A-Z
   zToA: Z-A
+
+environment:
+  delete: Delete

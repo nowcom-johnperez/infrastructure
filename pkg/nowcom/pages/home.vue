@@ -1,114 +1,45 @@
 <template>
-  <div class="rebranded">
-    <div class="row mb-20 full-width logo-handler">
-      <div class="col image-handler">
-        <img src="../assets/img/trident.gif" alt="NOWCOM">
+  <div>
+    <TopNav />
+    <div class="rebranded">
+      <div class="row mb-20 full-width logo-handler">
+        <div class="col image-handler">
+          <img src="../assets/img/trident.gif" alt="NOWCOM">
+        </div>
       </div>
-    </div>
 
-    <div class="col span-12 pl-50 pr-50">
-      <Banner
-        data-testid="changelog-banner"
-        color="info whats-new"
-      >
-        <div style="margin-right: auto;">
-          {{ t('home.seeWhatsNew') }}
-        </div>
-        <router-link
-          class="hand"
-          :to="whatsNewUrl"
-        >
-          <span v-clean-html="t('home.whatsNewLink')" />
-        </router-link>
-      </Banner>
-    </div>
+      <WhatsNewBanner />
+      
+      <div class="full-width">
+        <Environments />
+      </div>
 
-    <div class="col span-12 pl-50 pr-50">
-      <Banner
-        data-testid="makewish"
-        color="info whats-new"
-      >
-        <div style="margin-right: auto;">
-          We value your input and are eager to hear your suggestions, ideas, and feedback.
-        </div>
-        <a
-          class="hand"
-          href="#"
-          @click.prevent="fRequest.show = true"
-        >
-          <i class="fa fa-star fa-pulse mr-5"></i> Make a wish!
-        </a>
-      </Banner>
+      <MakeAWishBanner />
     </div>
-    
-    <div class="full-width">
-      <K8STable />
-      <!-- <Virtualization class="mt-40" /> -->
-    </div>
-
-    <Modal size="lg" v-if="fRequest.show">
-      <template #header>
-        <div class="row">
-          <div style="margin-right: auto;">
-            <h1 class="mb-0">
-              <i class="fa fa-star fa-pulse mr-10"></i> Make a wish!
-            </h1>
-          </div>
-          <div>
-            <cButton class="btn-x-modal" @click="fRequest.show = false">
-              <i class="x-icon fa fa-close fa-lg"></i>
-            </cButton>
-          </div>
-        </div>
-      </template>
-      <template v-slot:content>
-        <p class="mb-10">Please use this form to share your thoughts with us. Your feedback helps us improve and better serve you.</p>
-        <WishForm />
-      </template>
-    </Modal>
   </div>
+  
 </template>
 
 <script>
-import cButton from '../components/common/Button'
-import K8STable from '../components/home/k8s-table'
-import Virtualization from '../components/home/virtualization'
-import { Banner } from '@components/Banner';
+import TopNav from '../components/TopNav'
+import Environments from '../components/home/environment'
 import { getVendor } from '@shell/config/private-label';
-import Modal from '../components/common/Modal.vue';
-import WishForm from '../components/forms/WishForm.vue';
-import { PRODUCT_NAME, BLANK_CLUSTER, ROAD_MAP } from '../config/constants';
+import WhatsNewBanner from '../components/banners/WhatsNewBanner.vue';
+import MakeAWishBanner from '../components/banners/MakeAWishBanner.vue';
 export default {
   name: 'HomePage',
   layout: 'plain',
   components: {
-    K8STable,
-    Virtualization,
-    cButton,
-    Banner,
-    Modal,
-    WishForm
+    TopNav,
+    Environments,
+    WhatsNewBanner,
+    MakeAWishBanner
   },
   data() {
     return {
       vendor: getVendor(),
-      fRequest: {
-        show: false,
-      }
     }
   },
-  computed: {
-    whatsNewUrl () {
-      return {
-        path: `/${PRODUCT_NAME}/c/${BLANK_CLUSTER}/${ROAD_MAP}`
-      }
-    }
-  },
-  methods: {
-    featureRequest() {
-      this.fRequest.show = true
-    }
-  }
 }
 </script>
 
@@ -118,6 +49,7 @@ h1 {
 }
 
 .rebranded {
+  padding-top: 15px;
   align-items: center;
 }
 
