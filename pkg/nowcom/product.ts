@@ -2,7 +2,7 @@
 // definition of a "blank cluster" in Rancher Dashboard
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 // import { IPlugin } from '@rancher/shell/core/types';
-import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP } from './config/constants';
+import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, HOME } from './config/constants';
 
 export function init($plugin: any, store: any) {
   const {
@@ -20,7 +20,7 @@ export function init($plugin: any, store: any) {
     showClusterSwitcher: false,
     weight: 100,
     to: {
-      name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
+      name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       params: {
         product: PRODUCT_NAME,
         cluster: BLANK_CLUSTER,

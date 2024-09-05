@@ -9,6 +9,9 @@
 
     <div class="form-row mt-10">
       <div class="form-column">
+        <div v-if="loading">
+          Loading data... Please wait...
+        </div>
         <SortableTable 
           v-if="!loading"
           :headers="networkHeader" 
@@ -32,7 +35,6 @@
             <span></span>
           </template>
         </SortableTable>
-        <Loading v-if="loading" label="Loading data... Please wait..." />
       </div>
     </div>
 
@@ -43,7 +45,6 @@
 </template>
 
 <script>
-import Loading from '@shell/components/Loading';
 import { SORTABLE_FIREWALL_NETWORK_HEADERS } from '../config/table'
 import { VNET_BUTTONS } from '../config/buttons'
 import { mapGetters } from 'vuex'
@@ -61,7 +62,6 @@ import { firewallService } from '../services/api/firewall'
 export default {
   name: 'ListFirewall',
   components: {
-    Loading,
     SortableTable,
     cButton,
     GroupButtons,

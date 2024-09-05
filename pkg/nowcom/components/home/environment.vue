@@ -14,6 +14,7 @@ import { getVendor } from '@shell/config/private-label';
 import { mapFeature, MULTI_CLUSTER } from '@shell/store/features';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/utils/cluster';
+import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
 
 import ListNamespace from '@shell/pages/c/_cluster/_product/namespaces.vue'
 
@@ -98,11 +99,10 @@ export default {
 
     createLocation() {
       return {
-        name:   'c-cluster-product-resource-create',
+        name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
         params: {
           product:  MANAGER,
           cluster:  BLANK_CLUSTER,
-          resource: CAPI.RANCHER_CLUSTER
         },
       };
     },
@@ -266,34 +266,34 @@ export default {
                   #header-middle
                 >
                   <div class="table-heading">
-                    <n-link
+                    <router-link
                       v-if="canManageClusters"
                       :to="manageLocation"
                       class="btn btn-sm role-secondary"
                       data-testid="cluster-delete-button"
                     >
                       {{ t('environment.delete') }}
-                    </n-link>
-                    <n-link
+                    </router-link>
+                    <router-link
                       v-if="canCreateCluster"
                       :to="createLocation"
                       class="btn btn-sm role-primary"
                       data-testid="cluster-create-button"
                     >
                       {{ t('generic.create') }}
-                    </n-link>
+                    </router-link>
                   </div>
                 </template>
                 <template #col:name="{row}">
                   <td>
                     <div class="list-cluster-name">
                       <span v-if="row.mgmt">
-                        <n-link
+                        <router-link
                           v-if="row.mgmt.isReady && !row.hasError"
                           :to="{ name: 'c-cluster-explorer', params: { cluster: row.mgmt.id }}"
                         >
                           {{ row.nameDisplay }}
-                        </n-link>
+                        </router-link>
                         <span v-else>{{ row.nameDisplay }}</span>
                       </span>
                       <i

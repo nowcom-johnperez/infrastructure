@@ -1,6 +1,5 @@
 <template>
   <div>
-    <TopNav />
     <div class="rebranded">
       <div class="row mb-20 full-width logo-handler">
         <div class="col image-handler">
@@ -21,16 +20,13 @@
 </template>
 
 <script>
-import TopNav from '../components/TopNav'
 import Environments from '../components/home/environment'
 import { getVendor } from '@shell/config/private-label';
 import WhatsNewBanner from '../components/banners/WhatsNewBanner.vue';
 import MakeAWishBanner from '../components/banners/MakeAWishBanner.vue';
 export default {
   name: 'HomePage',
-  layout: 'plain',
   components: {
-    TopNav,
     Environments,
     WhatsNewBanner,
     MakeAWishBanner
@@ -49,7 +45,6 @@ h1 {
 }
 
 .rebranded {
-  padding-top: 15px;
   align-items: center;
 }
 

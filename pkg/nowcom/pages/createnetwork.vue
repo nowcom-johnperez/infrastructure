@@ -135,7 +135,6 @@ const { API_VERSION, API } = getConfig()
 
 export default {
   name: "CreateNetwork",
-  // layout: 'home',
   data() {
     return {
       reviewModalState: false,

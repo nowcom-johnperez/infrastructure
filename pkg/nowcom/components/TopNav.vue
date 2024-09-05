@@ -1,23 +1,23 @@
 <template>
   <nav class="navbar">
     <ul class="nav-list">
-      <li><n-link :to="homeLocation">Home</n-link></li>
+      <li><router-link :to="homeLocation">Home</router-link></li>
       <li class="dropdown">
         <a href="#">Trident</a>
         <ul class="dropdown-menu">
-          <li><n-link :to="tridentLocation.app">App Launcher</n-link></li>
-          <li><n-link :to="tridentLocation.wiki">Wiki</n-link></li>
+          <li><router-link :to="tridentLocation.app">App Launcher</router-link></li>
+          <li><router-link :to="tridentLocation.wiki">Wiki</router-link></li>
         </ul>
       </li>
       <li class="dropdown">
         <a href="#">Infrastructure</a>
         <ul class="dropdown-menu">
-          <li><n-link :to="infraLocation.k8">Kubernetes</n-link></li>
-          <li><n-link :to="infraLocation.network">Network</n-link></li>
-          <li><n-link :to="infraLocation.firewall">Firewall</n-link></li>
-          <li><n-link :to="infraLocation.dhcp">DHCP</n-link></li>
-          <li><n-link :to="infraLocation.dns">DNS</n-link></li>
-          <li><n-link :to="infraLocation.roadmap">Road Map</n-link></li>
+          <li><router-link :to="infraLocation.k8">Kubernetes</router-link></li>
+          <li><router-link :to="infraLocation.network">Network</router-link></li>
+          <li><router-link :to="infraLocation.firewall">Firewall</router-link></li>
+          <li><router-link :to="infraLocation.dhcp">DHCP</router-link></li>
+          <li><router-link :to="infraLocation.dns">DNS</router-link></li>
+          <li><router-link :to="infraLocation.roadmap">Road Map</router-link></li>
         </ul>
       </li>
       
@@ -76,9 +76,10 @@ export default {
   position: sticky;
   top: 0;
   width: 100%;
-  background-color: #333;
+  background-color: #1b1c21;
   padding: 10px 0;
-  z-index: 1000;
+  z-index: 15;
+  border: 1px solid #3D98D3;
 }
 
 .nav-list {
@@ -102,6 +103,11 @@ export default {
 }
 
 .nav-list a:hover {
+  background-color: #555;
+  border-radius: 5px;
+}
+
+.nav-list a.router-link-active {
   background-color: #555;
   border-radius: 5px;
 }

@@ -49,16 +49,19 @@
             <div class="row table-heading">
               <h2 class="mb-0">
                 Virtual Network
-              </h2>
+              </h2>        
+            </div>
+          </template>
+          <template #header-right>
+            <div class="row">
               <cButton class="cbtn btn-light block mr-10 ml-10" @click="actionHandler('create')" :disabled="loading">
                 <span class="fa fa-plus fa-lg mr-5"></span> Create
               </cButton>
 
               <cButton class="cbtn btn-primary block" @click="initBulkDelete" :disabled="loading">
                 <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
-              </cButton>              
+              </cButton>      
             </div>
-            
           </template>
           <template #cell:name="{row}">
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
