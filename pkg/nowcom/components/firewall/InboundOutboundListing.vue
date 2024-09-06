@@ -49,8 +49,7 @@ import cButton from '../common/Button'
 import GroupButtons from '../common/GroupButtons'
 import Tabs from '../common/Tabs'
 import { FIREWALL_BUTTONS } from '../../config/buttons'
-import { firewallService } from '../../services/api/firewall'
-import { PRODUCT_STORE } from '../../config/constants'
+import { firewallService } from '../../services/api'
 export default {
   name: 'FirewallListing',
   props: {

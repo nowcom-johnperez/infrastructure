@@ -11,7 +11,7 @@ interface SortableHeaderType {
     label: string;
     sort: string|string[];
     search: string|string[];
-    width: number;
+    width?: number;
     formatter?: string;
 }
 
@@ -259,5 +259,33 @@ const RULES_SUBNET_TRANSLATIONS: SortableHeaderType[] = [
     },
 ];
 
+const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'status',
+        label: 'Status',
+        sort: ['status'],
+        search: ['status'],
+        width: 100
+    },
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+    },
+    {
+        name: 'size',
+        label: 'Size',
+        sort: ['size'],
+        search: ['size'],
+    },
+    {
+        name: 'nodes',
+        label: 'Node',
+        sort: ['nodes'],
+        search: ['nodes'],
+    },
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS }
+
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, PLACEHOLDER_DATA, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS, ENVIRONMENT_HEADERS }

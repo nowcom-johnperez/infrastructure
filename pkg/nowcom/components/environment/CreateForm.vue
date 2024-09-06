@@ -14,7 +14,6 @@
         <div class="mt-15 input-container">
           <label for="size">Size <span class="text-danger">*</span></label>
           <CardSelect :options="sizes" @onSelect="(size) => selected.size = size" class="mt-5" :current="selected.size" />
-          <!-- <Select :options="sizes" v-model="selected.size" class="mt-5" required/> -->
         </div>
   
         <div v-if="selected.size" class="input-container mt-15">
@@ -58,17 +57,21 @@
 
     <div class="footer">
       <div class="form-column-bottom">
-        <button class="cbtn btn-primary ml-10">
+        <button class="cbtn btn-primary ml-10" @click="createEnv">
           Create
         </button>
       </div>
     </div>
+
+    <ModalStatus header-label="Create Status" :status="saving" :saving-modal-state="savingModalState" @onClose="closeEnv"/>
   </div>
 </template>
 
 <script>
 import Select from '@shell/components/form/Select.vue';
-import CardSelect from '../common/CardSelection.vue'
+import CardSelect from '../common/CardSelection.vue';
+import ModalStatus from '../environment/Modal-Status.vue';
+import { HOME, PRODUCT_NAME } from '../../config/constants';
 export default {
   name: 'EnvironmentCreateForm',
   props: {
@@ -79,10 +82,12 @@ export default {
   },
   components: {
     Select,
-    CardSelect
+    CardSelect,
+    ModalStatus,
   },
   data() {
     return {
+      savingModalState: false,
       saving: {
         networks: false,
         firewall: false,
@@ -142,13 +147,29 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(`vnets`, this.vnets)
+  methods: {
+    createEnv () {
+      this.savingModalState = true
+
+      setTimeout(() => {
+        this.saving.cluster = true
+        this.saving.networks = true
+      }, 1500)
+    },
+    closeEnv() {
+      this.$router.push({
+        name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+      })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .input-container {
+    width: 470px !important
+  }
+
   .env-form-container {
     display: flex;
 

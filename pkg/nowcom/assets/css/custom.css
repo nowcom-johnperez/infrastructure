@@ -3,6 +3,10 @@ HEADER {
   z-index: 17 !important;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 p {
   line-height: 1.3;
 }

@@ -1,22 +1,13 @@
 <script>
-import { mapPref, AFTER_LOGIN_ROUTE, READ_WHATS_NEW, HIDE_HOME_PAGE_CARDS } from '@shell/store/prefs';
 import IndentedPanel from '@shell/components/IndentedPanel';
 import SortableTable from '@shell/components/SortableTable';
 import { BadgeState } from '@components/BadgeState';
-import { mapGetters, mapState } from 'vuex';
-import { MANAGEMENT, CAPI } from '@shell/config/types';
-import { NAME as MANAGER } from '@shell/config/product/manager';
-import { STATE } from '@shell/config/table-headers';
-import { createMemoryFormat, formatSi, parseSi, createMemoryValues } from '@shell/utils/units';
-import { getVersionInfo } from '@shell/utils/version';
-import PageHeaderActions from '@shell/mixins/page-actions';
-import { getVendor } from '@shell/config/private-label';
-import { mapFeature, MULTI_CLUSTER } from '@shell/store/features';
+import { mapState } from 'vuex';
+import { CAPI } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
-import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/utils/cluster';
 import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
-
-import ListNamespace from '@shell/pages/c/_cluster/_product/namespaces.vue'
+import { ENVIRONMENT_HEADERS } from '../../config/table'
+import ModalStatus from '../environment/Modal-Status.vue';
 
 export default {
   name:       'Environments',
@@ -24,202 +15,91 @@ export default {
     IndentedPanel,
     SortableTable,
     BadgeState,
-    ListNamespace
-  },
-
-  mixins: [PageHeaderActions],
-
-  fetch() {
-    if ( this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER) ) {
-      this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER });
-    }
-
-    if ( this.$store.getters['management/schemaFor'](MANAGEMENT.CLUSTER) ) {
-      this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER });
-    }
-
-    if ( this.$store.getters['management/canList'](CAPI.MACHINE) ) {
-      this.$store.dispatch('management/findAll', { type: CAPI.MACHINE });
-    }
-
-    if ( this.$store.getters['management/canList'](MANAGEMENT.NODE) ) {
-      this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE });
-    }
-
-    // We need to fetch node pools and node templates in order to correctly show the provider for RKE1 clusters
-    if ( this.$store.getters['management/canList'](MANAGEMENT.NODE_POOL) ) {
-      this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE_POOL });
-    }
-
-    if ( this.$store.getters['management/canList'](MANAGEMENT.NODE_TEMPLATE) ) {
-      this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE_TEMPLATE });
-    }
+    ModalStatus
   },
 
   data() {
-    const fullVersion = getVersionInfo(this.$store).fullVersion;
-
+    const headers = ENVIRONMENT_HEADERS
     return {
-      HIDE_HOME_PAGE_CARDS, fullVersion, vendor: getVendor(),
-    };
+      headers,
+      statusModalState: false,
+      selectedEnv: null,
+      environmentList: [
+        {
+          status: 'Done',
+          name: 'Prod-trident',
+          size: 'Large',
+          nodes: 6,
+          state: {
+            networks: true,
+            firewall: true,
+            git: true,
+            keyvaults: true,
+            cluster: true,
+            services: true,
+            certDNS: true
+          }
+        },
+        {
+          status: 'Processing',
+          name: 'Dev-trident',
+          size: 'Medium',
+          nodes: 2,
+          state: {
+            networks: true,
+            firewall: true,
+            git: true,
+            keyvaults: false,
+            cluster: true,
+            services: false,
+            certDNS: false
+          }
+        }
+      ]
+    }
   },
 
   computed: {
     ...mapState(['managementReady']),
-    ...mapGetters(['currentCluster', 'defaultClusterId', 'releaseNotesUrl']),
-    mcm: mapFeature(MULTI_CLUSTER),
-
-    provClusters() {
-      return this.$store.getters['management/all'](CAPI.RANCHER_CLUSTER);
-    },
-
-    // User can go to Cluster Management if they can see the cluster schema
-    canManageClusters() {
-      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
-
-      return !!schema;
-    },
-
     canCreateCluster() {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
 
       return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
 
-    manageLocation() {
-      return {
-        name:   'c-cluster-product-resource',
-        params: {
-          product:  MANAGER,
-          cluster:  BLANK_CLUSTER,
-          resource: CAPI.RANCHER_CLUSTER
-        },
-      };
-    },
-
     createLocation() {
       return {
         name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
         params: {
-          product:  MANAGER,
+          product:  PRODUCT_NAME,
           cluster:  BLANK_CLUSTER,
         },
       };
     },
-
-    clusterHeaders() {
-      return [
-        STATE,
-        {
-          name:          'name',
-          labelKey:      'tableHeaders.name',
-          value:         'nameDisplay',
-          sort:          ['nameSort'],
-          canBeVariable: true,
-          getValue:      (row) => row.mgmt?.nameDisplay
-        },
-        {
-          label:     this.t('landing.clusters.provider'),
-          value:     'mgmt.status.provider',
-          name:      'Provider',
-          sort:      ['mgmt.status.provider'],
-          formatter: 'ClusterProvider'
-        },
-        {
-          label: this.t('landing.clusters.kubernetesVersion'),
-          value: 'kubernetesVersion',
-          name:  'Kubernetes Version'
-        },
-        {
-          label: this.t('tableHeaders.cpu'),
-          value: '',
-          name:  'cpu',
-          sort:  ['status.allocatable.cpu', 'status.available.cpu']
-
-        },
-        {
-          label: this.t('tableHeaders.memory'),
-          value: '',
-          name:  'memory',
-          sort:  ['status.allocatable.memory', 'status.available.memory']
-
-        },
-        {
-          label:        this.t('tableHeaders.pods'),
-          name:         'pods',
-          value:        '',
-          sort:         ['status.allocatable.pods', 'status.requested.pods'],
-          formatter:    'PodsUsage',
-          delayLoading: true
-        },
-        // {
-        //   name:  'explorer',
-        //   label:  this.t('landing.clusters.explorer')
-        // }
-      ];
-    },
-
-    kubeClusters() {
-      return filterHiddenLocalCluster(filterOnlyKubernetesClusters(this.provClusters || [], this.$store), this.$store);
-    }
-  },
-
-  async created() {
-    // Update last visited on load
-    await this.$store.dispatch('prefs/setLastVisited', { name: 'home' });
-  },
-
-  // Forget the types when we leave the page
-  beforeDestroy() {
-    this.$store.dispatch('management/forgetType', CAPI.MACHINE);
-    this.$store.dispatch('management/forgetType', MANAGEMENT.NODE);
-    this.$store.dispatch('management/forgetType', MANAGEMENT.NODE_POOL);
-    this.$store.dispatch('management/forgetType', MANAGEMENT.NODE_TEMPLATE);
   },
 
   methods: {
-    cpuUsed(cluster) {
-      return parseSi(cluster.status.requested?.cpu);
-    },
+    getBadgeColor (status) {
+      let color = 'clickable ml-20 mr-20'
 
-    cpuAllocatable(cluster) {
-      return parseSi(cluster.status?.allocatable?.cpu);
-    },
-    memoryAllocatable(cluster) {
-      const parsedAllocatable = (parseSi(cluster.status.allocatable?.memory) || 0).toString();
-      const format = createMemoryFormat(parsedAllocatable);
-
-      return formatSi(parsedAllocatable, format);
-    },
-
-    memoryReserved(cluster) {
-      const memValues = createMemoryValues(cluster?.status?.allocatable?.memory, cluster?.status?.requested?.memory);
-
-      return `${ memValues.useful }/${ memValues.total } ${ memValues.units }`;
-    },
-
-    showUserPrefs() {
-      this.$router.push({ name: 'prefs' });
-    },
-
-    async resetCards() {
-      await this.$store.dispatch('prefs/set', { key: HIDE_HOME_PAGE_CARDS, value: {} });
-      await this.$store.dispatch('prefs/set', { key: READ_WHATS_NEW, value: '' });
-    },
-
-    async closeSetLoginBanner(retry = 0) {
-      let value = this.$store.getters['prefs/get'](HIDE_HOME_PAGE_CARDS);
-
-      if (value === true || value === false || value.length > 0) {
-        value = {};
+      if (status === 'Processing') {
+        color += ' bg-info'
+      } else if (status === 'Done') {
+        color += ' bg-success'
+      } else {
+        color += ' bg-error'
       }
-      value.setLoginPage = true;
 
-      const res = await this.$store.dispatch('prefs/set', { key: HIDE_HOME_PAGE_CARDS, value });
-
-      if (retry === 0 && res?.type === 'error' && res?.status === 500) {
-        await this.closeSetLoginBanner(retry + 1);
-      }
+      return color;
+    },
+    closeModalState() {
+      this.statusModalState = false
+      this.selectedEnv = null
+    },
+    openModalStatus(env) {
+      console.log(`test`, env)
+      this.selectedEnv = env
+      this.statusModalState = true
     }
   }
 };
@@ -236,16 +116,15 @@ export default {
         <div class="col main-panel">
           <div class="row panel">
             <div
-              v-if="mcm"
               class="col span-12"
             >
               <SortableTable
                 :table-actions="false"
                 :row-actions="false"
                 key-field="id"
-                :rows="kubeClusters"
-                :headers="clusterHeaders"
-                :loading="!kubeClusters"
+                :rows="environmentList"
+                :headers="headers"
+                :loading="!environmentList"
                 :paging="true" 
                 :rows-per-page="10" 
               >
@@ -255,20 +134,19 @@ export default {
                       Environments
                     </h2>
                     <BadgeState
-                      v-if="kubeClusters"
-                      :label="kubeClusters.length.toString()"
+                      v-if="environmentList"
+                      :label="environmentList.length.toString()"
                       color="role-tertiary ml-20 mr-20"
                     />
                   </div>
                 </template>
                 <template
-                  v-if="canCreateCluster || canManageClusters"
+                  v-if="canCreateCluster"
                   #header-middle
                 >
                   <div class="table-heading">
                     <router-link
-                      v-if="canManageClusters"
-                      :to="manageLocation"
+                      to="#"
                       class="btn btn-sm role-secondary"
                       data-testid="cluster-delete-button"
                     >
@@ -284,43 +162,20 @@ export default {
                     </router-link>
                   </div>
                 </template>
-                <template #col:name="{row}">
+                <template #col:status="{row}">
                   <td>
-                    <div class="list-cluster-name">
-                      <span v-if="row.mgmt">
-                        <router-link
-                          v-if="row.mgmt.isReady && !row.hasError"
-                          :to="{ name: 'c-cluster-explorer', params: { cluster: row.mgmt.id }}"
-                        >
-                          {{ row.nameDisplay }}
-                        </router-link>
-                        <span v-else>{{ row.nameDisplay }}</span>
-                      </span>
-                      <i
-                        v-if="row.unavailableMachines"
-                        v-clean-tooltip="row.unavailableMachines"
-                        class="conditions-alert-icon icon-alert icon"
+                    <span @click="openModalStatus(row)">
+                      <BadgeState
+                      :label="row.status"
+                      :color="getBadgeColor(row.status)"
                       />
-                    </div>
-                  </td>
-                </template>
-                <template #col:cpu="{row}">
-                  <td v-if="row.mgmt && cpuAllocatable(row.mgmt)">
-                    {{ `${cpuAllocatable(row.mgmt)} ${t('landing.clusters.cores', {count:cpuAllocatable(row.mgmt) })}` }}
-                  </td>
-                  <td v-else>
-                    &mdash;
-                  </td>
-                </template>
-                <template #col:memory="{row}">
-                  <td v-if="row.mgmt && memoryAllocatable(row.mgmt) && !memoryAllocatable(row.mgmt).match(/^0 [a-zA-z]/)">
-                    {{ memoryAllocatable(row.mgmt) }}
-                  </td>
-                  <td v-else>
-                    &mdash;
+                    </span>
+                    
                   </td>
                 </template>
               </SortableTable>
+
+              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
             </div>
           </div>
         </div>
