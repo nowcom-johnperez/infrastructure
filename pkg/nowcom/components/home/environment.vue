@@ -29,7 +29,6 @@ export default {
           status: 'Done',
           name: 'Prod-trident',
           size: 'Large',
-          nodes: 6,
           state: {
             networks: true,
             firewall: true,
@@ -44,7 +43,6 @@ export default {
           status: 'Processing',
           name: 'Dev-trident',
           size: 'Medium',
-          nodes: 2,
           state: {
             networks: true,
             firewall: true,

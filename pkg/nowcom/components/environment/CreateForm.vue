@@ -16,22 +16,17 @@
           <CardSelect :options="sizes" @onSelect="(size) => selected.size = size" class="mt-5" :current="selected.size" />
         </div>
   
-        <div v-if="selected.size" class="input-container mt-15">
-          <label for="nodes">Nodes</label>
-          <input type="text" class="mt-10" name="nodes" v-model="selected.node" placeholder="1" required disabled/>
-          <span class="info-icon" v-clean-tooltip="nodeToolTip">
-            <i class="fa fa-info-circle" aria-hidden="true"></i>
-          </span>
-        </div>
-  
         <div class="mt-15 input-container">
           <label for="networkType">Network Type <span class="text-danger">*</span></label>
           <Select :options="networkType" v-model="selected.networkType" class="mt-5"/>
         </div>
   
-        <div v-if="selected.networkType === 'Standard'" class="mt-15 input-container">
+        <div v-if="selected.envName" class="mt-15 input-container">
           <label for="networkType">Network <span class="text-danger">*</span></label>
-          <Select  :options="standardNetworks" v-model="selected.network" class="mt-5" required/>
+          <input type="text" class="mt-10" name="nodes" v-model="generatedNetworkName" placeholder="1" required disabled/>
+          <span class="info-icon" v-clean-tooltip="'Generated network name'">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </span>
         </div>
       </div>
   
@@ -74,12 +69,6 @@ import ModalStatus from '../environment/Modal-Status.vue';
 import { HOME, PRODUCT_NAME } from '../../config/constants';
 export default {
   name: 'EnvironmentCreateForm',
-  props: {
-    vnets: {
-      type: Array,
-      default: () => []
-    }
-  },
   components: {
     Select,
     CardSelect,
@@ -99,18 +88,12 @@ export default {
       },
       selected: {
         envName: '',
-        node: 1,
         size: 'Small',
         orgName: '',
         teamName: '',
         networkType: 'Standard',
         network: null
       },
-      // sizes: [
-      //   'Small',
-      //   'Medium',
-      //   'Large'
-      // ],
       sizes: [
         { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD']},
         { size: 'Medium', description: ['1 Dedicated Control Pane']},
@@ -132,8 +115,10 @@ export default {
         return '3 Control Pane and 3 Worker Node'
       }
     },
-    standardNetworks() {
-      return this.vnets.map((net) => net.name)
+    generatedNetworkName() {
+      const network = this.selected.networkType === 'Standard' ? "vnet-" : "express-"
+
+      return network + this.selected.envName
     }
   },
   watch: {

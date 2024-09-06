@@ -279,12 +279,6 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         sort: ['size'],
         search: ['size'],
     },
-    {
-        name: 'nodes',
-        label: 'Node',
-        sort: ['nodes'],
-        search: ['nodes'],
-    },
 ];
 
 
