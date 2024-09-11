@@ -85,8 +85,6 @@ export default {
       margin-right: 0.5rem;
     }
   }
-
-
 }
 
 .card-select.active {

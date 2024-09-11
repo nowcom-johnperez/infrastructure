@@ -126,11 +126,11 @@ const routes = [
       },
     ]
   },
-  // {
-  //   path:      `/home`,
-  //   component: HomePage,
-  //   name:      `homepage`,
-  // },
+  {
+    path:      `/home`,
+    component: HomePage,
+    name:      `homepage`,
+  },
   // the following routes cover the "resource page"
   // registering routes for list/edit/create views
   {

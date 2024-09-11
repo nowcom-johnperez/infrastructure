@@ -66,7 +66,7 @@
 import Select from '@shell/components/form/Select.vue';
 import CardSelect from '../common/CardSelection.vue';
 import ModalStatus from '../environment/Modal-Status.vue';
-import { HOME, PRODUCT_NAME } from '../../config/constants';
+import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 export default {
   name: 'EnvironmentCreateForm',
   components: {
@@ -75,6 +75,7 @@ export default {
     ModalStatus,
   },
   data() {
+    const sizes = ENVIRONMENT_SIZES;
     return {
       savingModalState: false,
       saving: {
@@ -94,11 +95,7 @@ export default {
         networkType: 'Standard',
         network: null
       },
-      sizes: [
-        { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD']},
-        { size: 'Medium', description: ['1 Dedicated Control Pane']},
-        { size: 'Large', description: ['3 Control Pane', '3 Worker Nodes']},
-      ],
+      sizes,
       networkType: [
         'Express',
         'Standard',

@@ -35,7 +35,7 @@
 <script>
 import SortableTable from '@shell/components/ResourceTable.vue'
 import Alert from '../components/common/Alert'
-import { DHCP_HEADERS, PLACEHOLDER_DATA } from '../config/table'
+import { DHCP_HEADERS } from '../config/table'
 import { dhcpService } from '../services/api/dhcp';
 export default {
   name: 'DHCPListing',
@@ -65,7 +65,6 @@ export default {
       this.table.loading = true
       try {
         const response = await dhcpService.getAll()
-        // const response = PLACEHOLDER_DATA.items;
 
         this.table.items = response.map((d) => {
           return {

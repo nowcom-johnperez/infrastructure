@@ -1,3 +1,64 @@
+<template>
+  <div
+    v-if="managementReady"
+    class="home-page"
+  >
+    <IndentedPanel class="mt-20 mb-20">
+
+      <div class="row home-panels">
+        <div class="col main-panel">
+          <div class="row panel">
+            <div
+              class="col span-12"
+            >
+              <EnvironmentActions :is-grid-view="true" :search-query="searchQuery" @set-view="(view) => viewState = view">
+                <template #header>
+                  <div class="row table-heading">
+                    <h2 class="mb-0">
+                      Environments
+                    </h2>
+                    <BadgeState
+                      v-if="environmentList"
+                      :label="environmentList.length.toString()"
+                      color="role-tertiary ml-20 mr-20"
+                    />
+                  </div>
+                </template>
+              </EnvironmentActions>
+              <SortableTable
+                v-if="viewState === 'list'"
+                :table-actions="false"
+                :row-actions="false"
+                key-field="id"
+                :rows="environmentList"
+                :headers="headers"
+                :loading="!environmentList"
+                :paging="true" 
+                :rows-per-page="10"
+                :search="false"
+              >
+                <template #col:status="{row}">
+                  <td>
+                    <span @click="openModalStatus(row)">
+                      <BadgeState
+                      :label="row.status"
+                      :color="getBadgeColor(row.status)"
+                      />
+                    </span>
+                  </td>
+                </template>
+              </SortableTable>
+              <EnvironmentGridView v-if="viewState === 'grid'" :list="environmentList" />
+              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </IndentedPanel>
+  </div>
+</template>
+
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
 import SortableTable from '@shell/components/SortableTable';
@@ -8,6 +69,8 @@ import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
 import { ENVIRONMENT_HEADERS } from '../../config/table'
 import ModalStatus from '../environment/Modal-Status.vue';
+import EnvironmentActions from '../environment/EnvironmentActions.vue';
+import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 
 export default {
   name:       'Environments',
@@ -15,7 +78,9 @@ export default {
     IndentedPanel,
     SortableTable,
     BadgeState,
-    ModalStatus
+    ModalStatus,
+    EnvironmentActions,
+    EnvironmentGridView
   },
 
   data() {
@@ -24,6 +89,8 @@ export default {
       headers,
       statusModalState: false,
       selectedEnv: null,
+      searchQuery: '',
+      viewState: 'grid',
       environmentList: [
         {
           status: 'Done',
@@ -103,85 +170,7 @@ export default {
 };
 
 </script>
-<template>
-  <div
-    v-if="managementReady"
-    class="home-page"
-  >
-    <IndentedPanel class="mt-20 mb-20">
 
-      <div class="row home-panels">
-        <div class="col main-panel">
-          <div class="row panel">
-            <div
-              class="col span-12"
-            >
-              <SortableTable
-                :table-actions="false"
-                :row-actions="false"
-                key-field="id"
-                :rows="environmentList"
-                :headers="headers"
-                :loading="!environmentList"
-                :paging="true" 
-                :rows-per-page="10" 
-              >
-                <template #header-left>
-                  <div class="row table-heading">
-                    <h2 class="mb-0">
-                      Environments
-                    </h2>
-                    <BadgeState
-                      v-if="environmentList"
-                      :label="environmentList.length.toString()"
-                      color="role-tertiary ml-20 mr-20"
-                    />
-                  </div>
-                </template>
-                <template
-                  v-if="canCreateCluster"
-                  #header-middle
-                >
-                  <div class="table-heading">
-                    <router-link
-                      to="#"
-                      class="btn btn-sm role-secondary"
-                      data-testid="cluster-delete-button"
-                    >
-                      {{ t('environment.delete') }}
-                    </router-link>
-                    <router-link
-                      v-if="canCreateCluster"
-                      :to="createLocation"
-                      class="btn btn-sm role-primary"
-                      data-testid="cluster-create-button"
-                    >
-                      {{ t('generic.create') }}
-                    </router-link>
-                  </div>
-                </template>
-                <template #col:status="{row}">
-                  <td>
-                    <span @click="openModalStatus(row)">
-                      <BadgeState
-                      :label="row.status"
-                      :color="getBadgeColor(row.status)"
-                      />
-                    </span>
-                    
-                  </td>
-                </template>
-              </SortableTable>
-
-              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </IndentedPanel>
-  </div>
-</template>
 <style lang='scss' scoped>
   .home-panels {
     display: flex;
