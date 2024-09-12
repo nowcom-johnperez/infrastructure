@@ -25,29 +25,8 @@
                   </div>
                 </template>
               </EnvironmentActions>
-              <SortableTable
-                v-if="viewState === 'list'"
-                :table-actions="false"
-                :row-actions="false"
-                key-field="id"
-                :rows="environmentList"
-                :headers="headers"
-                :loading="!environmentList"
-                :paging="true" 
-                :rows-per-page="10"
-                :search="false"
-              >
-                <template #col:status="{row}">
-                  <td>
-                    <span @click="openModalStatus(row)">
-                      <BadgeState
-                      :label="row.status"
-                      :color="getBadgeColor(row.status)"
-                      />
-                    </span>
-                  </td>
-                </template>
-              </SortableTable>
+              
+              <EnvironmentListView v-if="viewState === 'list'" :list="environmentList" />
               <EnvironmentGridView v-if="viewState === 'grid'" :list="environmentList" />
               <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
             </div>
@@ -61,32 +40,27 @@
 
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
-import SortableTable from '@shell/components/SortableTable';
 import { BadgeState } from '@components/BadgeState';
 import { mapState } from 'vuex';
-import { CAPI } from '@shell/config/types';
-import { BLANK_CLUSTER } from '@shell/store/store-types.js';
-import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
-import { ENVIRONMENT_HEADERS } from '../../config/table'
+import { EventBus } from '../../config/event-bus';
 import ModalStatus from '../environment/Modal-Status.vue';
 import EnvironmentActions from '../environment/EnvironmentActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
+import EnvironmentListView from '../environment/EnvironmentListView.vue';
 
 export default {
   name:       'Environments',
   components: {
     IndentedPanel,
-    SortableTable,
     BadgeState,
     ModalStatus,
     EnvironmentActions,
-    EnvironmentGridView
+    EnvironmentGridView,
+    EnvironmentListView
   },
 
   data() {
-    const headers = ENVIRONMENT_HEADERS
     return {
-      headers,
       statusModalState: false,
       selectedEnv: null,
       searchQuery: '',
@@ -126,46 +100,23 @@ export default {
 
   computed: {
     ...mapState(['managementReady']),
-    canCreateCluster() {
-      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
-
-      return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
-    },
-
-    createLocation() {
-      return {
-        name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
-        params: {
-          product:  PRODUCT_NAME,
-          cluster:  BLANK_CLUSTER,
-        },
-      };
-    },
   },
 
   methods: {
-    getBadgeColor (status) {
-      let color = 'clickable ml-20 mr-20'
-
-      if (status === 'Processing') {
-        color += ' bg-info'
-      } else if (status === 'Done') {
-        color += ' bg-success'
-      } else {
-        color += ' bg-error'
-      }
-
-      return color;
-    },
     closeModalState() {
       this.statusModalState = false
       this.selectedEnv = null
     },
     openModalStatus(env) {
-      console.log(`test`, env)
       this.selectedEnv = env
       this.statusModalState = true
     }
+  },
+  mounted() {
+    EventBus.$on('env-modal-status', this.openModalStatus)
+  },
+  beforeDestroy() {
+    EventBus.$off('env-modal-status')
   }
 };
 

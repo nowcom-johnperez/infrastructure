@@ -2,6 +2,7 @@
 import { Card } from '@components/Card';
 import { ENVIRONMENT_SIZES } from '../../config/constants';
 import { BadgeState } from '@components/BadgeState';
+import { EventBus } from '../../config/event-bus';
 export default {
   components: {
     Card,
@@ -39,6 +40,9 @@ export default {
 
       return color;
     },
+    checkStatus() {
+      EventBus.$emit('env-modal-status', this.service)
+    }
   }
 };
 </script>
@@ -50,7 +54,7 @@ export default {
         <div style="font-size: 1.2rem; margin-right: auto;">
           {{ service.name }}
         </div>
-        <div class="environment-status">
+        <div class="environment-status" @click="checkStatus">
           <BadgeState
           :label="service.status"
           :color="getBadgeColor(service.status)"

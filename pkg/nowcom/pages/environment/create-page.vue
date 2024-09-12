@@ -11,7 +11,7 @@
 <script>
 import Loading from '../../components/common/Loading'
 import CreateForm from '../../components/environment/CreateForm.vue'
-
+import { PRODUCT_STORE } from '../../config/constants';
 export default {
   name: "CreateEnvironmentPage",
   data() {
@@ -29,6 +29,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch(`${PRODUCT_STORE}/setTopNavStatus`, false);
     this.showSpinner()
   },
   methods: {
@@ -40,6 +41,8 @@ export default {
       }, 1000);
     },
   },
-
+  beforeDestroy() {
+    this.$store.dispatch(`${PRODUCT_STORE}/setTopNavStatus`, true);
+  }
 };
 </script>

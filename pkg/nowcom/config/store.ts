@@ -16,5 +16,6 @@ export interface Vnets {
 }
 
 export interface vnetVariables {
-  items: Vnets[]
+  items: Vnets[],
+  topNav: boolean
 }

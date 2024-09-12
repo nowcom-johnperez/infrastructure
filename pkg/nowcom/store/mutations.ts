@@ -12,5 +12,8 @@ export default {
   },
   removeItem(state: vnetVariables, itemName: string) {
       state.items = state.items.filter(item => item.name !== itemName)
+  },
+  setTopNavState(state: vnetVariables, status: boolean) {
+    state.topNav = status
   }
 }
