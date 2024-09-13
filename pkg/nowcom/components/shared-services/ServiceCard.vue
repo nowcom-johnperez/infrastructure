@@ -1,8 +1,6 @@
 <script>
 import { Card } from '@components/Card';
-import { ENVIRONMENT_SIZES } from '../../config/constants';
 import { BadgeState } from '@components/BadgeState';
-import { EventBus } from '../../config/event-bus';
 export default {
   components: {
     Card,
@@ -14,25 +12,14 @@ export default {
       default: null,
     },
   },
-  name: 'EnvironmentCard',
-  data() {
-    const sizes = ENVIRONMENT_SIZES;
-    return {
-      sizes
-    }
-  },
-  computed: {
-    serviceSize() {
-      return this.sizes.find((d) => d.size === this.service.size)
-    }
-  },
+  name: 'ServiceCard',
   methods: {
     getBadgeColor (status) {
       let color = 'clickable ml-20 mr-20'
 
-      if (status === 'Processing') {
+      if (status === 'Pending') {
         color += ' bg-info'
-      } else if (status === 'Done') {
+      } else if (status === 'Approved') {
         color += ' bg-success'
       } else {
         color += ' bg-error'
@@ -40,21 +27,29 @@ export default {
 
       return color;
     },
-    checkStatus() {
-      EventBus.$emit('env-modal-status', this.service)
-    }
+    getServiceIcon (service) {
+      let icon = 'fa-database'
+      if (service === 'Elasticsearch') {
+        icon = 'fa-search'
+      } else if (service === 'Redis') {
+        icon = 'fa-server'
+      } else {
+        icon = 'fa-database'
+      }
+      return icon;
+    },
   }
 };
 </script>
 
 <template>
-  <Card class="environment-card" :show-highlight-border="false" :sticky="true" v-if="service">
+  <Card class="service-card" :show-highlight-border="false" :sticky="true" v-if="service">
     <template #title>
       <div style="width: 100%; display: flex">
         <div style="font-size: 1.2rem; margin-right: auto;">
           {{ service.name }}
         </div>
-        <div class="environment-status" @click="checkStatus">
+        <div class="shared-services-status">
           <BadgeState
           :label="service.status"
           :color="getBadgeColor(service.status)"
@@ -63,16 +58,16 @@ export default {
       </div>
     </template>
     <template #body>
-      <div class="environment-size-description">
-        <p style="font-size: 1.2rem">{{ service.size }}</p>
-        <ul>
-          <li v-for="(desc, index) in serviceSize.description" :key="index">
-            <i class="fa fa-check"></i> {{ desc }}
-          </li>
-        </ul>
+      <div class="shared-service-content">
+       <div class="img-service">
+        <i :class="`fa fa-3x ${getServiceIcon(service.service)}`"></i>
+       </div>
+       <div class="service-descriptions">
+        <h3>{{ service.service }}</h3>
+        <p>{{ service.description }}</p>
+        <p class="mt-10">{{ service.environment }}</p>
+       </div>
       </div>
-
-      
     </template>
     <template #actions>
       <button class="btn role-primary btn-sm">
@@ -85,27 +80,33 @@ export default {
 <style lang="scss" scoped>
 @import "@shell/assets/styles/fonts/_icons.scss";
 
-.environment-card {
+.service-card {
   padding: 10px;
   ::v-deep .card-body {
     overflow: hidden !important;
   }
 
-  .environment-size-description {
-    ul {
-      padding-left: 0;
-    }
+  .shared-service-content {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    text-align: left;
+    transition: transform 0.3s, box-shadow 0.3s;
 
-    li {
-      list-style: none; /* Remove the default bullet */
+    .img-service {
+      margin-right: 1rem;
       display: flex;
       align-items: center;
-      margin-bottom: 0.5rem;
+      justify-content: center;
+    }
 
-      i {
-        color: #28a745; /* Green color for the checkmark */
-        margin-right: 0.5rem;
-      }
+    .service-descriptions h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
     }
   }
 }

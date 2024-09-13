@@ -278,5 +278,33 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
     },
 ];
 
+const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [
+    {
+        name: 'status',
+        label: 'Status',
+        sort: ['status'],
+        search: ['status'],
+        width: 100
+    },
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+    },
+    {
+        name: 'environment',
+        label: 'Environment',
+        sort: ['environment'],
+        search: ['environment'],
+    },
+    {
+        name: 'description',
+        label: 'Description',
+        sort: ['description'],
+        search: ['description'],
+    },
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS, ENVIRONMENT_HEADERS }
+
+export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS, ENVIRONMENT_HEADERS, SHARED_SERVICES_HEADERS }

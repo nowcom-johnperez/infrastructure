@@ -52,8 +52,11 @@
 
     <div class="footer">
       <div class="form-column-bottom">
-        <button class="cbtn btn-primary ml-10" @click="createEnv">
+        <button class="btn role-primary ml-10" @click="createEnv">
           Create
+        </button>
+        <button class="btn role-secondary ml-10" @click="closeEnv">
+          Cancel
         </button>
       </div>
     </div>
@@ -143,7 +146,7 @@ export default {
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       })
     }
-  }
+  },
 }
 </script>
 

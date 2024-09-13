@@ -1,13 +1,13 @@
 <template>
-  <div class="environment-grid">
-    <EnvironmentCard v-for="service in list" :key="service.name" :service="service" />
+  <div class="shared-services-grid">
+    <ServiceCard v-for="service in list" :key="service.name" :service="service" />
   </div>
 </template>
 
 <script>
-import EnvironmentCard from './EnvironmentCard.vue';
+import ServiceCard from './ServiceCard.vue';
 export default {
-  name: 'EnvironmentGridView',
+  name: 'SharedServicesGridView',
   props: {
     list: {
       type: Array,
@@ -15,7 +15,7 @@ export default {
     }
   },
   components: {
-    EnvironmentCard
+    ServiceCard
   },
   data() {
     return {}
@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .environment-grid {
+  .shared-services-grid {
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

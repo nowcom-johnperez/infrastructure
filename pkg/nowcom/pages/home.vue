@@ -11,6 +11,7 @@
       
       <div class="full-width">
         <Environments />
+        <SharedService />
       </div>
 
       <MakeAWishBanner />
@@ -21,6 +22,7 @@
 
 <script>
 import Environments from '../components/home/environment'
+import SharedService from '../components/home/shared-service'
 import { getVendor } from '@shell/config/private-label';
 import WhatsNewBanner from '../components/banners/WhatsNewBanner.vue';
 import MakeAWishBanner from '../components/banners/MakeAWishBanner.vue';
@@ -28,6 +30,7 @@ export default {
   name: 'HomePage',
   components: {
     Environments,
+    SharedService,
     WhatsNewBanner,
     MakeAWishBanner
   },

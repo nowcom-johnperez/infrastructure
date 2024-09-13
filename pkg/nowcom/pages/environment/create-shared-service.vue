@@ -2,7 +2,7 @@
   <div class="base create-base">
     <Loading :loading="isLoading" />
     <div class="create-content">
-      <h1>Create New Environment</h1>
+      <h1>Create Shared Service</h1>
       <br />
       <CreateForm />
     </div>
@@ -10,10 +10,10 @@
 </template>
 <script>
 import Loading from '../../components/common/Loading'
-import CreateForm from '../../components/environment/CreateForm.vue'
+import CreateForm from '../../components/shared-services/CreateForm.vue'
 import { PRODUCT_STORE } from '../../config/constants';
 export default {
-  name: "CreateEnvironmentPage",
+  name: "CreateSharedServicePage",
   data() {
     return {
       isLoading: false,

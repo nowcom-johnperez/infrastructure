@@ -10,10 +10,12 @@ const vnetExtensionFactory = (): CoreStoreSpecifics => {
         state() {
             return {
                 items: [],
+                topNav: true
             }
         },
         getters: {
             items: (state: vnetVariables) => state.items,
+            getTopNav: (state: vnetVariables) => state.topNav
         },
         mutations: {
             ...mutations

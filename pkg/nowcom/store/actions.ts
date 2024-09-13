@@ -58,5 +58,8 @@ export default {
   },
   reset({ commit }: any) {
       commit('setItems', [])
+  },
+  setTopNavStatus({commit}: any, status: boolean) {
+    commit('setTopNavState', status)
   }
 }
