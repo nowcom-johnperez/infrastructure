@@ -11,24 +11,23 @@
             <div
               class="col span-12"
             >
-              <EnvironmentActions :is-grid-view="true" :search-query="searchQuery" @set-view="(view) => viewState = view">
+              <ListingActions :is-grid-view="true" :search-query="searchQuery" @set-view="(view) => viewState = view" :can-create="canCreateCluster" :create-location="createSharedServiceLocation">
                 <template #header>
                   <div class="row table-heading">
                     <h2 class="mb-0">
-                      Environments
+                      Shared Services
                     </h2>
                     <BadgeState
-                      v-if="environmentList"
-                      :label="environmentList.length.toString()"
+                      v-if="servicesList"
+                      :label="servicesList.length.toString()"
                       color="role-tertiary ml-20 mr-20"
                     />
                   </div>
                 </template>
-              </EnvironmentActions>
+              </ListingActions>
               
-              <EnvironmentListView v-if="viewState === 'list'" :list="environmentList" />
-              <EnvironmentGridView v-if="viewState === 'grid'" :list="environmentList" />
-              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
+              <SharedServicesListing v-if="viewState === 'list'" :list="servicesList" />
+              <SharedServicesGrid v-if="viewState === 'grid'" :list="servicesList" />
             </div>
           </div>
         </div>
@@ -42,54 +41,52 @@
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
 import { mapState } from 'vuex';
-import { EventBus } from '../../config/event-bus';
-import ModalStatus from '../environment/Modal-Status.vue';
-import EnvironmentActions from '../environment/EnvironmentActions.vue';
-import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
-import EnvironmentListView from '../environment/EnvironmentListView.vue';
-import { ENVIRONMENT_DATA } from '../../config/constants';
+import { CAPI } from '@shell/config/types';
+import { BLANK_CLUSTER } from '@shell/store/store-types.js';
+import { PRODUCT_NAME, SHARED_SERVICES, SHARED_SERVICES_DATA } from '../../config/constants';
+import ListingActions from '../common/ListingActions.vue';
+import SharedServicesGrid from '../shared-services/SharedServicesGrid.vue';
+import SharedServicesListing from '../shared-services/SharedServicesListing.vue';
+
 export default {
-  name:       'Environments',
+  name: 'SharedServices',
   components: {
     IndentedPanel,
     BadgeState,
-    ModalStatus,
-    EnvironmentActions,
-    EnvironmentGridView,
-    EnvironmentListView
+    ListingActions,
+    SharedServicesGrid,
+    SharedServicesListing
   },
 
   data() {
-    const environmentList = ENVIRONMENT_DATA
+    const servicesList = SHARED_SERVICES_DATA;
     return {
-      statusModalState: false,
-      selectedEnv: null,
+      selectedService: null,
       searchQuery: '',
       viewState: 'grid',
-      environmentList
+      servicesList
     }
   },
-
   computed: {
     ...mapState(['managementReady']),
-  },
+    canCreateCluster() {
+      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
 
-  methods: {
-    closeModalState() {
-      this.statusModalState = false
-      this.selectedEnv = null
+      return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
-    openModalStatus(env) {
-      this.selectedEnv = env
-      this.statusModalState = true
-    }
+
+    createSharedServiceLocation() {
+      return {
+        name:   `${PRODUCT_NAME}-c-cluster-${SHARED_SERVICES}-create`,
+        params: {
+          product:  PRODUCT_NAME,
+          cluster:  BLANK_CLUSTER,
+        },
+      };
+    },
   },
-  mounted() {
-    EventBus.$on('env-modal-status', this.openModalStatus)
+  methods: {
   },
-  beforeDestroy() {
-    EventBus.$off('env-modal-status')
-  }
 };
 
 </script>
