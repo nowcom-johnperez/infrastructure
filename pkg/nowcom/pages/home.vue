@@ -12,6 +12,9 @@
       <div class="full-width">
         <Environments />
         <SharedService />
+        <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
+          <component v-if="currentComponent" :is="currentComponent" :current-obj="currentObj"></component>
+        </SideBar>
       </div>
 
       <MakeAWishBanner />
@@ -26,9 +29,12 @@ import SharedService from '../components/home/shared-service'
 import { getVendor } from '@shell/config/private-label';
 import WhatsNewBanner from '../components/banners/WhatsNewBanner.vue';
 import MakeAWishBanner from '../components/banners/MakeAWishBanner.vue';
+import SideBar from '../components/Sidebar'
+import { EventBus } from '../config/event-bus';
 export default {
   name: 'HomePage',
   components: {
+    SideBar,
     Environments,
     SharedService,
     WhatsNewBanner,
@@ -37,8 +43,29 @@ export default {
   data() {
     return {
       vendor: getVendor(),
+      currentObj: null,
+      currentComponent: null,
+      sidebarVisible: false,
     }
   },
+  methods: {
+    openSidebar(d) {
+      this.currentObj = d.item
+      this.currentComponent = d.component
+      this.sidebarVisible = true
+    },
+    closeSidebar () {
+      this.sidebarVisible = false
+      this.currentObj = null
+      this.currentComponent = null
+    },
+  },
+  mounted() {
+    EventBus.$on('component-view', this.openSidebar)
+  },
+  beforeDestroy() {
+    EventBus.$off('component-view')
+  }
 }
 </script>
 

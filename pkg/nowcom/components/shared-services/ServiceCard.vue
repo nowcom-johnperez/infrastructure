@@ -1,6 +1,42 @@
+<template>
+  <Card class="service-card" :show-highlight-border="false" :sticky="true" v-if="service">
+    <template #title>
+      <div style="width: 100%; display: flex">
+        <div style="font-size: 1.2rem; margin-right: auto;">
+          {{ service.name }}
+        </div>
+        <div class="shared-services-status">
+          <BadgeState
+          :label="service.status"
+          :color="badgeColor(service.status)"
+          />
+        </div>
+      </div>
+    </template>
+    <template #body>
+      <div class="shared-service-content">
+       <div class="img-service">
+        <i :class="`fa fa-3x ${serviceIcon(service.service)}`"></i>
+       </div>
+       <div class="service-descriptions">
+        <h3>{{ service.service }}</h3>
+        <p>{{ service.description }}</p>
+        <p class="mt-10">{{ service.environment }}</p>
+       </div>
+      </div>
+    </template>
+    <template #actions>
+      <button type="button" class="btn role-primary btn-sm" @click="viewItem">
+        View
+      </button>
+    </template>
+  </Card>
+</template>
+
 <script>
 import { Card } from '@components/Card';
 import { BadgeState } from '@components/BadgeState';
+import { getBadgeColor, getServiceIcon } from '../../services/helpers/shared-service';
 export default {
   components: {
     Card,
@@ -14,68 +50,18 @@ export default {
   },
   name: 'ServiceCard',
   methods: {
-    getBadgeColor (status) {
-      let color = 'clickable ml-20 mr-20'
-
-      if (status === 'Pending') {
-        color += ' bg-info'
-      } else if (status === 'Approved') {
-        color += ' bg-success'
-      } else {
-        color += ' bg-error'
-      }
-
-      return color;
+    badgeColor (status) {
+      return getBadgeColor(status)
     },
-    getServiceIcon (service) {
-      let icon = 'fa-database'
-      if (service === 'Elasticsearch') {
-        icon = 'fa-search'
-      } else if (service === 'Redis') {
-        icon = 'fa-server'
-      } else {
-        icon = 'fa-database'
-      }
-      return icon;
+    serviceIcon (service) {
+      return getServiceIcon(service)
     },
+    viewItem() {
+      this.$emit('view-click', this.service)
+    }
   }
 };
 </script>
-
-<template>
-  <Card class="service-card" :show-highlight-border="false" :sticky="true" v-if="service">
-    <template #title>
-      <div style="width: 100%; display: flex">
-        <div style="font-size: 1.2rem; margin-right: auto;">
-          {{ service.name }}
-        </div>
-        <div class="shared-services-status">
-          <BadgeState
-          :label="service.status"
-          :color="getBadgeColor(service.status)"
-          />
-        </div>
-      </div>
-    </template>
-    <template #body>
-      <div class="shared-service-content">
-       <div class="img-service">
-        <i :class="`fa fa-3x ${getServiceIcon(service.service)}`"></i>
-       </div>
-       <div class="service-descriptions">
-        <h3>{{ service.service }}</h3>
-        <p>{{ service.description }}</p>
-        <p class="mt-10">{{ service.environment }}</p>
-       </div>
-      </div>
-    </template>
-    <template #actions>
-      <button class="btn role-primary btn-sm">
-        View
-      </button>
-    </template>
-  </Card>
-</template>
 
 <style lang="scss" scoped>
 @import "@shell/assets/styles/fonts/_icons.scss";

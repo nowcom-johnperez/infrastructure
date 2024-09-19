@@ -21,3 +21,7 @@ yarn publish-pkgs -s "username/rancher-extension" -b "main" -f
 In assets > copy index.yaml content and past it in root index.yaml
 Edit charts/nowcom/version/templates/cr.yaml
 
+
+```
+yarn publish-pkgs -c -p -r registry.gitlab.com -o nowcom/nowcom-inf-projects/platform/rancher-nowcom-extension
+```

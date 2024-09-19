@@ -15,18 +15,27 @@
         <span @click="checkStatus(row)">
           <BadgeState
           :label="row.status"
-          :color="getBadgeColor(row.status)"
+          :color="badgeColor(row.status)"
           />
         </span>
+      </td>
+    </template>
+    <template #col:name="{ row }">
+      <td>
+        <div class="list-cluster-name">
+          <a href="#" @click.prevent="viewItem(row)">{{ row.name }}</a>
+        </div>
       </td>
     </template>
   </SortableTable>
 </template>
 
 <script>
+import EnvironmentView from '../environment/EnvironmentView.vue';
 import SortableTable from '@shell/components/SortableTable';
 import { BadgeState } from '@components/BadgeState';
 import { ENVIRONMENT_HEADERS } from '../../config/table'
+import { getBadgeColor } from '../../services/helpers/environment'
 import { EventBus } from '../../config/event-bus';
 export default {
   name: 'EnvironmentListView',
@@ -47,22 +56,18 @@ export default {
     BadgeState
   },
   methods: {
+    badgeColor (status) {
+      return getBadgeColor(status)
+    },
     checkStatus (env) {
       EventBus.$emit('env-modal-status', env)
     },
-    getBadgeColor (status) {
-      let color = 'clickable ml-20 mr-20'
-
-      if (status === 'Processing') {
-        color += ' bg-info'
-      } else if (status === 'Done') {
-        color += ' bg-success'
-      } else {
-        color += ' bg-error'
-      }
-
-      return color;
-    },
+    viewItem(item) {
+      EventBus.$emit('component-view', {
+        item,
+        component: EnvironmentView
+      })
+    }
   }
 }
 </script>

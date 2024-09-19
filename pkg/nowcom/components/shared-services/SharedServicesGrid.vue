@@ -1,11 +1,13 @@
 <template>
   <div class="shared-services-grid">
-    <ServiceCard v-for="service in list" :key="service.name" :service="service" />
+    <ServiceCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
   </div>
 </template>
 
 <script>
 import ServiceCard from './ServiceCard.vue';
+import SharedServiceView from './SharedServiceView.vue';
+import { EventBus } from '../../config/event-bus';
 export default {
   name: 'SharedServicesGridView',
   props: {
@@ -20,6 +22,14 @@ export default {
   data() {
     return {}
   },
+  methods: {
+    viewItem (item) {
+      EventBus.$emit('component-view', {
+        item,
+        component: SharedServiceView
+      })
+    }
+  }
 }
 </script>
 
