@@ -67,3 +67,8 @@ Release v0.3.1 (2024-08-03)
 - Move Translation Address to Firewall
 - Error Handling improvements
 - Release notes dynamic reader
+
+Release v0.3.2 (2024-09-21)
+- Make Extension compliant to rancher 2.9
+- Environment Custom UI
+- Shared Services Custom UI
