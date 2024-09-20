@@ -80,7 +80,7 @@ export default {
       return this.currentObj.status === 'Approved' ? 'approved' : 'pending';
     },
     badgeColor () {
-      return getBadgeColor(this.currentObj.status)
+      return getBadgeColor(this.currentObj.status).replace('ml-20', '').replace('mr-20', '')
     },
     serviceIcon () {
       return getServiceIcon(this.currentObj.service)
@@ -119,8 +119,9 @@ export default {
   display: grid;
   grid-template-columns: 130px 1fr;
   gap: 20px;
-  padding: 10px 0;
+  padding: 15px 0;
   border-bottom: 0.5px solid #6B7280;
+  line-height: 25px;
 }
 
 .row-label {
