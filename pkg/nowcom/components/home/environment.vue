@@ -11,23 +11,23 @@
             <div
               class="col span-12"
             >
-              <EnvironmentActions :is-grid-view="true" :search-query="searchQuery" @set-view="(view) => viewState = view">
+              <ListingActions :is-grid-view="true" :search-query="searchQuery" @update:search-query="(query) => searchQuery = query" @set-view="(view) => viewState = view"  :can-create="canCreateCluster" :create-location="createEnvironmentLocation">
                 <template #header>
                   <div class="row table-heading">
                     <h2 class="mb-0">
                       Environments
                     </h2>
                     <BadgeState
-                      v-if="environmentList"
-                      :label="environmentList.length.toString()"
+                      v-if="filteredEnvironment"
+                      :label="filteredEnvironment.length.toString()"
                       color="role-tertiary ml-20 mr-20"
                     />
                   </div>
                 </template>
-              </EnvironmentActions>
+              </ListingActions>
               
-              <EnvironmentListView v-if="viewState === 'list'" :list="environmentList" />
-              <EnvironmentGridView v-if="viewState === 'grid'" :list="environmentList" />
+              <EnvironmentListView v-if="viewState === 'list'" :list="filteredEnvironment" />
+              <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" />
               <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
             </div>
           </div>
@@ -41,10 +41,13 @@
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
+import { CAPI } from '@shell/config/types';
+import { BLANK_CLUSTER } from '@shell/store/store-types.js';
+import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
 import { mapState } from 'vuex';
 import { EventBus } from '../../config/event-bus';
 import ModalStatus from '../environment/Modal-Status.vue';
-import EnvironmentActions from '../environment/EnvironmentActions.vue';
+import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
 import { ENVIRONMENT_DATA } from '../../config/constants';
@@ -54,7 +57,7 @@ export default {
     IndentedPanel,
     BadgeState,
     ModalStatus,
-    EnvironmentActions,
+    ListingActions,
     EnvironmentGridView,
     EnvironmentListView
   },
@@ -72,6 +75,34 @@ export default {
 
   computed: {
     ...mapState(['managementReady']),
+    canCreateCluster() {
+      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
+
+      return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
+    },
+
+    createEnvironmentLocation() {
+      return {
+        name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
+        params: {
+          product:  PRODUCT_NAME,
+          cluster:  BLANK_CLUSTER,
+        },
+      };
+    },
+
+    filteredEnvironment() {
+      if (this.searchQuery.trim() === '') {
+        return this.environmentList;
+      } else {
+        const searchTerm = this.searchQuery.trim().toLowerCase();
+        return this.environmentList.filter(app => {
+          return (app.name.toLowerCase().includes(searchTerm) ||
+            app.status.toLowerCase().includes(searchTerm) ||
+            app.size.toLowerCase().includes(searchTerm))
+        });
+      }
+    }
   },
 
   methods: {

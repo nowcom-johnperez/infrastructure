@@ -66,6 +66,12 @@ export default {
 <style lang="scss" scoped>
 @import "@shell/assets/styles/fonts/_icons.scss";
 
+.theme-dark {
+  .service-card {
+    border: 1px solid #fff
+  }
+}
+
 .service-card {
   padding: 10px;
   ::v-deep .card-body {

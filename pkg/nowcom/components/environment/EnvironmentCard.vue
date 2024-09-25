@@ -79,6 +79,12 @@ export default {
 <style lang="scss" scoped>
 @import "@shell/assets/styles/fonts/_icons.scss";
 
+.theme-dark {
+  .environment-card {
+    border: 1px solid #fff
+  }
+}
+
 .environment-card {
   padding: 10px;
   ::v-deep .card-body {
@@ -91,13 +97,13 @@ export default {
     }
 
     li {
-      list-style: none; /* Remove the default bullet */
+      list-style: none;
       display: flex;
       align-items: center;
       margin-bottom: 0.5rem;
 
       i {
-        color: #28a745; /* Green color for the checkmark */
+        color: #28a745;
         margin-right: 0.5rem;
       }
     }

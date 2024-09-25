@@ -11,23 +11,23 @@
             <div
               class="col span-12"
             >
-              <ListingActions :is-grid-view="true" :search-query="searchQuery" @set-view="(view) => viewState = view" :can-create="canCreateCluster" :create-location="createSharedServiceLocation">
+              <ListingActions :is-grid-view="true" :search-query="searchQuery" @update:search-query="(query) => searchQuery = query" @set-view="(view) => viewState = view" :can-create="canCreateCluster" :create-location="createSharedServiceLocation">
                 <template #header>
                   <div class="row table-heading">
                     <h2 class="mb-0">
                       Shared Services
                     </h2>
                     <BadgeState
-                      v-if="servicesList"
-                      :label="servicesList.length.toString()"
+                      v-if="filteredServices"
+                      :label="filteredServices.length.toString()"
                       color="role-tertiary ml-20 mr-20"
                     />
                   </div>
                 </template>
               </ListingActions>
               
-              <SharedServicesListing v-if="viewState === 'list'" :list="servicesList" />
-              <SharedServicesGrid v-if="viewState === 'grid'" :list="servicesList" />
+              <SharedServicesListing v-if="viewState === 'list'" :list="filteredServices" />
+              <SharedServicesGrid v-if="viewState === 'grid'" :list="filteredServices" />
             </div>
           </div>
         </div>
@@ -84,6 +84,21 @@ export default {
         },
       };
     },
+
+    filteredServices() {
+      if (this.searchQuery.trim() === '') {
+        return this.servicesList;
+      } else {
+        const searchTerm = this.searchQuery.trim().toLowerCase();
+        return this.servicesList.filter(app => {
+          return (app.name.toLowerCase().includes(searchTerm) ||
+            app.service.toLowerCase().includes(searchTerm) ||
+            app.environment.toLowerCase().includes(searchTerm) ||
+            app.status.toLowerCase().includes(searchTerm) ||
+            app.description.toLowerCase().includes(searchTerm))
+        });
+      }
+    }
   },
   methods: {
   },
