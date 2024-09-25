@@ -4,17 +4,14 @@
       <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
     </div>
 
-    <div class="pagination-controls">
-      <button :disabled="currentPage === 1" @click="prevPage" class="btn role-primary btn-sm">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button :disabled="currentPage === totalPages" @click="nextPage" class="btn role-primary btn-sm">Next</button>
-    </div>
+    <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
   </div>
 </template>
 
 <script>
 import EnvironmentView from '../environment/EnvironmentView.vue';
 import EnvironmentCard from './EnvironmentCard.vue';
+import GridPagination from '../common/GridPagination.vue';
 import { EventBus } from '../../config/event-bus';
 export default {
   name: 'EnvironmentGridView',
@@ -25,7 +22,8 @@ export default {
     }
   },
   components: {
-    EnvironmentCard
+    EnvironmentCard,
+    GridPagination
   },
   data() {
     return {
@@ -50,16 +48,6 @@ export default {
         component: EnvironmentView
       })
     },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    }
   }
 }
 </script>
@@ -69,16 +57,5 @@ export default {
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-
-  .pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-
-    button {
-      margin: 0 1rem;
-    }
   }
 </style>
