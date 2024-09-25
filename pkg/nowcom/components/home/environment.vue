@@ -27,7 +27,7 @@
               </ListingActions>
               
               <EnvironmentListView v-if="viewState === 'list'" :list="filteredEnvironment" />
-              <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" />
+              <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" :loading="$fetchState.pending" />
               <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
             </div>
           </div>
@@ -50,7 +50,7 @@ import ModalStatus from '../environment/Modal-Status.vue';
 import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
-import { ENVIRONMENT_DATA } from '../../config/constants';
+import { environmentService } from '../../services/api';
 export default {
   name:       'Environments',
   components: {
@@ -63,13 +63,12 @@ export default {
   },
 
   data() {
-    const environmentList = ENVIRONMENT_DATA
     return {
       statusModalState: false,
       selectedEnv: null,
       searchQuery: '',
       viewState: 'grid',
-      environmentList
+      environmentList: []
     }
   },
 
@@ -99,10 +98,30 @@ export default {
         return this.environmentList.filter(app => {
           return (app.name.toLowerCase().includes(searchTerm) ||
             app.status.toLowerCase().includes(searchTerm) ||
-            app.size.toLowerCase().includes(searchTerm))
+            app.size.toLowerCase().includes(searchTerm) ||
+            app.firewallPolicy.toLowerCase().includes(searchTerm))
         });
       }
     }
+  },
+
+  async fetch() {
+    const envResponse = await environmentService.getAll()
+    this.environmentList = envResponse.map((e) => {
+      return {
+        ...e.spec,
+        status: 'Done',
+        state: {
+          networks: true,
+          firewall: true,
+          git: true,
+          keyvaults: true,
+          cluster: true,
+          services: true,
+          certDNS: true
+        }
+      }
+    })
   },
 
   methods: {

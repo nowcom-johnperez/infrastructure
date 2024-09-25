@@ -1,11 +1,16 @@
 <template>
   <div>
-    <div class="environment-grid">
-      <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
+    <div v-if="!loading">
+      <div class="environment-grid">
+        <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
+      </div>
+
+      <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
     </div>
 
-    <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
+    <div v-if="loading">Loading Please wait...</div>
   </div>
+    
 </template>
 
 <script>
@@ -19,6 +24,10 @@ export default {
     list: {
       type: Array,
       required: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

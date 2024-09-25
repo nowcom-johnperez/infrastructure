@@ -23,6 +23,11 @@
             <div class="row-label">Size</div>
             <div class="row-val">{{ currentObj.size }}</div>
           </div>
+          
+          <div class="row-detail">
+            <div class="row-label">Firewall Policy</div>
+            <div class="row-val">{{ currentObj.firewallPolicy }}</div>
+          </div>
 
           <div class="row-detail">
             <div class="row-label">Status</div>
@@ -34,10 +39,10 @@
             </div>
           </div>
 
-          <div class="row-detail">
+          <!-- <div class="row-detail">
             <div class="row-label">Description</div>
             <div class="row-val">{{ currentObj.description }}</div>
-          </div>
+          </div> -->
         </div>
       </div>
 

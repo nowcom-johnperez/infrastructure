@@ -15,12 +15,14 @@
     </template>
     <template #body>
       <div class="environment-size-description">
-        <p style="font-size: 1.2rem">{{ service.size }}</p>
+        <p style="font-size: 1.2rem"><span class="policy-text">Size:</span> {{ service.size }}</p>
         <ul>
           <li v-for="(desc, index) in serviceSize.description" :key="index">
             <i class="fa fa-check"></i> {{ desc }}
           </li>
         </ul>
+
+        <p style="font-size: 1.2rem"><span class="policy-text">Firewall Policy:</span> {{ service.firewallPolicy }}</p>
       </div>
 
       
@@ -59,7 +61,7 @@ export default {
   },
   computed: {
     serviceSize() {
-      return this.sizes.find((d) => d.size === this.service.size)
+      return this.sizes.find((d) => d.size.toLowerCase() === this.service.size.toLowerCase())
     }
   },
   methods: {
@@ -82,6 +84,10 @@ export default {
 .theme-dark {
   .environment-card {
     border: 1px solid #fff
+  }
+
+  .policy-text {
+    color: #fff !important;
   }
 }
 
@@ -106,6 +112,11 @@ export default {
         color: #28a745;
         margin-right: 0.5rem;
       }
+    }
+
+    .policy-text {
+      font-weight: bold;
+      color: #000;
     }
   }
 }
