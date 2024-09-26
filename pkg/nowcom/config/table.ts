@@ -276,6 +276,12 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         sort: ['size'],
         search: ['size'],
     },
+    {
+        name: 'firewallPolicy',
+        label: 'Firewall Policy',
+        sort: ['firewallPolicy'],
+        search: ['firewallPolicy'],
+    },
 ];
 
 const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [

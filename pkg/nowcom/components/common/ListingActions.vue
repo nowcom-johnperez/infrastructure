@@ -26,7 +26,7 @@
       </router-link>
     </div>
     <div class="search-input">
-        <input :value="searchQuery" placeholder="Filter" @input="$emit('update:search-query', $event.target.value)" />
+      <input :value="searchQuery" placeholder="Filter" @input="$emit('update:search-query', $event.target.value)" />
     </div>
     <button class="btn btn-sm role-primary mr-5" @click="$emit('set-view', 'grid')">
       <i class="icon icon-apps" />
