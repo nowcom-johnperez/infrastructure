@@ -48,13 +48,14 @@ export default {
         this.loading = true
         const payload = {
           apiVersion: `${TRIDENT_API}/${API_VERSION}`,
-          kind: "MakeWish",
+          kind: "Wish",
           metadata: {
-            name: this.subject.toLowerCase().replace(/ /g, '-')
+            // name: this.subject.toLowerCase().replace(/ /g, '-')
+            generateName: "wish-"
           },
           spec: {
-            description: this.subject,
-            message: this.request,
+            title: this.subject,
+            description: this.request,
             user: this.user.name || this.user.username || this.user.id || this.user.uuid
           }
         };

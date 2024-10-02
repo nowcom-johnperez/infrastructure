@@ -24,7 +24,7 @@ export const getConfig = () => {
     CLUSTER: 'c-m-sdtmhjdg',
     API_VERSION: 'v1',
     API: 'packetlifter.dev',
-    TRIDENT_API: 'trident.dev'
+    TRIDENT_API: 'trident.nowcom.io'
   };
 
   if (typeof window !== 'undefined') {
