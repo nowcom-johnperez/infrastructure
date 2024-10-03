@@ -8,7 +8,7 @@
     </div>
     
 
-    <Tabs :list="['Basic', 'Additional Information']" :current="currentTabIndex" @set-active="setTab"/>
+    <Tabs :list="['Basic', 'Actions', 'Link Services', 'KeyVault', 'Additional Information']" :current="currentTabIndex" @set-active="setTab"/>
 
     <div class="tab-content-container mt-40">
       <!-- Basic Information Tab -->
@@ -46,8 +46,23 @@
         </div>
       </div>
 
-      <!-- Additional Information Tab -->
+      <!-- Actions Tab -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
+        <p>Actions</p>
+      </div>
+
+      <!-- Link Services -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
+        <p>Link Services</p>
+      </div>
+
+      <!-- KeyVault -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 3 }">
+        <p>Key Vault</p>
+      </div>
+
+      <!-- Additional Information Tab -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 4 }">
         <p>Additional info will be set here</p>
       </div>
     </div>
@@ -125,7 +140,7 @@ export default {
   grid-template-columns: 130px 1fr;
   gap: 20px;
   padding: 15px 0;
-  border-bottom: 0.5px solid #6B7280;
+  /* border-bottom: 0.5px solid #6B7280; */
   line-height: 25px;
 }
 

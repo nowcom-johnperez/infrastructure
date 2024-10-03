@@ -77,34 +77,109 @@ export const SHARED_SERVICES_DATA = [
     service: 'Elasticsearch',
     environment: 'Dev-trident',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sit amet congue metus. Aliquam at arcu ornare, sagittis turpis ut, convallis mi. Morbi vitae orci eu lectus efficitur hendrerit eget ac ante.',
-    status: 'Approved'
+    status: 'Approved',
+    monitoring: [
+      {
+        name: 'Test' + Math.floor(Math.random() * 10),
+        usedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        },
+        reservedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        }
+      }
+    ]
   },
   {
     name: 'Elasticsearch 9.0',
     service: 'Elasticsearch',
     environment: 'Dev-trident',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sit amet congue metus. Aliquam at arcu ornare, sagittis turpis ut, convallis mi. Morbi vitae orci eu lectus efficitur hendrerit eget ac ante.',
-    status: 'Pending'
+    status: 'Pending',
+    monitoring: [
+      {
+        name: 'Test' + Math.floor(Math.random() * 10),
+        usedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        },
+        reservedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        }
+      }
+    ]
   },
   {
     name: 'Redis v5',
     service: 'Redis',
     environment: 'Dev-trident',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sit amet congue metus. Aliquam at arcu ornare, sagittis turpis ut, convallis mi. Morbi vitae orci eu lectus efficitur hendrerit eget ac ante.',
-    status: 'Pending'
+    status: 'Pending',
+    monitoring: [
+      {
+        name: 'Test' + Math.floor(Math.random() * 10),
+        usedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        },
+        reservedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        }
+      }
+    ]
   },
   {
     name: 'MySQL',
     service: 'Database',
     environment: 'Dev-trident',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sit amet congue metus. Aliquam at arcu ornare, sagittis turpis ut, convallis mi. Morbi vitae orci eu lectus efficitur hendrerit eget ac ante.',
-    status: 'Approved'
+    status: 'Approved',
+    monitoring: [
+      {
+        name: 'Test' + Math.floor(Math.random() * 10),
+        usedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        },
+        reservedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        }
+      }
+    ]
   },
   {
     name: 'PostgresSQL',
     service: 'Database',
     environment: 'Prod-trident',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sit amet congue metus. Aliquam at arcu ornare, sagittis turpis ut, convallis mi. Morbi vitae orci eu lectus efficitur hendrerit eget ac ante.',
-    status: 'Pending'
+    status: 'Pending',
+    monitoring: [
+      {
+        name: 'Test' + Math.floor(Math.random() * 10),
+        usedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        },
+        reservedObj: {
+          useful: Math.floor(Math.random() * 100),
+          total: Math.floor(Math.random() * 100),
+          units: ''
+        }
+      }
+    ]
   }
 ]

@@ -11,11 +11,19 @@
     </div>
     
 
-    <Tabs :list="['Basic', 'Additional Information']" :current="currentTabIndex" @set-active="setTab"/>
+    <Tabs :list="['Monitoring', 'Actions', 'Additional Information']" :current="currentTabIndex" @set-active="setTab"/>
 
     <div class="tab-content-container mt-40">
-      <!-- Basic Information Tab -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 0 }">
+        <HardwareResourceGauge v-for="monitor in currentObj.monitoring" :name="monitor.name" :used="monitor.usedObj" :reserved="monitor.reservedObj" />
+      </div>
+    
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
+        <p>Actions</p>
+      </div>
+
+      <!-- Additional Information Tab -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
         <div class="details-table">
           <div class="row-detail">
             <div class="row-label">Service Name</div>
@@ -48,13 +56,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Additional Information Tab -->
-      <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-        <pre class="additional-info">
-          {{ currentObj }}
-        </pre>
-      </div>
     </div>
   </div>
 </template>
@@ -62,6 +63,7 @@
 <script>
 import Tabs from '../common/Tabs'
 import { BadgeState } from '@components/BadgeState';
+import HardwareResourceGauge from '@shell/components/HardwareResourceGauge.vue'
 import { getBadgeColor, getServiceIcon } from '../../services/helpers/shared-service';
 export default {
   name: 'SharedServiceView',
@@ -73,11 +75,22 @@ export default {
   },
   components: {
     Tabs,
-    BadgeState
+    BadgeState,
+    HardwareResourceGauge
   },
   data() {
     return {
-      currentTabIndex: 0
+      currentTabIndex: 0,
+      usedObj: {
+        useful: 10,
+        total: 100,
+        units: ''
+      },
+      reservedObj: {
+        useful: 1,
+        total: 100,
+        units: ''
+      }
     }
   },
   methods: {
