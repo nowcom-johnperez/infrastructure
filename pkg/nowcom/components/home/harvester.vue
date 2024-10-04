@@ -37,7 +37,11 @@ export default {
     },
 
     clusters() {
-      return this.$store.getters['management/all'](HCI.CLUSTER)
+      return this.$store.dispatch('management/find', { type: HCI.CLUSTER })
+    },
+
+    allClusters() {
+      return this.$store.dispatch('management/findAll', { type: HCI.CLUSTER })
     }
   },
 }
