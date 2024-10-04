@@ -41,7 +41,7 @@
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
-import { CAPI } from '@shell/config/types';
+import { CAPI, HCI } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
 import { mapState } from 'vuex';
@@ -78,6 +78,27 @@ export default {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
 
       return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
+    },
+
+    hasHarvesterDashboard() {
+      const schema = this.$store.getters['management/schemaFor'](HCI.DASHBOARD);
+
+      return schema
+      // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
+    },
+
+    hasHarvesterCluster() {
+      const schema = this.$store.getters['management/schemaFor'](HCI.CLUSTER);
+
+      return schema
+      // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
+    },
+
+    hasHarvesterConfig() {
+      const schema = this.$store.getters['management/schemaFor'](HCI.HARVESTER_CONFIG);
+
+      return schema
+      // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
 
     createEnvironmentLocation() {
