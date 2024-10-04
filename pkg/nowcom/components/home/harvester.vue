@@ -70,10 +70,10 @@ export default {
   },
 
   mounted() {
-    // this.getAllCluster()
+    this.getAllCluster()
     // this.getCluster()
     // this.getDashboard()
-    this.testDirectCall()
+    // this.testDirectCall()
   }
 }
 </script>
