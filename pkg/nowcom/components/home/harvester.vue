@@ -5,8 +5,11 @@
     <p>Harvester Cluster Schema: <pre>{{ hasHarvesterCluster }}</pre></p>
     <p>Cluster</p>
     <pre>
-      {{ clusters }}
+      {{ cluster }}
     </pre>
+
+    <p>All Clusters</p>
+    <pre>{{ clusters }}</pre>
   </div>
 </template>
 
@@ -14,6 +17,12 @@
 import { HCI } from '@shell/config/types';
 export default {
   name: 'HarvesterTest',
+  data() {
+    return {
+      cluster: null,
+      clusters: []
+    }
+  },
   computed: {
     hasHarvesterDashboard() {
       const schema = this.$store.getters['management/schemaFor'](HCI.DASHBOARD);
@@ -35,14 +44,20 @@ export default {
       return schema
       // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
+  },
 
-    clusters() {
-      return this.$store.dispatch('management/find', { type: HCI.CLUSTER })
+  methods: {
+    async getCluster() {
+      this.cluster = await this.$store.dispatch('management/find', { type: HCI.CLUSTER })
     },
-
-    allClusters() {
-      return this.$store.dispatch('management/findAll', { type: HCI.CLUSTER })
+    async getAllCluster() {
+      this.clusters = await this.$store.dispatch('management/findAll', { type: HCI.CLUSTER })
     }
   },
+
+  mounted() {
+    this.getAllCluster()
+    this.getCluster()
+  }
 }
 </script>
