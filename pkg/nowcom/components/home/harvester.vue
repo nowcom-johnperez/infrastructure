@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import { HCI } from '@shell/config/types';
+import { HCI, MANAGEMENT } from '@shell/config/types';
+import { allHash } from '@shell/utils/promise';
 export default {
   name: 'HarvesterTest',
   data() {
@@ -47,6 +48,16 @@ export default {
     },
   },
 
+  async fetch() {
+    const hash = await allHash({
+      hciClusters:  this.$store.dispatch(`management/findAll`, { type: HCI.CLUSTER }),
+      mgmtClusters: this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
+    });
+
+    this.cluster = hash.hgiClusters
+    this.clusters = hash.mgmtClusters
+  },
+
   methods: {
     async getCluster() {
       this.cluster = await this.$store.dispatch('management/find', { type: HCI.CLUSTER, id: 'c-m-sdtmhjdg' })
@@ -67,13 +78,6 @@ export default {
         console.error('Error fetching from API:', error);
       });
     }
-  },
-
-  mounted() {
-    this.getAllCluster()
-    // this.getCluster()
-    // this.getDashboard()
-    // this.testDirectCall()
   }
 }
 </script>
