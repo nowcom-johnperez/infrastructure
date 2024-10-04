@@ -56,12 +56,24 @@ export default {
     },
     async getDashboard() {
       this.dashboard = await this.$store.dispatch('management/findAll', { type: HCI.DASHBOARD })
+    },
+    async testDirectCall() {
+      fetch('/v1/harvesterhci.io.management.cluster')
+      .then(response => response.json())
+      .then(data => {
+        console.log('API Data:', data);
+      })
+      .catch(error => {
+        console.error('Error fetching from API:', error);
+      });
     }
   },
 
   mounted() {
-    this.getAllCluster()
+    // this.getAllCluster()
     // this.getCluster()
+    this.getDashboard()
+    this.testDirectCall()
   }
 }
 </script>
