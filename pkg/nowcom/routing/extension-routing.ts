@@ -14,6 +14,7 @@ import ListDNS from '../pages/list-dns.vue';
 import ListFirewall from '../pages/list-firewall.vue';
 import ListK8s from '../pages/list-k8s.vue';
 import WishPage from '../pages/wish-page.vue';
+import HarvesterPage from '../pages/sample-harvester.vue';
 import EnvironmentCreatePage from '../pages/environment/create-page.vue';
 import SharedServicesCreatePage from '../pages/environment/create-shared-service.vue';
 // import WikiPage from '../pages/deprecated/wiki.vue';
@@ -23,7 +24,7 @@ import SharedServicesCreatePage from '../pages/environment/create-shared-service
 // import RouteTable from '../pages/deprecated/routetables.vue';
 // import Forms from '../pages/deprecated/forms.vue';
 
-import { PRODUCT_NAME, HOME, LIST_NETWORK, CREATE_NETWORK, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, ENVIRONMENT, SHARED_SERVICES } from '../config/constants';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, CREATE_NETWORK, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, ENVIRONMENT, SHARED_SERVICES, SAMPLE_HARVESTER } from '../config/constants';
 
 const routes = [
   {
@@ -129,6 +130,15 @@ const routes = [
         name: `${PRODUCT_NAME}-c-cluster-${WISH_PAGE}`,
         path: `${WISH_PAGE}`,
         component: WishPage,
+        meta: {
+          product: PRODUCT_NAME,
+          cluster: BLANK_CLUSTER
+        },
+      },
+      {
+        name: `${PRODUCT_NAME}-c-cluster-${SAMPLE_HARVESTER}`,
+        path: `${SAMPLE_HARVESTER}`,
+        component: HarvesterPage,
         meta: {
           product: PRODUCT_NAME,
           cluster: BLANK_CLUSTER

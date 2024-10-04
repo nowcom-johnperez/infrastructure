@@ -7,6 +7,7 @@
         <ul class="dropdown-menu">
           <li><router-link :to="tridentLocation.app">App Launcher</router-link></li>
           <li><router-link :to="tridentLocation.wiki">Wiki</router-link></li>
+          <li><router-link :to="tridentLocation.harvester">Resource Management</router-link></li>
         </ul>
       </li>
       <li class="dropdown">
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, WIKI_PAGE } from '../config/constants';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, WIKI_PAGE, SAMPLE_HARVESTER } from '../config/constants';
 export default {
   name: 'TopNav',
   computed: {
@@ -42,6 +43,9 @@ export default {
         },
         wiki: {
           name: `trident-c-cluster-${WIKI_PAGE}`
+        },
+        harvester: {
+          name: `${PRODUCT_NAME}-c-cluster-${SAMPLE_HARVESTER}`
         }
       }
     },

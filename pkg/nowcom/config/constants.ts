@@ -28,6 +28,8 @@ export const HOME = 'Home';
 export const BLANK_CLUSTER = '_';
 export const CUSTOM_K8S_RESOURCE_NAME = 'vnetExtensionFactory';
 
+export const SAMPLE_HARVESTER = 'harvester.sample';
+
 export const ENVIRONMENT_SIZES = [
   { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD']},
   { size: 'Medium', description: ['1 Dedicated Control Pane']},
