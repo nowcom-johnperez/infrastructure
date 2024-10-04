@@ -61,7 +61,7 @@ export default {
 
   mounted() {
     this.getAllCluster()
-    this.getCluster()
+    // this.getCluster()
   }
 }
 </script>
