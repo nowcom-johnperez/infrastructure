@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Harvester Dashboard Schema: <pre>{{ hasHarvesterDashboard }}</pre></p>
+    <p>Harvester Dashboard: <pre>{{ dashboard }}</pre></p>
     <p>Harvester Config Schema: <pre>{{ hasHarvesterConfig }}</pre></p>
     <p>Harvester Cluster Schema: <pre>{{ hasHarvesterCluster }}</pre></p>
     <p>Cluster</p>
@@ -20,7 +20,8 @@ export default {
   data() {
     return {
       cluster: null,
-      clusters: []
+      clusters: [],
+      dashboard: null
     }
   },
   computed: {
@@ -48,10 +49,13 @@ export default {
 
   methods: {
     async getCluster() {
-      this.cluster = await this.$store.dispatch('management/find', { type: HCI.CLUSTER })
+      this.cluster = await this.$store.dispatch('management/find', { type: HCI.CLUSTER, id: 'c-m-sdtmhjdg' })
     },
     async getAllCluster() {
       this.clusters = await this.$store.dispatch('management/findAll', { type: HCI.CLUSTER })
+    },
+    async getDashboard() {
+      this.dashboard = await this.$store.dispatch('management/findAll', { type: HCI.DASHBOARD })
     }
   },
 
