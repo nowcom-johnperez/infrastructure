@@ -58,7 +58,7 @@ export default {
       this.dashboard = await this.$store.dispatch('management/findAll', { type: HCI.DASHBOARD })
     },
     async testDirectCall() {
-      fetch('/v1/harvesterhci.io.management.cluster')
+      fetch('/v1/harvesterhci.io.clusters')
       .then(response => response.json())
       .then(data => {
         console.log('API Data:', data);
@@ -72,7 +72,7 @@ export default {
   mounted() {
     // this.getAllCluster()
     // this.getCluster()
-    this.getDashboard()
+    // this.getDashboard()
     this.testDirectCall()
   }
 }
