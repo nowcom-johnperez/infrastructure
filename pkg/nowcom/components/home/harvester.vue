@@ -51,13 +51,13 @@ export default {
     },
 
     getAllManage() {
-      return this.$store.getters['management/all']
+      return this.$store.getters['management/all'](HCI.CLUSTER)
     }
   },
 
   async fetch() {
     const hash = await allHash({
-      hciClusters:  this.$store.dispatch(`management/findAll`, { type: HCI.CLUSTER }),
+      hciClusters:  this.$store.dispatch(`management/findAll`, { type: 'harvesterhci.io.clusters' }),
       mgmtClusters: this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
     });
 
