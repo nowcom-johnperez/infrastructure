@@ -10,6 +10,9 @@
 
     <p>All Clusters</p>
     <pre>{{ clusters }}</pre>
+
+    <p>Test</p>
+    <pre>{{ getAllManage }}</pre>
   </div>
 </template>
 
@@ -46,6 +49,10 @@ export default {
       return schema
       // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
+
+    getAllManage() {
+      return this.$store.getters['management/all']
+    }
   },
 
   async fetch() {
