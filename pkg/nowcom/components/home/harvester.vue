@@ -56,13 +56,21 @@ export default {
   },
 
   async fetch() {
-    const hash = await allHash({
-      hciClusters:  this.$store.dispatch(`management/findAll`, { type: 'harvesterhci.io.clusters' }),
-      mgmtClusters: this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
-    });
+    // const hash = await allHash({
+    //   hciClusters:  this.$store.dispatch(`management/findAll`, { type: HCI.CLUSTER }),
+    //   mgmtClusters: this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
+    // });
 
-    this.cluster = hash.hgiClusters
-    this.clusters = hash.mgmtClusters
+    // this.cluster = hash.hgiClusters
+    // this.clusters = hash.mgmtClusters
+
+    const response = await fetch('/v3/proxy/harvesterhci.io/v1/harvesterhci.io.management.clusters');
+    const data = await response.json();
+    this.clusters = data.items.map(cluster => ({
+      name: cluster.metadata.name,
+      status: cluster.status.phase,
+      nodeCount: cluster.spec.nodeCount,
+    }));
   },
 
   methods: {
