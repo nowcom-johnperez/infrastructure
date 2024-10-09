@@ -11,14 +11,15 @@
     <p>All Clusters</p>
     <pre>{{ clusters }}</pre>
 
-    <p>Test</p>
-    <pre>{{ getAllManage }}</pre>
+    <!-- <p>Test</p>
+    <pre>{{ getAllManage }}</pre> -->
   </div>
 </template>
 
 <script>
 import { HCI, MANAGEMENT } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
+import { harvesterService } from '../../services/api';
 export default {
   name: 'HarvesterTest',
   data() {
@@ -50,9 +51,9 @@ export default {
       // return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
 
-    getAllManage() {
-      return this.$store.getters['management/all'](HCI.CLUSTER)
-    }
+    // getAllManage() {
+    //   return this.$store.getters['management/all'](HCI.CLUSTER)
+    // }
   },
 
   async fetch() {
@@ -61,38 +62,15 @@ export default {
     //   mgmtClusters: this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
     // });
 
-    // this.cluster = hash.hgiClusters
-    // this.clusters = hash.mgmtClusters
+    this.cluster = await harvesterService.getAll()
+    this.clusters = await harvesterService.getUserTemplates()
 
-    const response = await fetch('/v3/proxy/harvesterhci.io/v1/harvesterhci.io.management.clusters');
-    const data = await response.json();
-    this.clusters = data.items.map(cluster => ({
-      name: cluster.metadata.name,
-      status: cluster.status.phase,
-      nodeCount: cluster.spec.nodeCount,
-    }));
+    console.log(`test`, this.cluster)
+    console.log(`user data template`, this.clusters)
+    // this.clusters = hash.mgmtClusters
   },
 
   methods: {
-    async getCluster() {
-      this.cluster = await this.$store.dispatch('management/find', { type: HCI.CLUSTER, id: 'c-m-sdtmhjdg' })
-    },
-    async getAllCluster() {
-      this.clusters = await this.$store.dispatch('management/findAll', { type: HCI.CLUSTER })
-    },
-    async getDashboard() {
-      this.dashboard = await this.$store.dispatch('management/findAll', { type: HCI.DASHBOARD })
-    },
-    async testDirectCall() {
-      fetch('/v1/harvesterhci.io.clusters')
-      .then(response => response.json())
-      .then(data => {
-        console.log('API Data:', data);
-      })
-      .catch(error => {
-        console.error('Error fetching from API:', error);
-      });
-    }
   }
 }
 </script>
