@@ -27,47 +27,79 @@
 </template>
 
 <script>
-import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, WIKI_PAGE, SAMPLE_HARVESTER } from '../config/constants';
+import { getConfig } from '../config/api';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, TRIDENT, BLANK_CLUSTER } from '../config/constants';
+const { CLUSTER } = getConfig()
 export default {
   name: 'TopNav',
   computed: {
     homeLocation() {
       return {
-        name: `${PRODUCT_NAME}-c-cluster-${HOME}`
+        name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+        params: {
+          cluster: BLANK_CLUSTER
+        }
       }
     },
     tridentLocation() {
       return {
         app: {
-          name: `trident-c-cluster-local-testing`
+          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.LOCAL_TESTING}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         wiki: {
-          name: `trident-c-cluster-${WIKI_PAGE}`
+          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.WIKI}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         harvester: {
-          name: `${PRODUCT_NAME}-c-cluster-${SAMPLE_HARVESTER}`
+          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.RESOURCE_MANAGEMENT}`,
+          params: {
+            cluster: CLUSTER
+          }
         }
       }
     },
     infraLocation() {
       return {
         k8: {
-          name: `${PRODUCT_NAME}-c-cluster-${LIST_K8}`
+          name: `${PRODUCT_NAME}-c-cluster-${LIST_K8}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         network: {
-          name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`
+          name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         firewall: {
-          name: `${PRODUCT_NAME}-c-cluster-${LIST_FIREWALL}`
+          name: `${PRODUCT_NAME}-c-cluster-${LIST_FIREWALL}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         dns: {
-          name: `${PRODUCT_NAME}-c-cluster-${LIST_DNS}`
+          name: `${PRODUCT_NAME}-c-cluster-${LIST_DNS}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         dhcp: {
-          name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`
+          name: `${PRODUCT_NAME}-c-cluster-${LIST_DHCP}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         },
         roadmap: {
-          name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`
+          name: `${PRODUCT_NAME}-c-cluster-${ROAD_MAP}`,
+          params: {
+            cluster: BLANK_CLUSTER
+          }
         }
       }
     }

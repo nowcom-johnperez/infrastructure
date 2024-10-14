@@ -30,6 +30,13 @@ export const CUSTOM_K8S_RESOURCE_NAME = 'vnetExtensionFactory';
 
 export const SAMPLE_HARVESTER = 'harvester.sample';
 
+export const TRIDENT = {
+  PRODUCT_NAME: 'trident',
+  LOCAL_TESTING: 'local-testing',
+  WIKI: 'wiki',
+  RESOURCE_MANAGEMENT: 'resource-management',
+}
+
 export const ENVIRONMENT_SIZES = [
   { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD']},
   { size: 'Medium', description: ['1 Dedicated Control Pane']},
