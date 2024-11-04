@@ -35,4 +35,8 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+.theme-dark h1 {
+  color: #fff;
+}
 </style>

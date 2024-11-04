@@ -8,7 +8,7 @@
     </div>
     
 
-    <Tabs :list="['Basic', 'Actions', 'Link Services', 'KeyVault', 'Additional Information']" :current="currentTabIndex" @set-active="setTab"/>
+    <Tabs :list="['Basic', 'Actions', 'KeyVault', 'Linked Services']" :current="currentTabIndex" @set-active="setTab"/>
 
     <div class="tab-content-container mt-40">
       <!-- Basic Information Tab -->
@@ -30,6 +30,11 @@
           </div>
 
           <div class="row-detail">
+            <div class="row-label">Github</div>
+            <div class="row-val">{{ currentObj.github }}</div>
+          </div>
+
+          <div class="row-detail">
             <div class="row-label">Status</div>
             <div class="row-val">
               <BadgeState
@@ -48,31 +53,30 @@
 
       <!-- Actions Tab -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-        <p>Actions</p>
-      </div>
-
-      <!-- Link Services -->
-      <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
-        <p>Link Services</p>
+        <ActionsTab :current-obj="currentObj" />
       </div>
 
       <!-- KeyVault -->
-      <div class="tab-content" :class="{ 'show': currentTabIndex === 3 }">
-        <p>Key Vault</p>
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
+        <KeyvaultView :current-obj="currentObj" />
       </div>
 
-      <!-- Additional Information Tab -->
-      <div class="tab-content" :class="{ 'show': currentTabIndex === 4 }">
-        <p>Additional info will be set here</p>
+      <!-- Link Services -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 3 }">
+        <LinkServicesView />
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import Tabs from '../common/Tabs'
+import ActionsTab from './actions/ViewActions.vue'
 import { BadgeState } from '@components/BadgeState';
 import { getBadgeColor } from '../../services/helpers/environment';
+import LinkServicesView from './link-services/LinkServicesView.vue';
+import KeyvaultView from './keyvault/KeyvaultView.vue';
 export default {
   name: 'EnvironmentView',
   props: {
@@ -83,7 +87,10 @@ export default {
   },
   components: {
     Tabs,
-    BadgeState
+    BadgeState,
+    ActionsTab,
+    LinkServicesView,
+    KeyvaultView
   },
   data() {
     return {
@@ -108,64 +115,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.environment-detail-view {
-  border-radius: 8px;
-}
-
-.environment-detail-header {
-  display: flex;
-}
-
-.section-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.section-subtitle {
-  font-size: 14px;
-  color: #6B7280; /* Light gray */
-  margin-bottom: 30px;
-}
-
-.details-table {
-  width: 100%;
-  border-spacing: 0 10px;
-}
-
-.row-detail {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 20px;
-  padding: 15px 0;
-  /* border-bottom: 0.5px solid #6B7280; */
-  line-height: 25px;
-}
-
-.row-label {
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.row-val {
-  font-size: 16px;
-}
-
-.service-status {
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.additional-info {
-  background-color: #f9fafb;
-  padding: 20px;
-  border-radius: 8px;
-  margin-top: 20px;
-  font-family: monospace;
-  color: #374151;
-}
-</style>

@@ -47,6 +47,11 @@
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
         </div>
+
+        <div class="checkbox-content mt-15">
+          <input type="checkbox" id="githubRepo" v-model="selected.enableGithub" />
+          <label for="githubRepo">Enable fresh Github repo</label>
+        </div>
       </div>
     </div>
 
@@ -96,7 +101,8 @@ export default {
         orgName: '',
         teamName: '',
         networkType: 'Standard',
-        network: null
+        network: null,
+        enableGithub: false,
       },
       sizes,
       networkType: [
