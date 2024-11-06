@@ -15,13 +15,23 @@
           <label for="size">Size <span class="text-danger">*</span></label>
           <CardSelect :options="sizes" @onSelect="(size) => selected.size = size" class="mt-5" :current="selected.size" />
         </div>
+
+        <div class="input-container mt-15">
+          <label for="size">Size Information</label>
+          <ul class="size-description-list">
+            <li v-for="(desc, index) in sizeDescription" :key="index">
+              <i class="fa fa-check"></i> {{ desc }}
+            </li>
+          </ul>
+        </div>
   
         <div class="mt-15 input-container">
           <label for="networkType">Network Type <span class="text-danger">*</span></label>
           <Select :options="networkType" v-model="selected.networkType" class="mt-5"/>
         </div>
+
   
-        <div v-if="selected.envName" class="mt-15 input-container">
+        <div v-if="selected.envName && selected.networkType === 'Isolated'" class="mt-15 input-container">
           <label for="networkType">Network <span class="text-danger">*</span></label>
           <input type="text" class="mt-10" name="nodes" v-model="generatedNetworkName" placeholder="1" required disabled/>
           <span class="info-icon" v-clean-tooltip="'Generated network name'">
@@ -51,6 +61,11 @@
         <div class="checkbox-content mt-15">
           <input type="checkbox" id="githubRepo" v-model="selected.enableGithub" />
           <label for="githubRepo">Enable fresh Github repo</label>
+        </div>
+
+        <div class="checkbox-content mt-15">
+          <input type="checkbox" id="keyvaultAzure" v-model="selected.enableKeyvault" />
+          <label for="keyvaultAzure">Enable Keyvault</label>
         </div>
       </div>
     </div>
@@ -100,14 +115,15 @@ export default {
         size: 'Small',
         orgName: '',
         teamName: '',
-        networkType: 'Standard',
+        networkType: 'Isolated',
         network: null,
         enableGithub: false,
+        enableKeyvault: false,
       },
       sizes,
       networkType: [
         'Express',
-        'Standard',
+        'Isolated',
       ],
     }
   },
@@ -122,9 +138,13 @@ export default {
       }
     },
     generatedNetworkName() {
-      const network = this.selected.networkType === 'Standard' ? "vnet-" : "express-"
+      const network = this.selected.networkType === 'Isolated' ? "vnet-" : "express-"
 
       return network + this.selected.envName
+    },
+    sizeDescription () {
+      if (!this.selected.size) return []
+      return this.sizes.find((size) => size.size === this.selected.size)?.description || []
     }
   },
   watch: {
@@ -170,6 +190,16 @@ export default {
 
     .right-form {
       flex: 1
+    }
+
+    .size-description-list {
+      list-style: none;
+      padding-left: 0;
+      line-height: 20px;
+      li i {
+        color: green;
+        margin-right: 10px;
+      }
     }
   }
 

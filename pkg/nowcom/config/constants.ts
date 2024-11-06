@@ -38,9 +38,9 @@ export const TRIDENT = {
 }
 
 export const ENVIRONMENT_SIZES = [
-  { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD']},
-  { size: 'Medium', description: ['1 Dedicated Control Pane']},
-  { size: 'Large', description: ['3 Control Pane', '3 Worker Nodes']},
+  { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD'], short: ['1 node']},
+  { size: 'Medium', description: ['1 Dedicated Control Pane'], short: ['3 nodes']},
+  { size: 'Large', description: ['3 Control Pane', '3 Worker Nodes'], short: ['6 nodes']},
 ];
 
 export  const ENVIRONMENT_DATA = [

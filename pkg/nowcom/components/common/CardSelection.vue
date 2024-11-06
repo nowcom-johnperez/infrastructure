@@ -7,11 +7,14 @@
       @click="selectOption(option.size)"
     >
       <h3>{{ option.size }}</h3>
-      <ul>
+      <div v-for="(desc, index) in option.short" :key="index" style="text-align: center;">
+        <span :class="[{'desc-active': selected === option.size}]">{{ desc }}</span>
+      </div>
+      <!-- <ul>
         <li v-for="(desc, index) in option.description" :key="index">
           <i class="fa fa-check"></i> {{ desc }}
         </li>
-      </ul>
+      </ul> -->
     </div>
   </div>
 </template>
@@ -84,6 +87,10 @@ export default {
       color: #28a745; /* Green color for the checkmark */
       margin-right: 0.5rem;
     }
+  }
+
+  .desc-active {
+    color: #007bff;
   }
 }
 

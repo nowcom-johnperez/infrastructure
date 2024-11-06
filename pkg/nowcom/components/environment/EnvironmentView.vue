@@ -31,7 +31,7 @@
 
           <div class="row-detail">
             <div class="row-label">Github</div>
-            <div class="row-val">{{ currentObj.github }}</div>
+            <div class="row-val">{{ currentObj.github || 'not available' }}</div>
           </div>
 
           <div class="row-detail">

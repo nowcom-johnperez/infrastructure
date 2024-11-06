@@ -9,16 +9,22 @@
       </div>
     </div>
 
-    <div>
-      <button class="btn role-secondary ml-10 clikable" type="button" @click="isModalClientSecret = true">
-        Reset SPN Client Secret
-      </button>
+    <div class="row-detail">
+      <div class="row-label">Client SPN</div>
+      <div class="row-val">
+        <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true">
+          Reset Secret
+        </button>
+      </div>
     </div>
 
-    <div class="mt-15">
-      <button class="btn role-secondary ml-10 clikable" type="button">
-        Enable Github Repo for Environment
-      </button>
+    <div class="row-detail">
+      <div class="row-label">Github Repo</div>
+      <div class="row-val">
+        <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
+          Enable Github Environment
+        </button>
+      </div>
     </div>
 
     <Modal v-if="isModalClientSecret">

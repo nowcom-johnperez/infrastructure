@@ -16,7 +16,7 @@
     <template #body>
       <div class="environment-size-description">
         <p style="font-size: 1.2rem"><span class="policy-text">Size:</span> {{ service.size }}</p>
-        <ul>
+        <ul style="min-height: 80px; max-height: 80px;">
           <li v-for="(desc, index) in serviceSize.description" :key="index">
             <i class="fa fa-check"></i> {{ desc }}
           </li>
