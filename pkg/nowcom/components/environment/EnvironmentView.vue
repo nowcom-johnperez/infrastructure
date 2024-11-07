@@ -8,7 +8,7 @@
     </div>
     
 
-    <Tabs :list="['Basic', 'Actions', 'KeyVault', 'Linked Services']" :current="currentTabIndex" @set-active="setTab"/>
+    <Tabs :list="['Basic', 'Actions', 'KeyVault', 'App Launcher', 'Linked Services']" :current="currentTabIndex" @set-active="setTab"/>
 
     <div class="tab-content-container mt-40">
       <!-- Basic Information Tab -->
@@ -61,8 +61,13 @@
         <KeyvaultView :current-obj="currentObj" />
       </div>
 
-      <!-- Link Services -->
+      <!-- App Launcher -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 3 }">
+        <AppLauncherView :current-obj="currentObj" />
+      </div>
+
+      <!-- Link Services -->
+      <div class="tab-content" :class="{ 'show': currentTabIndex === 4 }">
         <LinkServicesView />
       </div>
 
@@ -77,6 +82,7 @@ import { BadgeState } from '@components/BadgeState';
 import { getBadgeColor } from '../../services/helpers/environment';
 import LinkServicesView from './link-services/LinkServicesView.vue';
 import KeyvaultView from './keyvault/KeyvaultView.vue';
+import AppLauncherView from './app-launcher/AppLauncherView.vue';
 export default {
   name: 'EnvironmentView',
   props: {
@@ -90,7 +96,8 @@ export default {
     BadgeState,
     ActionsTab,
     LinkServicesView,
-    KeyvaultView
+    KeyvaultView,
+    AppLauncherView
   },
   data() {
     return {

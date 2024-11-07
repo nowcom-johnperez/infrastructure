@@ -107,7 +107,9 @@ export default {
 
   async fetch() {
     const envResponse = await environmentService.getAll()
+    const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4']
     this.environmentList = envResponse.map((e) => {
+      const randomNumber = Math.floor(Math.random() * 3);
       return {
         ...e.spec,
         status: 'Done',
@@ -119,7 +121,8 @@ export default {
           cluster: true,
           services: true,
           certDNS: true
-        }
+        },
+        clusterId: clusters[randomNumber]
       }
     })
   },
