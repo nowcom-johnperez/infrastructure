@@ -16,10 +16,12 @@
     </div>
 
     <!-- table -->
+    <KeyvaultTable />
   </div>
 </template>
 
 <script>
+import KeyvaultTable from './KeyvaultTable.vue';
 export default {
   name: 'EnvironmentKeyvaultView',
   props: {
@@ -27,6 +29,9 @@ export default {
       type: Object,
       required: true
     }
+  },
+  components: {
+    KeyvaultTable
   }
 }
 </script>

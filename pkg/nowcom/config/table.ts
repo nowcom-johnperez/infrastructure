@@ -312,5 +312,34 @@ const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [
     },
 ];
 
+const KEYVAULT_HEADER: SortableHeaderType[] = [
+    {
+        name: 'key',
+        label: 'Key',
+        sort: ['key'],
+        search: ['key'],
+        width: 100,
+    },
+    {
+        name: 'value',
+        label: 'Value',
+        sort: ['value'],
+        search: ['value'],
+        width: 100
+    },
+];
 
-export { SORTABLE_NETWORK_HEADERS, SORTABLE_SUB_NETWORK_HEADERS, DHCP_HEADERS, RELEASE_NOTES_HEADERS, SORTABLE_SUB_NETWORK_EXPRESS_HEADERS, RULES_HEADERS, SORTABLE_FIREWALL_NETWORK_HEADERS, RULES_SUBNET_TRANSLATIONS, ENVIRONMENT_HEADERS, SHARED_SERVICES_HEADERS }
+
+export { 
+    SORTABLE_NETWORK_HEADERS,
+    SORTABLE_SUB_NETWORK_HEADERS,
+    DHCP_HEADERS,
+    RELEASE_NOTES_HEADERS,
+    SORTABLE_SUB_NETWORK_EXPRESS_HEADERS,
+    RULES_HEADERS,
+    SORTABLE_FIREWALL_NETWORK_HEADERS,
+    RULES_SUBNET_TRANSLATIONS,
+    ENVIRONMENT_HEADERS,
+    SHARED_SERVICES_HEADERS,
+    KEYVAULT_HEADER
+}
