@@ -74,6 +74,7 @@ export default {
 
   methods: {
     handleOnSave (data) {
+      console.log(`test`, data)
       this.list.push(data)
       this.create.show = false
     }
