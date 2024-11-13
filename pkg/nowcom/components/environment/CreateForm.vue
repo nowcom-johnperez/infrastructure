@@ -60,12 +60,12 @@
 
         <div class="checkbox-content mt-15">
           <input type="checkbox" id="githubRepo" v-model="selected.enableGithub" />
-          <label for="githubRepo">Enable fresh Github repo</label>
+          <label for="githubRepo">Create New Github Repo</label>
         </div>
 
         <div class="checkbox-content mt-15">
           <input type="checkbox" id="keyvaultAzure" v-model="selected.enableKeyvault" />
-          <label for="keyvaultAzure">Enable Keyvault</label>
+          <label for="keyvaultAzure">Create New Azure Keyvault</label>
         </div>
       </div>
     </div>

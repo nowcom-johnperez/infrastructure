@@ -38,14 +38,14 @@ export const TRIDENT = {
 }
 
 export const ENVIRONMENT_SIZES = [
-  { size: 'Small', description: ['Control Pane', 'Worker', 'ETCD'], short: ['1 node']},
-  { size: 'Medium', description: ['1 Dedicated Control Pane'], short: ['3 nodes']},
-  { size: 'Large', description: ['3 Control Pane', '3 Worker Nodes'], short: ['6 nodes']},
+  { size: 'Small', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['1 Machine'], master: { cpu: 8, memory: 16, role: 'Master/Worker', machineCount: 1 }},
+  { size: 'Medium', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['3 Machines'], master: { cpu: 8, memory: 16, role: 'Master/Worker', machineCount: 3 }},
+  { size: 'Large', description: ['3 Machines - 8 CPU 16G Memory (Role: Master)', '3 Machines - 12 CPU 64G Memory (Role: Worker)', ], short: ['6 Machines'], master: { cpu: 8, memory: 16, role: 'Master', machineCount: 3 }, worker: { cpu: 12, memory: 64, role: 'Worker', machineCount: 3 }},
 ];
 
 export  const ENVIRONMENT_DATA = [
   {
-    status: 'Done',
+    status: 'Active',
     name: 'Prod-trident',
     size: 'Large',
     state: {

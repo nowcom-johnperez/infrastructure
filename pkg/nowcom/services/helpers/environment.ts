@@ -1,5 +1,5 @@
-export const getBadgeColor = (status: string) => {
-  let color = 'clickable ml-20 mr-20'
+export const getBadgeColor = (status: string, noMargin: boolean = false) => {
+  let color = 'clickable'
 
   if (status === 'Processing') {
     color += ' bg-info'
@@ -7,6 +7,10 @@ export const getBadgeColor = (status: string) => {
     color += ' bg-success'
   } else {
     color += ' bg-error'
+  }
+
+  if (!noMargin) {
+    color += ' ml-20 mr-20'
   }
 
   return color;

@@ -1,8 +1,8 @@
 <template>
   <Card class="environment-card" :show-highlight-border="false" :sticky="true" v-if="service">
     <template #title>
-      <div style="width: 100%; display: flex">
-        <div style="font-size: 1.2rem; margin-right: auto;">
+      <div class="w-100" style="display: flex">
+        <div class="mr-auto text-lg">
           {{ service.name }}
         </div>
         <div class="environment-status" @click="checkStatus">
@@ -28,8 +28,12 @@
       
     </template>
     <template #actions>
-      <button type="button" @click="viewItem" class="btn role-primary btn-sm">
-        View
+      <a :href="`/c/${service.clusterId}/explorer#cluster-events`" class="btn role-secondary btn-sm mr-auto">
+        Explore
+      </a>
+
+      <button type="button" @click="viewItem" class="btn role-secondary btn-sm">
+        Manage
       </button>
     </template>
   </Card>
@@ -66,7 +70,7 @@ export default {
   },
   methods: {
     badgeColor(status) {
-      return getBadgeColor(status)
+      return getBadgeColor(status, true)
     },
     checkStatus() {
       EventBus.$emit('env-modal-status', this.service)
