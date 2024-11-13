@@ -74,6 +74,7 @@ export default {
 
 .service-card {
   padding: 10px;
+  border: 1px solid #dcdee7;
   ::v-deep .card-body {
     overflow: hidden !important;
   }
