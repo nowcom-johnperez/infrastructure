@@ -118,6 +118,12 @@ background-color: #4caf50;
   border-bottom: 2px solid #297db4;
 }
 
+.tab-content-container {
+  flex-grow: 1;
+  max-height: calc(100vh - 240px);
+  overflow-y: auto;
+}
+
 .tab-content-container .tab-content {
   display: none;
   height: 70vh;
@@ -125,6 +131,13 @@ background-color: #4caf50;
 
 .tab-content-container .tab-content.show {
   display: block;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .modal {
+    /* Safari-specific styles */
+    max-width: 95%; /* Ensure the modal adapts to zoom */
+  }
 }
 
 /* buttons */
@@ -408,7 +421,9 @@ background-color: #4caf50;
 
 /* environment Page */
 .environment-detail-view {
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .environment-detail-header {
@@ -429,31 +444,33 @@ background-color: #4caf50;
 
 .details-table {
   width: 100%;
-  border-spacing: 0 10px;
+  /* border-spacing: 0 10px; */
 }
 
 .basic-grid {
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .row-detail {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 20px;
-  padding: 5px 0;
-  /* border-bottom: 0.5px solid #6B7280; */
-  line-height: 25px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #333;
 }
 
 .row-label {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 600;
-  font-size: 16px;
+  /* font-size: 16px; */
 }
 
 .row-val {
-  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* font-size: 16px; */
+  font-weight: 500;
 }
 
 .service-status {

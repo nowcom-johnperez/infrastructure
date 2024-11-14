@@ -1,29 +1,33 @@
 <template>
   <div class="details-table">
-    <div class="row-detail">
-      <div class="row-label">Change Env Size</div>
-      <div class="row-val">
-        <button class="btn btn-sm role-secondary ml-10 clikable" type="button">
-          {{ currentObj.size }}
-        </button>
-      </div>
-    </div>
+    <div class="basic-grid">
+      <div>
+        <div class="row-detail">
+          <div class="row-label">Change Env Size</div>
+          <div class="row-val">
+            <button class="btn btn-sm role-secondary ml-10 clikable" type="button">
+              {{ currentObj.size }}
+            </button>
+          </div>
+        </div>
 
-    <div class="row-detail">
-      <div class="row-label">Client SPN</div>
-      <div class="row-val">
-        <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true">
-          Reset Secret
-        </button>
-      </div>
-    </div>
+        <div class="row-detail">
+          <div class="row-label">Client SPN</div>
+          <div class="row-val">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true">
+              Reset Secret
+            </button>
+          </div>
+        </div>
 
-    <div class="row-detail">
-      <div class="row-label">Github Repo</div>
-      <div class="row-val">
-        <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
-          Enable Github Environment
-        </button>
+        <div class="row-detail">
+          <div class="row-label">Github Repo</div>
+          <div class="row-val">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
+              Enable Github Environment
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

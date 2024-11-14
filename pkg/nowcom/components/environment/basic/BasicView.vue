@@ -22,8 +22,6 @@
           <div class="row-val">linux (ubuntu 22.04)</div>
         </div>
 
-        
-        
         <div class="row-detail">
           <div class="row-label">Firewall Policy</div>
           <div class="row-val">{{ currentObj.firewallPolicy }}</div>
@@ -43,19 +41,20 @@
             />
           </div>
         </div>
+
       </div>
+      
       <div>
-        <h3 class="text-xl">Size</h3>
         <div class="row-detail">
           <div class="row-label">Size</div>
-          <div class="row-val">{{ currentObj.size }}</div>
+          <div class="row-val">{{ currentObj.size.toUpperCase() }}</div>
         </div>
-        
+
         <div class="row-detail">
           <div class="row-label">Role</div>
           <div class="row-val">{{ getSizeInfo.master.role }}</div>
         </div>
-        
+
         <div class="row-detail">
           <div class="row-label">CPU</div>
           <div class="row-val">{{ getSizeInfo.master.cpu }}</div>
@@ -72,21 +71,19 @@
         </div>
 
         <template v-if="getSizeInfo.worker">
+          <hr>
           <div class="row-detail">
             <div class="row-label">Role</div>
             <div class="row-val">{{ getSizeInfo.worker.role }}</div>
           </div>
-          
           <div class="row-detail">
             <div class="row-label">CPU</div>
             <div class="row-val">{{ getSizeInfo.worker.cpu }}</div>
           </div>
-
           <div class="row-detail">
             <div class="row-label">RAM</div>
             <div class="row-val">{{ getSizeInfo.worker.memory }}G</div>
           </div>
-
           <div class="row-detail">
             <div class="row-label">Machines</div>
             <div class="row-val">{{ getSizeInfo.worker.machineCount }}</div>
@@ -94,13 +91,22 @@
         </template>
       </div>
     </div>
-    
-    <h1 class="text-2xl mt-10">Features</h1>
+    <hr>
 
-    <!-- <div class="row-detail">
-      <div class="row-label">Description</div>
-      <div class="row-val">{{ currentObj.description }}</div>
-    </div> -->
+    <h1 class="text-2xl mt-10">Features</h1>
+    <div class="basic-grid">
+      <div>
+        <div class="row-detail">
+          <div class="row-label">Keyvault</div>
+          <div class="row-val">Enabled</div>
+        </div>
+
+        <div class="row-detail">
+          <div class="row-label">Github</div>
+          <div class="row-val">Enabled</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
