@@ -133,6 +133,11 @@ background-color: #4caf50;
   display: block;
 }
 
+.modal-overlay {
+  width: 100vw; /* Make sure it covers the entire viewport width */
+  height: 100vh; /* Ensure it covers the entire viewport height */
+}
+
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   .modal {
     /* Safari-specific styles */
