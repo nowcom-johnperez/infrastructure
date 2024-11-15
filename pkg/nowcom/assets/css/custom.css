@@ -133,9 +133,21 @@ background-color: #4caf50;
   display: block;
 }
 
+.modal {
+  width: 90%; /* Make sure the modal width adapts */
+  max-width: 800px; /* Optional, to set a maximum width */
+  min-width: 300px; /* Ensure it doesn't shrink too small */
+  height: auto; /* Let the modal height adapt to content */
+}
+
 .modal-overlay {
-  width: 100vw; /* Make sure it covers the entire viewport width */
-  height: 100vh; /* Ensure it covers the entire viewport height */
+  width: 100vw !important; /* Make sure it covers the entire viewport width */
+  height: 100vh !important; /* Ensure it covers the entire viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px; /* Add padding to allow for better spacing when zooming */
+  box-sizing: border-box;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
