@@ -26,7 +26,8 @@
       </template>
     </SortableTable>
 
-    <Teleport to=".environment-detail-view">
+    <!-- <Teleport to=".environment-detail-view"> -->
+    <Teleport to="body">
       <Modal size="lg" v-if="create.show">
         <template #header>
           <div class="row">
