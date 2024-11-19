@@ -18,11 +18,15 @@
 
         <div class="input-container mt-15">
           <label for="size">Size Information</label>
-          <ul class="size-description-list">
+          <div class="mt-5">
+            <NodeInfo :node="nodeInfo.master" :show-usage="false" />
+            <NodeInfo v-if="nodeInfo.worker" :node="nodeInfo.worker" class="mt-15" :show-usage="false" />
+          </div>
+          <!-- <ul class="size-description-list">
             <li v-for="(desc, index) in sizeDescription" :key="index">
               <i class="fa fa-check"></i> {{ desc }}
             </li>
-          </ul>
+          </ul> -->
         </div>
   
         <div class="mt-15 input-container">
@@ -31,7 +35,7 @@
         </div>
 
   
-        <div v-if="selected.envName && selected.networkType === 'Isolated'" class="mt-15 input-container">
+        <div v-if="selected.networkType === 'Isolated'" class="mt-15 input-container">
           <label for="networkType">Network <span class="text-danger">*</span></label>
           <input type="text" class="mt-10" name="nodes" v-model="generatedNetworkName" placeholder="1" required disabled/>
           <span class="info-icon" v-clean-tooltip="'Generated network name'">
@@ -97,6 +101,7 @@ import ModalStatus from '../environment/Modal-Status.vue';
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { harvesterService } from '../../services/api';
+import NodeInfo from './NodeInfo.vue';
 export default {
   name: 'EnvironmentCreateForm',
   components: {
@@ -104,6 +109,7 @@ export default {
     CardSelect,
     ModalStatus,
     // SubnetCreate
+    NodeInfo
   },
   data() {
     const sizes = ENVIRONMENT_SIZES;
@@ -131,30 +137,25 @@ export default {
         subnets: []
       },
       sizes,
+      // networkType: [
+      //   'Express',
+      //   'Isolated',
+      // ],
       networkType: [
-        'Express',
-        'Isolated',
+        { label: 'Express', value: 'Express', disabled: false },
+        { label: 'Isolated', value: 'Isolated', disabled: true },
       ],
     }
   },
   computed: {
-    nodeToolTip() {
-      if (this.selected.size === 'Small') {
-        return 'Control Pane, Worker, ETCD'
-      } else if (this.selected.size === 'Medium') {
-        return '1 Worker node dedicated'
-      } else {
-        return '3 Control Pane and 3 Worker Node'
-      }
-    },
     generatedNetworkName() {
       const network = this.selected.networkType === 'Isolated' ? "vnet-" : "express-"
 
       return network + this.selected.envName
     },
-    sizeDescription () {
-      if (!this.selected.size) return []
-      return this.sizes.find((size) => size.size === this.selected.size)?.description || []
+    nodeInfo () {
+      if (!this.selected.size) return {}
+      return this.sizes.find((size) => size.size === this.selected.size) || {}
     }
   },
   watch: {

@@ -5,7 +5,8 @@
     </div>
     <div class="usage">
       <Bar :percentage="100" :primary-color="'--primary'" />
-      <span>{{node.nodeCount}} / {{ node.nodeCount }}</span>
+      <span>
+        <span v-if="showUsage">{{node.nodeCount}} / </span>{{ node.nodeCount }}</span>
     </div>
     <div class="resources">
       <span class="label">CPU / Memory</span>
@@ -22,6 +23,10 @@ export default {
     node: {
       type: Object,
       required: true
+    },
+    showUsage: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
