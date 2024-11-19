@@ -27,6 +27,34 @@
         </div>
       </td>
     </template>
+    <template #col:cpu="{ row }">
+      <td>
+        <tr>
+          <td align="left">
+            {{ row.sizeInfo.master.cpu }} / {{ row.sizeInfo.master.memory }}G
+          </td>
+        </tr>
+        <tr v-if="row.sizeInfo.worker">
+          <td  align="left">
+            {{ row.sizeInfo.worker.cpu }} / {{ row.sizeInfo.worker.memory }}G
+          </td>
+        </tr>
+      </td>
+    </template>
+    <template #col:role="{ row }">
+      <td>
+        <tr>
+          <td align="left">
+            {{ row.sizeInfo.master.role }}
+          </td>
+        </tr>
+        <tr v-if="row.sizeInfo.worker">
+          <td  align="left">
+            {{ row.sizeInfo.worker.role }}
+          </td>
+        </tr>
+      </td>
+    </template>
   </SortableTable>
 </template>
 

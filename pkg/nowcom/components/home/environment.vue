@@ -43,7 +43,7 @@ import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
 import { CAPI } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
-import { PRODUCT_NAME, ENVIRONMENT } from '../../config/constants';
+import { PRODUCT_NAME, ENVIRONMENT, ENVIRONMENT_SIZES } from '../../config/constants';
 import { mapState } from 'vuex';
 import { EventBus } from '../../config/event-bus';
 import ModalStatus from '../environment/Modal-Status.vue';
@@ -111,6 +111,7 @@ export default {
     const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4']
     this.environmentList = envResponse.map((e) => {
       const randomNumber = Math.floor(Math.random() * 3);
+      const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.size)
       return {
         ...e.spec,
         status: 'Done',
@@ -124,7 +125,8 @@ export default {
           certDNS: true
         },
         clusterId: clusters[randomNumber],
-        dns: '10.51.2.3'
+        dns: '10.51.2.3',
+        sizeInfo
       }
     })
   },

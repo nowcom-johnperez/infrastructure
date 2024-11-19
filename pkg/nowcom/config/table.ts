@@ -282,6 +282,24 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         sort: ['firewallPolicy'],
         search: ['firewallPolicy'],
     },
+    {
+        name: 'dns',
+        label: 'DNS',
+        sort: ['dns'],
+        search: ['dns'],
+    },
+    {
+        name: 'role',
+        label: 'Role',
+        sort: ['role'],
+        search: ['role'],
+    },
+    {
+        name: 'cpu',
+        label: 'Role - CPU / Memory',
+        sort: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
+        search: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
+    },
 ];
 
 const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [
