@@ -100,7 +100,16 @@ export default {
 
 .theme-dark {
   .environment-card {
-    border: 1px solid #fff
+    border: 1px solid #fff;
+
+    .environment-details {
+      .detail-icon {
+        color: #fff;
+      }
+      .detail-value {
+        color: #fff;
+      }
+    }
   }
 
   .policy-text {
@@ -143,7 +152,7 @@ export default {
 
     .detail-icon {
       margin-right: 5px;
-      color: #ffffff;
+      color: #000;
     }
 
     .detail-label {
@@ -152,7 +161,7 @@ export default {
     }
 
     .detail-value {
-      color: #fff;
+      color: #000;
     }
   }
 
