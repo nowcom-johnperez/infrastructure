@@ -296,7 +296,7 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
     },
     {
         name: 'cpu',
-        label: 'Role - CPU / Memory',
+        label: 'CPU / Memory',
         sort: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
         search: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
     },
