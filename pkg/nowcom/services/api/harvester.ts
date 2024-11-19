@@ -9,5 +9,9 @@ export const harvesterService = {
     getUserTemplates: async () => {
       const res: any = await INSTANCE_V3.get(`/k8s/clusters/${CLUSTER}/v1/configmaps/default`)
       return res.data
+    },
+    getConfigMaps: async () => {
+      const res: any = await INSTANCE_V3.get(`/k8s/clusters/${CLUSTER}/v1/configmaps`)
+      return res.data
     }
 }

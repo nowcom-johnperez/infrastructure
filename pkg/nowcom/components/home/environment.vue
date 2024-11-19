@@ -99,7 +99,8 @@ export default {
           return (app.name.toLowerCase().includes(searchTerm) ||
             app.status.toLowerCase().includes(searchTerm) ||
             app.size.toLowerCase().includes(searchTerm) ||
-            app.firewallPolicy.toLowerCase().includes(searchTerm))
+            app.firewallPolicy.toLowerCase().includes(searchTerm) ||
+            app.dns.toLowerCase().includes(searchTerm))
         });
       }
     }
@@ -122,7 +123,8 @@ export default {
           services: true,
           certDNS: true
         },
-        clusterId: clusters[randomNumber]
+        clusterId: clusters[randomNumber],
+        dns: '10.51.2.3'
       }
     })
   },

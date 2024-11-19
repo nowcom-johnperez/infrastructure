@@ -38,9 +38,9 @@ export const TRIDENT = {
 }
 
 export const ENVIRONMENT_SIZES = [
-  { size: 'Small', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['1 Machine'], master: { cpu: 8, memory: 16, role: 'Master/Worker', machineCount: 1 }},
-  { size: 'Medium', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['3 Machines'], master: { cpu: 8, memory: 16, role: 'Master/Worker', machineCount: 3 }},
-  { size: 'Large', description: ['3 Machines - 8 CPU 16G Memory (Role: Master)', '3 Machines - 12 CPU 64G Memory (Role: Worker)', ], short: ['6 Machines'], master: { cpu: 8, memory: 16, role: 'Master', machineCount: 3 }, worker: { cpu: 12, memory: 64, role: 'Worker', machineCount: 3 }},
+  { size: 'Small', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['1 node'], master: { cpu: 8, memory: 16, role: 'Master/Worker', nodeCount: 1 }},
+  { size: 'Medium', description: ['8 CPU 16G Memory', 'Role: Master/Worker'], short: ['3 Nodes'], master: { cpu: 8, memory: 16, role: 'Master/Worker', nodeCount: 3 }},
+  { size: 'Large', description: ['3 Nodes - 8 CPU 16G Memory (Role: Master)', '3 Nodes - 12 CPU 64G Memory (Role: Worker)', ], short: ['6 Nodes'], master: { cpu: 8, memory: 16, role: 'Master', nodeCount: 3 }, worker: { cpu: 12, memory: 64, role: 'Worker', nodeCount: 3 }},
 ];
 
 export  const ENVIRONMENT_DATA = [

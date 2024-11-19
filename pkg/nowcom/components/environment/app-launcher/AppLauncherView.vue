@@ -4,7 +4,8 @@
       <div class="row-label">Cluster Name</div>
       <div class="row-val">
         <a
-          :href="`/c/${this.cluster.id}/explorer#cluster-events`"
+          :href="`/c/${cluster.id}/explorer#cluster-events`"
+          @click.prevent="exploreCluster"
           target="_blank"
           rel="noopener noreferrer nofollow"
           class="btn role-secondary btn-sm ml-10"
@@ -119,12 +120,14 @@ export default {
     },
     githubLinks() {
       return this.githubList.filter((gh) => {
-        console.log(`gh`, gh.clusterName, this.cluster.spec.displayName)
         return gh.clusterName === this.cluster.spec.displayName
       }).map((gh) => gh.spec.repo)
     }
   },
   methods: {
+    exploreCluster() {
+      this.$router.push(`/c/${this.cluster.id}/explorer#cluster-events`)
+    },
     async getGitHubRepos() {
       const hasFleetAccess = await this.$store.getters['management/schemaFor'](FLEET.GIT_REPO)
       if (!hasFleetAccess) return

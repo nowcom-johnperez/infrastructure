@@ -12,10 +12,10 @@
         </div>
 
         <div class="row-detail">
-          <div class="row-label">Client SPN</div>
+          <div class="row-label">Azure SPN Secret</div>
           <div class="row-val">
             <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true">
-              Reset Secret
+              Reset
             </button>
           </div>
         </div>
@@ -24,7 +24,16 @@
           <div class="row-label">Github Repo</div>
           <div class="row-val">
             <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
-              Enable Github Environment
+              Enable
+            </button>
+          </div>
+        </div>
+
+        <div class="row-detail">
+          <div class="row-label">Azure Keyvault</div>
+          <div class="row-val">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
+              Enable
             </button>
           </div>
         </div>

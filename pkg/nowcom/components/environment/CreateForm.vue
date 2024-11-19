@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="env-form-container">
+    <div class="env-form-container basic-grid">
       <div class="left-form">
         <h1>Basic</h1>
         <div class="input-container">
@@ -38,6 +38,10 @@
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
         </div>
+
+        <!-- <div class="mt-15">
+          <SubnetCreate @onAdd="addSubnet" />
+        </div> -->
       </div>
   
       <div class="right-form">
@@ -89,13 +93,17 @@
 import Select from '@shell/components/form/Select.vue';
 import CardSelect from '../common/CardSelection.vue';
 import ModalStatus from '../environment/Modal-Status.vue';
+// import SubnetCreate from '../forms/InitialSubnetCreation.vue'
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
+import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
+import { harvesterService } from '../../services/api';
 export default {
   name: 'EnvironmentCreateForm',
   components: {
     Select,
     CardSelect,
     ModalStatus,
+    // SubnetCreate
   },
   data() {
     const sizes = ENVIRONMENT_SIZES;
@@ -115,10 +123,12 @@ export default {
         size: 'Small',
         orgName: '',
         teamName: '',
-        networkType: 'Isolated',
+        networkType: 'Express',
         network: null,
         enableGithub: false,
         enableKeyvault: false,
+        userDataTemplate: null,
+        subnets: []
       },
       sizes,
       networkType: [
@@ -158,7 +168,37 @@ export default {
       }
     }
   },
+  async fetch() {
+    const configMaps = await harvesterService.getConfigMaps()
+    const userDataOptions = [];
+    const networkDataOptions = [];
+
+    (configMaps.data || []).map((O) => {
+      const cloudTemplate =
+        O.metadata?.labels?.[HCI_ANNOTATIONS.CLOUD_INIT];
+
+      if (cloudTemplate === 'user') {
+        userDataOptions.push({
+          label: O.metadata.name,
+          value: O.data.cloudInit
+        });
+      }
+
+      if (cloudTemplate === 'network') {
+        networkDataOptions.push({
+          label: O.metadata.name,
+          value: O.data.cloudInit
+        });
+      }
+    });
+
+    // console.log(`userDataOptions`, userDataOptions)
+    if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
+  },
   methods: {
+    addSubnet (subnets) {
+      this.selected.subnets = subnets
+    },
     createEnv () {
       this.savingModalState = true
 
@@ -182,15 +222,15 @@ export default {
   }
 
   .env-form-container {
-    display: flex;
+    // display: flex;
 
-    .left-form {
-      flex: 1
-    }
+    // .left-form {
+    //   flex: 1
+    // }
 
-    .right-form {
-      flex: 1
-    }
+    // .right-form {
+    //   flex: 1
+    // }
 
     .size-description-list {
       list-style: none;

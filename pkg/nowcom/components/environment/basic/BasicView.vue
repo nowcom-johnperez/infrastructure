@@ -2,6 +2,7 @@
   <div class="details-table">
     <div class="basic-grid">
       <div>
+        <h1 class="text-2xl mt-10 text-primary">Environment Specs</h1>
         <div class="row-detail">
           <div class="row-label">Name</div>
           <div class="row-val">{{ currentObj.name }}</div>
@@ -28,6 +29,11 @@
         </div>
 
         <div class="row-detail">
+          <div class="row-label">DNS</div>
+          <div class="row-val">{{ currentObj.dns }}</div>
+        </div>
+
+        <div class="row-detail">
           <div class="row-label">Github</div>
           <div class="row-val">{{ currentObj.github || 'not available' }}</div>
         </div>
@@ -45,12 +51,18 @@
       </div>
       
       <div>
+        <h1 class="text-2xl mt-10 text-primary">Node Information</h1>
         <div class="row-detail">
           <div class="row-label">Size</div>
           <div class="row-val">{{ currentObj.size.toUpperCase() }}</div>
         </div>
 
-        <div class="row-detail">
+        <div>
+          <NodeInfo :node="getSizeInfo.master" />
+          <NodeInfo v-if="getSizeInfo.worker" class="mt-10" :node="getSizeInfo.worker" />
+        </div>
+
+        <!-- <div class="row-detail">
           <div class="row-label">Role</div>
           <div class="row-val">{{ getSizeInfo.master.role }}</div>
         </div>
@@ -67,7 +79,7 @@
 
         <div class="row-detail">
           <div class="row-label">Machines</div>
-          <div class="row-val">{{ getSizeInfo.master.machineCount }}</div>
+          <div class="row-val">{{ getSizeInfo.master.nodeCount }}</div>
         </div>
 
         <template v-if="getSizeInfo.worker">
@@ -86,14 +98,14 @@
           </div>
           <div class="row-detail">
             <div class="row-label">Machines</div>
-            <div class="row-val">{{ getSizeInfo.worker.machineCount }}</div>
+            <div class="row-val">{{ getSizeInfo.worker.nodeCount }}</div>
           </div>
-        </template>
+        </template> -->
       </div>
     </div>
     <hr>
 
-    <h1 class="text-2xl mt-10">Features</h1>
+    <h1 class="text-2xl mt-10 text-primary">Features</h1>
     <div class="basic-grid">
       <div>
         <div class="row-detail">
@@ -114,6 +126,7 @@
 import { getBadgeColor } from '../../../services/helpers/environment';
 import { ENVIRONMENT_SIZES } from '../../../config/constants';
 import { BadgeState } from '@components/BadgeState';
+import NodeInfo from '../NodeInfo.vue';
 export default {
   name: 'BasicView',
   props: {
@@ -130,6 +143,7 @@ export default {
   },
   components: {
     BadgeState,
+    NodeInfo
   },
   computed: {
     badgeColor () {
