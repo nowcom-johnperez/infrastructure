@@ -126,12 +126,37 @@ export default {
         },
         clusterId: clusters[randomNumber],
         dns: '10.51.2.3',
-        sizeInfo
+        sizeInfo,
+        statuses: {
+          network: this.getRandomStatus(),
+          networkPolicy: this.getRandomStatus(),
+          clusterCreation: this.getRandomStatus(),
+          certificateServices: this.getRandomStatus(),
+          dns: this.getRandomStatus()
+        }
       }
     })
   },
 
   methods: {
+    getRandomStatus() {
+      const statuses = [
+        { value: 'active', weight: 0.6 },  // 60% chance
+        { value: 'warning', weight: 0.3 }, // 30% chance
+        { value: 'inactive', weight: 0.1 } // 10% chance
+      ];
+
+      const totalWeight = statuses.reduce((sum, status) => sum + status.weight, 0);
+      const random = Math.random() * totalWeight;
+
+      let cumulativeWeight = 0;
+      for (const status of statuses) {
+        cumulativeWeight += status.weight;
+        if (random < cumulativeWeight) {
+          return status.value;
+        }
+      }
+    },
     closeModalState() {
       this.statusModalState = false
       this.selectedEnv = null

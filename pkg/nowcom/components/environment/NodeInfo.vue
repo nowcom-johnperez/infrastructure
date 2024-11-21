@@ -1,22 +1,21 @@
 <template>
   <div class="node-presentation">
-    <div class="role">
-      {{ node.role }}
-    </div>
-    <div class="usage">
-      <Bar :percentage="100" :primary-color="'--primary'" />
-      <span>
-        <span v-if="showUsage">{{node.nodeCount}} / </span>{{ node.nodeCount }}</span>
+    <div class="resources">
+      <span class="label">Role</span>
+      <span>{{ node.role }}</span>
     </div>
     <div class="resources">
       <span class="label">CPU / Memory</span>
       <span>{{ node.cpu }} / {{ node.memory }}G</span>
     </div>
+    <div class="resources">
+      <span class="label">Node Count</span>
+      <span>{{ node.nodeCount }}</span>
+    </div>
   </div>
 </template>
 
 <script>
-import Bar from '@shell/components/graph/Bar';
 export default {
   name: 'NodeInfo',
   props: {
@@ -26,12 +25,9 @@ export default {
     },
     showUsage: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
-  components: {
-    Bar
-  }
 }
 </script>
 
@@ -39,7 +35,7 @@ export default {
 <style lang="scss" scoped>
   .node-presentation {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
     align-items: center;
     text-align: center;

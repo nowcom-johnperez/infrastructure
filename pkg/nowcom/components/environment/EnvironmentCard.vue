@@ -3,13 +3,6 @@
     <template #title>
       <div class="title-container w-100">
         <div class="title-text">{{ service.name }}</div>
-        <div class="ml-auto">
-          <BadgeState
-            class="status-badge"
-            :label="service.status"
-            :color="badgeColor(service.status)"
-          />
-        </div>
       </div>
     </template>
     <template #body>
@@ -31,8 +24,7 @@
         </div>
       </div>
       <div class="node-info">
-        <NodeInfo :node="serviceSize.master" />
-        <NodeInfo v-if="serviceSize.worker" :node="serviceSize.worker" />
+        <EnvironmentStatus :statuses="service.statuses" />
       </div>
     </template>
     <template #actions>
@@ -49,16 +41,17 @@
 
 <script>
 import { Card } from '@components/Card';
-import NodeInfo from './NodeInfo.vue';
+import EnvironmentStatus from './EnvironmentStatus.vue';
 import { ENVIRONMENT_SIZES } from '../../config/constants';
 import { BadgeState } from '@components/BadgeState';
 import { EventBus } from '../../config/event-bus';
 import { getBadgeColor } from '../../services/helpers/environment'
 export default {
+  name: 'EnvironmentCard',
   components: {
     Card,
     BadgeState,
-    NodeInfo
+    EnvironmentStatus
   },
   props: {
     service: {
@@ -66,7 +59,6 @@ export default {
       default: null,
     },
   },
-  name: 'EnvironmentCard',
   data() {
     const sizes = ENVIRONMENT_SIZES;
     return {
