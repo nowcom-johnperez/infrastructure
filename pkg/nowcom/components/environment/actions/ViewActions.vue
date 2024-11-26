@@ -6,7 +6,7 @@
           <div class="row-label">Change Env Size</div>
           <div class="row-val">
             <button class="btn btn-sm role-secondary ml-10 clikable" type="button">
-              {{ currentObj.size }}
+              {{ currentObj.spec.clusterSize }}
             </button>
           </div>
         </div>

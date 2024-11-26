@@ -2,7 +2,7 @@
   <Card class="environment-card" :show-highlight-border="false" :sticky="true" v-if="service">
     <template #title>
       <div class="title-container w-100">
-        <div class="title-text">{{ service.name }}</div>
+        <div class="title-text">{{ service.spec.environmentName }}</div>
       </div>
     </template>
     <template #body>
@@ -10,12 +10,12 @@
         <div class="detail-item">
           <i class="fa fa-server detail-icon"></i>
           <span class="detail-label">Size:</span>
-          <span class="detail-value">{{ service.size }}</span>
+          <span class="detail-value">{{ service.spec.clusterSize }}</span>
         </div>
         <div class="detail-item">
           <i class="fa fa-shield detail-icon"></i>
           <span class="detail-label">FW Policy:</span>
-          <span class="detail-value">{{ service.firewallPolicy }}</span>
+          <span class="detail-value">{{ service.spec.networkPolicy }}</span>
         </div>
         <div class="detail-item">
           <i class="fa fa-globe detail-icon"></i>

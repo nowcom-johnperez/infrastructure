@@ -108,22 +108,13 @@ export default {
 
   async fetch() {
     const envResponse = await environmentService.getAll()
-    const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4']
+    // const envResponse = await this.$store.dispatch('management/find', { type: 'stack' })
+    const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
     this.environmentList = envResponse.map((e) => {
       const randomNumber = Math.floor(Math.random() * 3);
-      const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.size)
+      const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
       return {
-        ...e.spec,
-        status: 'Done',
-        state: {
-          networks: true,
-          firewall: true,
-          git: true,
-          keyvaults: true,
-          cluster: true,
-          services: true,
-          certDNS: true
-        },
+        ...e,
         clusterId: clusters[randomNumber],
         dns: '10.51.2.3',
         sizeInfo,
@@ -136,6 +127,8 @@ export default {
         }
       }
     })
+
+    console.log(`environment`, this.environmentList)
   },
 
   methods: {

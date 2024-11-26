@@ -17,9 +17,10 @@
     <div v-if="ingress" class="row-detail">
       <div class="row-label">FQDN</div>
       <div class="row-val">
-        <button class="btn btn-sm role-secondary ml-10 clikable" type="button">
-          <CopyToClipboardText :text="getIngressPath" />
-        </button>
+        <a :href="getIngressPath" target="_blank" class="btn btn-sm role-secondary ml-10 clikable" type="button">
+          <!-- <CopyToClipboardText :text="getIngressPath" /> -->
+          {{ getIngressPath }}
+        </a>
       </div>
     </div>
     <div class="row-detail">
@@ -60,7 +61,7 @@
         </a>
       </div>
     </div>
-    <div class="row-detail">
+    <!-- <div class="row-detail">
       <div class="row-label">Application</div>
       <div v-if="ingress" class="row-val">
         <a
@@ -72,7 +73,7 @@
           Launch
         </a>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

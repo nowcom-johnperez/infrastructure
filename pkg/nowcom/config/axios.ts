@@ -9,7 +9,7 @@ export const INSTANCE_V2 = axios.create({
     headers:    { Authorization: `Bearer ${ BEARERTOKEN }`, 'Accept': 'application/json', 'Access-Control-Allow-Origin': `*, https://localhost:8005` }
 });
 
-export const INSTANCE_V3 = axios.create({
+export const BASE_URL_HOST = axios.create({
     baseURL: RANCHER_DIRECT_URL,
     httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
     headers:    { Authorization: `Bearer ${ RANCHER_BEARERTOKEN }`, 'Accept': 'application/json', 'Access-Control-Allow-Origin': '*, https://localhost:8005' }

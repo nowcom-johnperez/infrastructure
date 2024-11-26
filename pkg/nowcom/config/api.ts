@@ -22,6 +22,7 @@ export const getConfig = () => {
     BEARERTOKEN_V3: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Im1MeUp2T2lfdHptTi1pN1JkbEdSUGw5RnR2YnQxbVROeTJVUmY3TE9oR0UifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImVjZDY1NTFiLWM3NTUtNDM1ZS1iMjYyLTRlYzcyYTA0MTk1MSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.LPUPR_O2opQwa6pd73dDu5CxIvoaSAESFoEvVe7h7mpVUGzbZrfKkCRCA4C40vblzBB5MgHzU_DHWf3-GIlCiteUiyGVm8uf9nNoXZeL45Hl1i5rDMrzTdMnMrdMQwiLHH_rxj8Now2qK0eLrfwPZAMdMnwjp-mjzBnsdO1XPNyHXfBkdg1hirYYZXFuVpPrF3wHyjWtdYYQ-gDTzzOUKV8oka4Wly9MzD5FwZEPdDvkyDETqSxaKRT0TwG6PMnhmfjieHXGU6mroDrraWv6K8a79HypHHrqXRKm5kCXqMAdjEk_lCkn3bhjra88l49hf8x4rxV4s5giANIS7nCoPw',
     RANCHER_BEARERTOKEN: 'token-rzfxq:hg7wtcs5v5dng7xllx7vm25nrvz9kqrbfp9bzf5448n8995dj8hjkt',
     CLUSTER: 'c-m-sdtmhjdg',
+    ENVIRONMENT_CLUSTER: 'c-m-mw54xzmw',
     API_VERSION: 'v1',
     API: 'packetlifter.dev',
     TRIDENT_API: 'trident.nowcom.io'
@@ -35,11 +36,22 @@ export const getConfig = () => {
       config.RANCHER_BEARERTOKEN = 'token-dwz8m:vlbqpmct5sn2tbzf22t68w6hdrlqg9z9zt9bkp4tn6q274njqk4nlc'
       config.CLUSTER = 'c-m-kl24rgkc'
       config.API = 'packetlifter.io'
+    } else if (hostname.includes('forge.tridentcloud')) {
+      config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
+      config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
+      config.CLUSTER = 'c-m-hx52gvl6'
+      config.API = 'vanguard.tridentcloud.dev'
+      config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
     } else {
-      config.RANCHER_DIRECT_URL = 'https://els-cybraindev01.hankeyinvestments.com/'
-      config.RANCHER_BEARERTOKEN = 'token-rzfxq:hg7wtcs5v5dng7xllx7vm25nrvz9kqrbfp9bzf5448n8995dj8hjkt'
-      config.CLUSTER = 'c-m-sdtmhjdg'
-      config.API = 'packetlifter.dev'
+      // config.RANCHER_DIRECT_URL = 'https://els-cybraindev01.hankeyinvestments.com/'
+      // config.RANCHER_BEARERTOKEN = 'token-rzfxq:hg7wtcs5v5dng7xllx7vm25nrvz9kqrbfp9bzf5448n8995dj8hjkt'
+      // config.CLUSTER = 'c-m-sdtmhjdg'
+      // config.API = 'packetlifter.dev'
+      config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
+      config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
+      config.CLUSTER = 'c-m-hx52gvl6'
+      config.API = 'vanguard.tridentcloud.dev'
+      config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
     }
   }
 
