@@ -108,7 +108,7 @@ export default {
 
   async fetch() {
     const envResponse = await environmentService.getAll()
-    // const envResponse = await this.$store.dispatch('management/find', { type: 'stack' })
+    // const envResponse = await this.$store.dispatch('management/find', { type: 'stacks' })
     const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
     this.environmentList = envResponse.map((e) => {
       const randomNumber = Math.floor(Math.random() * 3);

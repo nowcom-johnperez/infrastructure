@@ -1,6 +1,6 @@
 import { INSTANCE_V4, BASE_URL_HOST } from "../../config/axios";
 import { getConfig } from "../../config/api";
-const { TRIDENT_API, API, ENVIRONMENT_CLUSTER } = getConfig();
+const { TRIDENT_API, API, ENVIRONMENT_CLUSTER, API_VERSION } = getConfig();
 export const environmentService = {
     // getAll: async () => {
     //     // const res: any =  await INSTANCE_V4.get(`/apis/trident.dev/${API_VERSION}/namespaces/default/createenvs`)

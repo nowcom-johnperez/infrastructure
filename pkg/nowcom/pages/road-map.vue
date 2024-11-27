@@ -53,6 +53,7 @@
 
 <script>
 import Timeline from '../components/TimelineComponent.vue'
+// import Timeline from '../components/TimelineTrident.vue'
 import cButton from '../components/common/Button'
 import Modal from '../components/common/Modal'
 import SortableTable from '@shell/components/ResourceTable.vue'
