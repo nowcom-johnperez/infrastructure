@@ -109,7 +109,7 @@ import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { NAMESPACE, CONFIG_MAP } from '@shell/config/types';
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
-const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API } = getConfig()
+const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API } = getConfig()
 export default {
   name: 'EnvironmentCreateForm',
   components: {
@@ -166,7 +166,10 @@ export default {
     nodeInfo () {
       if (!this.selected.size) return {}
       return this.sizes.find((size) => size.size === this.selected.size) || {}
-    }
+    },
+    user() {
+      return this.$store.getters['auth/v3User']
+    },
   },
   watch: {
     'selected.size' (newSize) {
@@ -221,30 +224,35 @@ export default {
     addSubnet (subnets) {
       this.selected.subnets = subnets
     },
-    createEnv () {
+    async createEnv () {
       this.savingModalState = true
 
       const payload = {
         apiVersion: `${VANGUARD_API}`,
         kind: "Stack",
         metadata: {
-          name: '',
+          name: this.selected.envName,
           namespace: 'default',
           annotations: {
-            team: this.selected.teamName,
-            org: this.selected.orgName,
-            'rancher-uid': '',
+            [`${BREACHER_API}/team`]: this.selected.teamName,
+            [`${BREACHER_API}/org`]: this.selected.orgName,
+            [`${BREACHER_API}/rancher-uid`]: this.user.id,
           },
         },
         spec: {
           clusterSize: this.selected.size.toLocaleLowerCase(),
           networkType: this.selected.networkType.toLocaleLowerCase(),
-          networkPolicy: this.selected.networkType,
+          // networkPolicy: this.selected.networkType,
+          networkPolicy: 'standard-dev',
           environmentName: this.selected.envName
         }
       };
 
-      console.log(`payload`, payload)
+      await this.$store.dispatch('cluster/request', {
+        url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
+        method: 'post',
+        data:   payload,
+      });
 
       setTimeout(() => {
         this.saving.cluster = true

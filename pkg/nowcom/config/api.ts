@@ -27,6 +27,7 @@ export const getConfig = () => {
     API: 'packetlifter.dev',
     TRIDENT_API: 'trident.nowcom.io',
     VANGUARD_API: 'vanguard.tridentcloud.dev/v1alpha1',
+    BREACHER_API: 'breacher.tridentcloud.dev',
     STACK: 'stacks'
   };
 
@@ -53,8 +54,8 @@ export const getConfig = () => {
       config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
       // config.CLUSTER = 'c-m-hx52gvl6'
       config.API = 'vanguard.tridentcloud.dev'
-      // config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
-      config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
+      config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
+      // config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
     }
   }
 

@@ -8,7 +8,7 @@
 
         <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
       </template>
-      <template>
+      <template v-else>
         <Banner
           data-testid="no-data-found"
           color="error"
