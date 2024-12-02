@@ -71,53 +71,13 @@
         <h1 class="text-2xl mt-20 text-primary">Additional Information</h1>
         <div class="row-detail">
           <div class="row-label">Organization Name</div>
-          <div class="row-val">{{ currentObj.spec.orgName }}</div>
+          <div class="row-val">{{ currentObj.metadata?.annotations?.org }}</div>
         </div>
 
         <div class="row-detail">
           <div class="row-label">Team Name</div>
-          <div class="row-val">{{ currentObj.spec.teamName }}</div>
+          <div class="row-val">{{ currentObj.metadata?.annotations?.team }}</div>
         </div>
-
-        <!-- <div class="row-detail">
-          <div class="row-label">Role</div>
-          <div class="row-val">{{ getSizeInfo.master.role }}</div>
-        </div>
-
-        <div class="row-detail">
-          <div class="row-label">CPU</div>
-          <div class="row-val">{{ getSizeInfo.master.cpu }}</div>
-        </div>
-
-        <div class="row-detail">
-          <div class="row-label">RAM</div>
-          <div class="row-val">{{ getSizeInfo.master.memory }}G</div>
-        </div>
-
-        <div class="row-detail">
-          <div class="row-label">Machines</div>
-          <div class="row-val">{{ getSizeInfo.master.nodeCount }}</div>
-        </div>
-
-        <template v-if="getSizeInfo.worker">
-          <hr>
-          <div class="row-detail">
-            <div class="row-label">Role</div>
-            <div class="row-val">{{ getSizeInfo.worker.role }}</div>
-          </div>
-          <div class="row-detail">
-            <div class="row-label">CPU</div>
-            <div class="row-val">{{ getSizeInfo.worker.cpu }}</div>
-          </div>
-          <div class="row-detail">
-            <div class="row-label">RAM</div>
-            <div class="row-val">{{ getSizeInfo.worker.memory }}G</div>
-          </div>
-          <div class="row-detail">
-            <div class="row-label">Machines</div>
-            <div class="row-val">{{ getSizeInfo.worker.nodeCount }}</div>
-          </div>
-        </template> -->
       </div>
     </div>
     <hr>

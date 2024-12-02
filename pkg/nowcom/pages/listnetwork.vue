@@ -54,22 +54,22 @@
           </template>
           <template #header-right>
             <div class="row">
-              <cButton class="cbtn btn-light block mr-10 ml-10" @click="actionHandler('create')" :disabled="loading">
+              <button class="btn role-secondary mr-10 ml-10" @click="actionHandler('create')" :disabled="loading || disabledUpdate">
                 <span class="fa fa-plus fa-lg mr-5"></span> Create
-              </cButton>
+              </button>
 
-              <cButton class="cbtn btn-primary block" @click="initBulkDelete" :disabled="loading">
+              <button class="btn role-primary block" @click="initBulkDelete" :disabled="loading || disabledUpdate">
                 <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
-              </cButton>      
+              </button>      
             </div>
           </template>
           <template #cell:name="{row}">
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
           </template>
           <template #row-actions="row">
-            <cButton class="cbtn btn-primary" @click="openModal(row.row)" :disabled="loading">
+            <button class="btn role-primary" @click="openModal(row.row)" :disabled="loading || disabledUpdate">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
-            </cButton>
+            </button>
           </template>
         </SortableTable>
       </div>
@@ -79,9 +79,9 @@
       <h2 class="text-label">{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
-            <cButton class="cbtn btn-light" @click="addSubnetSidebar">
+            <button class="btn role-secondary" @click="addSubnetSidebar" :disabled="disabledUpdate">
               <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
-            </cButton> 
+            </button> 
           </div>
         </div>
         <div class="mt-10 mb-10" v-if="subnetResponse">
@@ -98,9 +98,9 @@
             />
           </template>
           <template #row-actions="row">
-            <cButton class="cbtn btn-primary" @click="openModalAction(row.row)" :disabled="loading">
+            <button class="btn role-primary" @click="openModalAction(row.row)" :disabled="loading">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
-            </cButton>
+            </button>
           </template>  
         </SortableTable>
     </SideBar>
@@ -221,7 +221,8 @@ export default {
         subHeader: null,
         nextAvailableSub: {},
         selectedSub: {}
-      }
+      },
+      disabledUpdate: true
     };
   },
   computed: {

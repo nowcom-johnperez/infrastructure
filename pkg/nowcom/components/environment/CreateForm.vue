@@ -4,12 +4,18 @@
       <div class="left-form">
         <h1>Basic</h1>
         <div class="input-container">
-          <label for="environmentName">Name</label>
+          <label for="environmentName">Name <span class="text-danger">*</span></label>
           <input type="text" class="mt-10" name="environmentName" v-model="selected.envName" placeholder="Environment Name" required />
           <span class="info-icon" v-clean-tooltip="'Naming Scheme must be {ENV NAME}-{TEAM}'">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
         </div>
+
+        <div class="mt-15 input-container">
+          <label for="networkType">Namespace <span class="text-danger">*</span></label>
+          <Select :options="namespaceList" v-model="selected.namespace" class="mt-5"/>
+        </div>
+
   
         <div class="mt-15 input-container">
           <label for="size">Size <span class="text-danger">*</span></label>
@@ -33,7 +39,6 @@
           <label for="networkType">Network Type <span class="text-danger">*</span></label>
           <Select :options="networkType" v-model="selected.networkType" class="mt-5"/>
         </div>
-
   
         <div v-if="selected.networkType === 'Isolated'" class="mt-15 input-container">
           <label for="networkType">Network <span class="text-danger">*</span></label>
@@ -100,8 +105,11 @@ import ModalStatus from '../environment/Modal-Status.vue';
 // import SubnetCreate from '../forms/InitialSubnetCreation.vue'
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
-import { harvesterService } from '../../services/api';
+// import { harvesterService } from '../../services/api';
+import { NAMESPACE, CONFIG_MAP } from '@shell/config/types';
 import NodeInfo from './NodeInfo.vue';
+import { getConfig } from '../../config/api';
+const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API } = getConfig()
 export default {
   name: 'EnvironmentCreateForm',
   components: {
@@ -134,7 +142,8 @@ export default {
         enableGithub: false,
         enableKeyvault: false,
         userDataTemplate: null,
-        subnets: []
+        // subnets: [],
+        namespace: ''
       },
       sizes,
       // networkType: [
@@ -145,6 +154,7 @@ export default {
         { label: 'Express', value: 'Express', disabled: false },
         { label: 'Isolated', value: 'Isolated', disabled: true },
       ],
+      namespaceList: []
     }
   },
   computed: {
@@ -170,31 +180,42 @@ export default {
     }
   },
   async fetch() {
-    const configMaps = await harvesterService.getConfigMaps()
-    const userDataOptions = [];
-    const networkDataOptions = [];
+    if (this.$store.getters['management/schemaFor'](NAMESPACE)) {
+      const namespace = await this.$store.dispatch('management/findAll', { type: NAMESPACE })
+      console.log(`namespace`, namespace.map((n) => n.metadata?.name))
+      this.namespaceList = namespace.map((n) => n.metadata?.name)
+    }
 
-    (configMaps.data || []).map((O) => {
-      const cloudTemplate =
-        O.metadata?.labels?.[HCI_ANNOTATIONS.CLOUD_INIT];
+    if (this.$store.getters['cluster/schemaFor'](CONFIG_MAP)) {
+      // const configMaps = await harvesterService.getConfigMaps()
+      const configMaps = await this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP })
+      const userDataOptions = [];
+      const networkDataOptions = [];
 
-      if (cloudTemplate === 'user') {
-        userDataOptions.push({
-          label: O.metadata.name,
-          value: O.data.cloudInit
-        });
-      }
+      (configMaps.data || []).map((O) => {
+        const cloudTemplate =
+          O.metadata?.labels?.[HCI_ANNOTATIONS.CLOUD_INIT];
 
-      if (cloudTemplate === 'network') {
-        networkDataOptions.push({
-          label: O.metadata.name,
-          value: O.data.cloudInit
-        });
-      }
-    });
+        if (cloudTemplate === 'user') {
+          userDataOptions.push({
+            label: O.metadata.name,
+            value: O.data.cloudInit
+          });
+        }
 
-    // console.log(`userDataOptions`, userDataOptions)
-    if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
+        if (cloudTemplate === 'network') {
+          networkDataOptions.push({
+            label: O.metadata.name,
+            value: O.data.cloudInit
+          });
+        }
+      });
+
+      if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
+    }
+
+    const envResponse = await this.$store.dispatch('cluster/findAll', { type: 'stacks' })
+    console.log(`envResponse`, envResponse)
   },
   methods: {
     addSubnet (subnets) {
@@ -202,6 +223,28 @@ export default {
     },
     createEnv () {
       this.savingModalState = true
+
+      const payload = {
+        apiVersion: `${VANGUARD_API}`,
+        kind: "Stack",
+        metadata: {
+          name: '',
+          namespace: 'default',
+          annotations: {
+            team: this.selected.teamName,
+            org: this.selected.orgName,
+            'rancher-uid': '',
+          },
+        },
+        spec: {
+          clusterSize: this.selected.size.toLocaleLowerCase(),
+          networkType: this.selected.networkType.toLocaleLowerCase(),
+          networkPolicy: this.selected.networkType,
+          environmentName: this.selected.envName
+        }
+      };
+
+      console.log(`payload`, payload)
 
       setTimeout(() => {
         this.saving.cluster = true
@@ -211,6 +254,9 @@ export default {
     closeEnv() {
       this.$router.push({
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+        params: {
+          cluster: ENVIRONMENT_CLUSTER
+        }
       })
     }
   },

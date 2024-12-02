@@ -33,7 +33,6 @@ const routes = [
     name: 'default-nowcom-layout',
     meta: {
       product: PRODUCT_NAME,
-      cluster: BLANK_CLUSTER
     },
     children: [
       {
@@ -42,7 +41,6 @@ const routes = [
         component: HomePage,
         meta: {
           product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
         },
       },
       {
@@ -51,7 +49,6 @@ const routes = [
         component: EnvironmentCreatePage,
         meta: {
           product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
         },
       },
       {

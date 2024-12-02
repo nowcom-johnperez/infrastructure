@@ -13,11 +13,11 @@
       <li class="dropdown">
         <a href="#">Infrastructure</a>
         <ul class="dropdown-menu">
-          <li><router-link :to="infraLocation.k8">Kubernetes</router-link></li>
+          <!-- <li><router-link :to="infraLocation.k8">Kubernetes</router-link></li> -->
           <li><router-link :to="infraLocation.network">Network</router-link></li>
           <li><router-link :to="infraLocation.firewall">Firewall</router-link></li>
           <li><router-link :to="infraLocation.dhcp">DHCP</router-link></li>
-          <li><router-link :to="infraLocation.dns">DNS</router-link></li>
+          <!-- <li><router-link :to="infraLocation.dns">DNS</router-link></li> -->
           <li><router-link :to="infraLocation.roadmap">Road Map</router-link></li>
         </ul>
       </li>
@@ -30,7 +30,7 @@
 import { CATALOG } from '@shell/config/types';
 import { getConfig } from '../config/api';
 import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, TRIDENT, BLANK_CLUSTER } from '../config/constants';
-const { CLUSTER } = getConfig()
+const { CLUSTER, ENVIRONMENT_CLUSTER } = getConfig()
 export default {
   name: 'TopNav',
   data() {
@@ -61,7 +61,7 @@ export default {
       return {
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
         params: {
-          cluster: BLANK_CLUSTER
+          cluster: ENVIRONMENT_CLUSTER
         }
       }
     },

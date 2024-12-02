@@ -51,6 +51,8 @@ import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
 import { environmentService } from '../../services/api';
+import { getConfig } from '../../config/api';
+const { ENVIRONMENT_CLUSTER, STACK } = getConfig()
 export default {
   name:       'Environments',
   components: {
@@ -85,7 +87,7 @@ export default {
         name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
         params: {
           product:  PRODUCT_NAME,
-          cluster:  BLANK_CLUSTER,
+          cluster:  ENVIRONMENT_CLUSTER,
         },
       };
     },
@@ -108,7 +110,7 @@ export default {
 
   async fetch() {
     const envResponse = await environmentService.getAll()
-    // const envResponse = await this.$store.dispatch('management/find', { type: 'stacks' })
+    // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
     const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
     this.environmentList = envResponse.map((e) => {
       const randomNumber = Math.floor(Math.random() * 3);

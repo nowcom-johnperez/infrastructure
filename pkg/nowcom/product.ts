@@ -3,7 +3,8 @@
 // import { STATE, NAME as NAME_COL, AGE } from '@shell/config/table-headers';
 // import { IPlugin } from '@rancher/shell/core/types';
 import { PRODUCT_NAME, NODE, LIST_NETWORK, FORMS, BLANK_CLUSTER, WISH_PAGE, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, HOME } from './config/constants';
-
+import { getConfig } from './config/api'
+const { ENVIRONMENT_CLUSTER } = getConfig()
 export function init($plugin: any, store: any) {
   const {
     product,
@@ -23,7 +24,7 @@ export function init($plugin: any, store: any) {
       name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       params: {
         product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER,
+        cluster: ENVIRONMENT_CLUSTER,
         resource: NODE
       }
     }
@@ -49,7 +50,7 @@ export function init($plugin: any, store: any) {
         name: `${PRODUCT_NAME}-c-cluster-${v.name}`,
         params: {
           product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
+          // cluster: BLANK_CLUSTER
         }
       }
     })

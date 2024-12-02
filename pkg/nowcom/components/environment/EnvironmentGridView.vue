@@ -1,11 +1,21 @@
 <template>
   <div>
     <div v-if="!loading">
-      <div class="environment-grid">
-        <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
-      </div>
+      <template v-if="list.length > 0">
+        <div class="environment-grid">
+          <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
+        </div>
 
-      <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
+        <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
+      </template>
+      <template>
+        <Banner
+          data-testid="no-data-found"
+          color="error"
+        >
+          <p>No environment found</p>
+        </Banner>
+      </template>
     </div>
 
     <div v-if="loading">Loading Please wait...</div>
@@ -17,7 +27,9 @@
 import EnvironmentView from '../environment/EnvironmentView.vue';
 import EnvironmentCard from './EnvironmentCard.vue';
 import GridPagination from '../common/GridPagination.vue';
+import { Banner } from '@components/Banner';
 import { EventBus } from '../../config/event-bus';
+
 export default {
   name: 'EnvironmentGridView',
   props: {
@@ -32,7 +44,8 @@ export default {
   },
   components: {
     EnvironmentCard,
-    GridPagination
+    GridPagination,
+    Banner
   },
   data() {
     return {
