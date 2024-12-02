@@ -43,7 +43,6 @@ export const getConfig = () => {
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
       config.CLUSTER = 'c-m-hx52gvl6'
-      config.API = 'vanguard.tridentcloud.dev'
       config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-cybraindev01.hankeyinvestments.com/'
@@ -53,7 +52,6 @@ export const getConfig = () => {
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
       // config.CLUSTER = 'c-m-hx52gvl6'
-      config.API = 'vanguard.tridentcloud.dev'
       config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
       // config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
     }

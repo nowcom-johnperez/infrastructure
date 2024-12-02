@@ -1,6 +1,6 @@
 import { INSTANCE_V4, BASE_URL_HOST } from "../../config/axios";
 import { getConfig } from "../../config/api";
-const { TRIDENT_API, API, ENVIRONMENT_CLUSTER, API_VERSION } = getConfig();
+const { TRIDENT_API, API, ENVIRONMENT_CLUSTER, VANGUARD_API } = getConfig();
 export const environmentService = {
     // getAll: async () => {
     //     // const res: any =  await INSTANCE_V4.get(`/apis/trident.dev/${API_VERSION}/namespaces/default/createenvs`)
@@ -8,7 +8,12 @@ export const environmentService = {
     //     return res.data.items
     // }
     getAll: async () => {
-        const res: any =  await BASE_URL_HOST.get(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${API}/v1alpha1/stacks`)
+        const res: any =  await BASE_URL_HOST.get(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/stacks`)
         return res.data.items
+    },
+
+    create: async (payload: any) => {
+        const res: any =  await BASE_URL_HOST.post(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/namespaces/vanguard-system/stacks`, payload)
+        return res.data
     }
 }

@@ -105,7 +105,7 @@ import ModalStatus from '../environment/Modal-Status.vue';
 // import SubnetCreate from '../forms/InitialSubnetCreation.vue'
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
-// import { harvesterService } from '../../services/api';
+import { environmentService } from '../../services/api';
 import { NAMESPACE, CONFIG_MAP } from '@shell/config/types';
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
@@ -232,7 +232,7 @@ export default {
         kind: "Stack",
         metadata: {
           name: this.selected.envName,
-          namespace: 'default',
+          namespace: 'vanguard-system',
           annotations: {
             [`${BREACHER_API}/team`]: this.selected.teamName,
             [`${BREACHER_API}/org`]: this.selected.orgName,
@@ -248,11 +248,12 @@ export default {
         }
       };
 
-      await this.$store.dispatch('cluster/request', {
-        url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
-        method: 'post',
-        data:   payload,
-      });
+      await environmentService.create(payload)
+      // await this.$store.dispatch('cluster/request', {
+      //   url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
+      //   method: 'post',
+      //   data:   payload,
+      // });
 
       setTimeout(() => {
         this.saving.cluster = true

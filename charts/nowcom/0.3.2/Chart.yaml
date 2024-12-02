@@ -7,7 +7,6 @@ annotations:
   catalog.cattle.io/rancher-version: '>= 2.8.0'
   catalog.cattle.io/scope: management
   catalog.cattle.io/ui-component: plugins
-  catalog.cattle.io/ui-extensions-version: '>= 2.0.1'
 apiVersion: v2
 appVersion: 0.3.2
 description: Nowcom Infrastructure Network Automation
