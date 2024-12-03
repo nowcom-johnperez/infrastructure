@@ -11,11 +11,10 @@
           </span>
         </div>
 
-        <div class="mt-15 input-container">
+        <!-- <div class="mt-15 input-container">
           <label for="networkType">Namespace <span class="text-danger">*</span></label>
           <Select :options="namespaceList" v-model="selected.namespace" class="mt-5"/>
-        </div>
-
+        </div> -->
   
         <div class="mt-15 input-container">
           <label for="size">Size <span class="text-danger">*</span></label>
@@ -38,6 +37,11 @@
         <div class="mt-15 input-container">
           <label for="networkType">Network Type <span class="text-danger">*</span></label>
           <Select :options="networkType" v-model="selected.networkType" class="mt-5"/>
+        </div>
+  
+        <div class="mt-15 input-container">
+          <label for="networkType">Network Policy <span class="text-danger">*</span></label>
+          <Select :options="networkPolicy" v-model="selected.networkPolicy" class="mt-5"/>
         </div>
   
         <div v-if="selected.networkType === 'Isolated'" class="mt-15 input-container">
@@ -137,7 +141,8 @@ export default {
         size: 'Small',
         orgName: '',
         teamName: '',
-        networkType: 'Express',
+        networkType: 'express',
+        networkPolicy: 'standard-dev',
         network: null,
         enableGithub: false,
         enableKeyvault: false,
@@ -146,13 +151,12 @@ export default {
         namespace: ''
       },
       sizes,
-      // networkType: [
-      //   'Express',
-      //   'Isolated',
-      // ],
       networkType: [
-        { label: 'Express', value: 'Express', disabled: false },
-        { label: 'Isolated', value: 'Isolated', disabled: true },
+        { label: 'Express', value: 'express', disabled: false },
+        { label: 'Isolated', value: 'isolated', disabled: true },
+      ],
+      networkPolicy: [
+        { label: 'Standard Dev', value: 'standard-dev', disabled: false },
       ],
       namespaceList: []
     }
