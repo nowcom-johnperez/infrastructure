@@ -67,7 +67,7 @@
           </span>
         </div>
   
-        <div class="team-header mt-15">
+        <div class="team-header input-container mt-15">
           <div>
             <h3>Team Access</h3>
           </div>
@@ -76,32 +76,34 @@
           </div>
         </div>
 
-        <div v-for="(role, ctr) in selected.owners" :key="`${ctr}_owners`" class="row-detail">
-          <div class="row-label">Owner</div>
-          <div class="row-val">
+        <div v-for="(role, ctr) in selected.owners" :key="`${ctr}_owners`" class="row-detail input-container">
+          <div class="row-label">
             <Principal 
               :key="role"
               :value="role" />
+          </div>
+          <div class="row-val">
             <button v-if="selected.owners.length > 1" type="button" @click="removeOwner(ctr)" class="btn btn-danger btn-sm">remove</button>
           </div>
         </div>
 
-        <div v-for="(role, ctr) in selected.members" :key="`${ctr}_members`" class="row-detail">
-          <div class="row-label">Member</div>
-          <div class="row-val">
+        <div v-for="(role, ctr) in selected.members" :key="`${ctr}_members`" class="row-detail input-container">
+          <div class="row-label">
             <Principal 
               :key="role"
               :value="role" />
+          </div>
+          <div class="row-val">
             <button type="button" @click="removeMember(ctr)" class="btn btn-danger btn-sm">remove</button>
           </div>
         </div>
 
-        <div class="checkbox-content mt-15">
+        <div v-if="false" class="checkbox-content mt-15">
           <input type="checkbox" id="githubRepo" v-model="selected.enableGithub" />
           <label for="githubRepo">Create New Github Repo</label>
         </div>
 
-        <div class="checkbox-content mt-15">
+        <div v-if="false" class="checkbox-content mt-15">
           <input type="checkbox" id="keyvaultAzure" v-model="selected.enableKeyvault" />
           <label for="keyvaultAzure">Create New Azure Keyvault</label>
         </div>
@@ -309,8 +311,8 @@ export default {
             [`${BREACHER_API}/team`]: this.selected.teamName,
             [`${BREACHER_API}/org`]: this.selected.orgName,
             [`${BREACHER_API}/rancher-uid`]: this.user.id,
-            [`${BREACHER_API}/owners`]: this.selected.owners,
-            [`${BREACHER_API}/members`]: this.selected.members,
+            [`${BREACHER_API}/owners`]: JSON.stringify(this.selected.owners),
+            [`${BREACHER_API}/members`]: JSON.stringify(this.selected.members),
           },
         },
         spec: {
