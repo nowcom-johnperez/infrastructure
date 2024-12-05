@@ -69,7 +69,16 @@
   
         <div class="input-container mt-15">
           <label for="teamName">Team Name</label>
-          <input type="text" class="mt-10" name="teamName" v-model="selected.teamName" placeholder="Team Name" required />
+          <!-- <input type="text" class="mt-10" name="teamName" v-model="selected.teamName" placeholder="Team Name" required /> -->
+          <!-- <SelectPrincipal
+            v-focus
+            class="mb-20"
+            :retain-selection="true"
+            data-testid="cluster-member-select"
+            @add="onAdd"
+          /> -->
+          <button type="button" class="btn role-primary btn-sm" @click="addMember">Add</button>
+          <pre>{{ bindings }}</pre>
           <span class="info-icon" v-clean-tooltip="'Team Name'">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
@@ -99,6 +108,7 @@
     </div>
 
     <ModalStatus header-label="Create Status" :status="saving" :saving-modal-state="savingModalState" @onClose="closeEnv"/>
+    <ModalRoles :saving-modal-state="openModalRole" @onClose="openModalRole = false" :onAdd="onAddMember" />
   </div>
 </template>
 
@@ -106,13 +116,15 @@
 import Select from '@shell/components/form/Select.vue';
 import CardSelect from '../common/CardSelection.vue';
 import ModalStatus from '../environment/Modal-Status.vue';
-// import SubnetCreate from '../forms/InitialSubnetCreation.vue'
+import ModalRoles from '../environment/Modal-Roles.vue';
+import SelectPrincipal from '@shell/components/auth/SelectPrincipal';
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { environmentService } from '../../services/api';
-import { NAMESPACE, CONFIG_MAP } from '@shell/config/types';
+import { NAMESPACE, CONFIG_MAP, MANAGEMENT } from '@shell/config/types';
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
+import { bind } from 'lodash';
 const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API } = getConfig()
 export default {
   name: 'EnvironmentCreateForm',
@@ -120,13 +132,15 @@ export default {
     Select,
     CardSelect,
     ModalStatus,
-    // SubnetCreate
-    NodeInfo
+    SelectPrincipal,
+    NodeInfo,
+    ModalRoles
   },
   data() {
     const sizes = ENVIRONMENT_SIZES;
     return {
       savingModalState: false,
+      openModalRole: false,
       saving: {
         networks: false,
         firewall: false,
@@ -158,7 +172,8 @@ export default {
       networkPolicy: [
         { label: 'Standard Dev', value: 'standard-dev', disabled: false },
       ],
-      namespaceList: []
+      namespaceList: [],
+      bindings: []
     }
   },
   computed: {
@@ -189,7 +204,7 @@ export default {
   async fetch() {
     if (this.$store.getters['management/schemaFor'](NAMESPACE)) {
       const namespace = await this.$store.dispatch('management/findAll', { type: NAMESPACE })
-      console.log(`namespace`, namespace.map((n) => n.metadata?.name))
+      // console.log(`namespace`, namespace.map((n) => n.metadata?.name))
       this.namespaceList = namespace.map((n) => n.metadata?.name)
     }
 
@@ -221,10 +236,19 @@ export default {
       if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
     }
 
-    const envResponse = await this.$store.dispatch('cluster/findAll', { type: 'stacks' })
-    console.log(`envResponse`, envResponse)
+    // const envResponse = await this.$store.dispatch('cluster/findAll', { type: 'stacks' })
+    // console.log(`envResponse`, envResponse)
+    await this.$store.dispatch('management/findAll', { type: MANAGEMENT.USER })
   },
   methods: {
+    async addMember() {
+      this.openModalRole = true
+    },
+
+    onAddMember(bindings) {
+      this.$set(this, 'bindings', [...this.bindings, ...bindings]);
+    },
+
     addSubnet (subnets) {
       this.selected.subnets = subnets
     },
@@ -252,7 +276,8 @@ export default {
         }
       };
 
-      await environmentService.create(payload)
+      // await environmentService.create(payload)
+      console.log(`payload`, payload)
       // await this.$store.dispatch('cluster/request', {
       //   url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
       //   method: 'post',

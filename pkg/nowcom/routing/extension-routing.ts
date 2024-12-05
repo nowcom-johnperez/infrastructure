@@ -6,6 +6,7 @@ import ViewNamespacedResource from '@shell/pages/c/_cluster/_product/_resource/_
 
 import NowcomLayout from '../layouts/NowcomLayout.vue';
 import HomePage from '../pages/home.vue';
+import LandingPage from '../pages/landing.vue';
 import ListNetwork from '../pages/listnetwork.vue';
 import CreateNetwork from '../pages/createnetwork.vue';
 import RoadMap from '../pages/road-map.vue';
@@ -35,6 +36,14 @@ const routes = [
       product: PRODUCT_NAME,
     },
     children: [
+      {
+        name: `${PRODUCT_NAME}-c-cluster-landing`,
+        path: `landing`,
+        component: LandingPage,
+        meta: {
+          product: PRODUCT_NAME,
+        },
+      },
       {
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
         path: `${HOME}`,

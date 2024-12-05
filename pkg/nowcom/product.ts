@@ -20,6 +20,14 @@ export function init($plugin: any, store: any) {
     // removable: false,
     showClusterSwitcher: false,
     weight: 100,
+    // to: {
+    //   name: `${PRODUCT_NAME}-c-cluster-landing`,
+    //   params: {
+    //     product: PRODUCT_NAME,
+    //     cluster: '_',
+    //     resource: NODE
+    //   }
+    // }
     to: {
       name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       params: {
