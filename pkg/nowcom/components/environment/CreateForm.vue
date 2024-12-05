@@ -67,21 +67,33 @@
           </span>
         </div>
   
-        <div class="input-container mt-15">
-          <label for="teamName">Team Name</label>
-          <!-- <input type="text" class="mt-10" name="teamName" v-model="selected.teamName" placeholder="Team Name" required /> -->
-          <!-- <SelectPrincipal
-            v-focus
-            class="mb-20"
-            :retain-selection="true"
-            data-testid="cluster-member-select"
-            @add="onAdd"
-          /> -->
-          <button type="button" class="btn role-primary btn-sm" @click="addMember">Add</button>
-          <pre>{{ bindings }}</pre>
-          <span class="info-icon" v-clean-tooltip="'Team Name'">
-            <i class="fa fa-info-circle" aria-hidden="true"></i>
-          </span>
+        <div class="team-header mt-15">
+          <div>
+            <h3>Team Access</h3>
+          </div>
+          <div>
+            <button type="button" class="btn role-primary btn-sm ml-auto" @click="addMember">Add</button>
+          </div>
+        </div>
+
+        <div v-for="(role, ctr) in selected.owners" :key="`${ctr}_owners`" class="row-detail">
+          <div class="row-label">Owner</div>
+          <div class="row-val">
+            <Principal 
+              :key="role"
+              :value="role" />
+            <button v-if="selected.owners.length > 1" type="button" @click="removeOwner(ctr)" class="btn btn-danger btn-sm">remove</button>
+          </div>
+        </div>
+
+        <div v-for="(role, ctr) in selected.members" :key="`${ctr}_members`" class="row-detail">
+          <div class="row-label">Member</div>
+          <div class="row-val">
+            <Principal 
+              :key="role"
+              :value="role" />
+            <button type="button" @click="removeMember(ctr)" class="btn btn-danger btn-sm">remove</button>
+          </div>
         </div>
 
         <div class="checkbox-content mt-15">
@@ -124,7 +136,6 @@ import { environmentService } from '../../services/api';
 import { NAMESPACE, CONFIG_MAP, MANAGEMENT } from '@shell/config/types';
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
-import { bind } from 'lodash';
 const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API } = getConfig()
 export default {
   name: 'EnvironmentCreateForm',
@@ -162,7 +173,9 @@ export default {
         enableKeyvault: false,
         userDataTemplate: null,
         // subnets: [],
-        namespace: ''
+        namespace: '',
+        owners: [],
+        members: []
       },
       sizes,
       networkType: [
@@ -173,7 +186,7 @@ export default {
         { label: 'Standard Dev', value: 'standard-dev', disabled: false },
       ],
       namespaceList: [],
-      bindings: []
+      bindings: [],
     }
   },
   computed: {
@@ -238,15 +251,46 @@ export default {
 
     // const envResponse = await this.$store.dispatch('cluster/findAll', { type: 'stacks' })
     // console.log(`envResponse`, envResponse)
-    await this.$store.dispatch('management/findAll', { type: MANAGEMENT.USER })
+    // await this.$store.dispatch('management/findAll', { type: MANAGEMENT.USER })
+    this.bindings.push({
+      roleTemplateId: 'cluster-owner',
+      // userPrincipalId: this.user.principalIds[this.user.principalIds.length - 1]
+      userPrincipalId: this.user.principalIds[0]
+    })
+
+    this.filterBindings()
   },
   methods: {
+    filterBindings() {
+      const bindings = [...this.bindings]
+      this.selected.owners = bindings.filter((role) => role.roleTemplateId === 'cluster-owner').map((role) => role?.userPrincipalId || role?.groupPrincipalId)
+      this.selected.members = bindings.filter((role) => role.roleTemplateId !== 'cluster-owner').map((role) => role?.userPrincipalId || role?.groupPrincipalId)
+    },
+    removeMember(index) {
+      const userId = this.selected.members[index]
+      const bindingIndex = this.bindings.findIndex((r) => r.roleTemplateId !== 'cluster-owner' && (r.userPrincipalId === userId || r.groupPrincipalId === userId))
+      if (bindingIndex >= 0) {
+        this.bindings.splice(bindingIndex, 1)
+      }
+      this.filterBindings()
+    },
+    removeOwner(index) {
+      const userId = this.selected.members[index]
+      const bindingIndex = this.bindings.findIndex((r) => r.roleTemplateId === 'cluster-owner' && (r.userPrincipalId === userId || r.groupPrincipalId === userId))
+
+      if (bindingIndex >= 0) {
+        this.bindings.splice(bindingIndex, 1)
+      }
+      this.filterBindings()
+    },
     async addMember() {
       this.openModalRole = true
     },
 
     onAddMember(bindings) {
       this.$set(this, 'bindings', [...this.bindings, ...bindings]);
+      // process bindings
+      this.filterBindings()
     },
 
     addSubnet (subnets) {
@@ -265,6 +309,8 @@ export default {
             [`${BREACHER_API}/team`]: this.selected.teamName,
             [`${BREACHER_API}/org`]: this.selected.orgName,
             [`${BREACHER_API}/rancher-uid`]: this.user.id,
+            [`${BREACHER_API}/owners`]: this.selected.owners,
+            [`${BREACHER_API}/members`]: this.selected.members,
           },
         },
         spec: {
@@ -276,8 +322,7 @@ export default {
         }
       };
 
-      // await environmentService.create(payload)
-      console.log(`payload`, payload)
+      await environmentService.create(payload)
       // await this.$store.dispatch('cluster/request', {
       //   url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
       //   method: 'post',
@@ -302,6 +347,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .team-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
   .input-container {
     width: 470px !important
   }
