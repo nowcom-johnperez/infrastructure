@@ -52,8 +52,8 @@ export const getConfig = () => {
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
       // config.CLUSTER = 'c-m-hx52gvl6'
-      // config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
-      config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
+      config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
+      // config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
     }
   }
 
