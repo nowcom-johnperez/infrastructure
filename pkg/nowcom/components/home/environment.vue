@@ -52,7 +52,7 @@ import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
 import { environmentService } from '../../services/api';
 import { getConfig } from '../../config/api';
-const { ENVIRONMENT_CLUSTER, STACK } = getConfig()
+const { ENVIRONMENT_CLUSTER, STACK, BREACHER_API } = getConfig()
 export default {
   name:       'Environments',
   components: {
@@ -77,6 +77,7 @@ export default {
 
   computed: {
     ...mapState(['managementReady']),
+
     canCreateCluster() {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
 
@@ -99,11 +100,11 @@ export default {
       } else {
         const searchTerm = this.searchQuery.trim().toLowerCase();
         return this.environmentList.filter(app => {
-          return (app.name.toLowerCase().includes(searchTerm) ||
-            app.status.toLowerCase().includes(searchTerm) ||
-            app.size.toLowerCase().includes(searchTerm) ||
-            app.firewallPolicy.toLowerCase().includes(searchTerm) ||
-            app.dns.toLowerCase().includes(searchTerm))
+          return (app.spec.environmentName.toLowerCase().includes(searchTerm) ||
+            app.spec.clusterSize.toLowerCase().includes(searchTerm) ||
+            app.spec.networkType.toLowerCase().includes(searchTerm) ||
+            app.metadata?.annotations?.[`${BREACHER_API}/org`].toLowerCase().includes(searchTerm) ||
+            app.metadata?.annotations?.[`${BREACHER_API}/team`].toLowerCase().includes(searchTerm))
         });
       }
     }

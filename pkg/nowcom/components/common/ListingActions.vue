@@ -11,6 +11,7 @@
         to="#"
         class="btn btn-sm role-secondary mr-5"
         data-testid="cluster-delete-button"
+        v-if="false"
       >
         <i class="fa fa-trash mr-5"></i>
         {{ t('environment.delete') }}
