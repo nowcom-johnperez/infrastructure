@@ -42,13 +42,13 @@ export const getConfig = () => {
     } else if (hostname.includes('forge.tridentcloud')) {
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       // config.RANCHER_BEARERTOKEN = 'token-vqqj9:t588zzlrxv58hfcjgmqf7msgd4kk96czchnprrznsfbv9c2k8xkg7d'
-      config.RANCHER_BEARERTOKEN = 'token-5dxcm:q269g9z9rwfqp26gcxkc8scpns9xtcg67h65294kzkj9fp5lxj7wh7'
+      config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm'
       config.CLUSTER = 'c-m-hx52gvl6'
       config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
     } else {
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
-      config.RANCHER_BEARERTOKEN = 'token-5dxcm:q269g9z9rwfqp26gcxkc8scpns9xtcg67h65294kzkj9fp5lxj7wh7' // no-scope
-      // config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
+      // config.RANCHER_BEARERTOKEN = 'token-5dxcm:q269g9z9rwfqp26gcxkc8scpns9xtcg67h65294kzkj9fp5lxj7wh7' // no-scope
+      config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
       config.CLUSTER = 'c-m-hx52gvl6'
       config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
       // config.ENVIRONMENT_CLUSTER = 'c-m-sdtmhjdg'
