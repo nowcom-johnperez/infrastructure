@@ -1,6 +1,6 @@
 <template>
   <div class="status-presentation" >
-    <p class="text-lg mb-5">Status</p>
+    <p v-if="showLabel" class="text-lg mb-5">Status</p>
     <div class="usage">
       <Bar
       :percentage="100"
@@ -20,7 +20,7 @@
 <script>
 import Bar from '@shell/components/graph/Bar';
 export default {
-  name: 'NodeInfo',
+  name: 'StatusInfo',
   props: {
     statuses: {
       type: Object,
@@ -29,6 +29,10 @@ export default {
     showUsage: {
       type: Boolean,
       default: false
+    },
+    showLabel: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -36,13 +40,13 @@ export default {
   },
   computed: {
     statusTooltip() {
-      return `
-        <span class="${this.getTextStatusColor(this.statuses.network)}">Network</span> <br />
-        <span class="${this.getTextStatusColor(this.statuses.networkPolicy)}">Network policy</span> <br />
-        <span class="${this.getTextStatusColor(this.statuses.clusterCreation)}">Cluster creation</span> <br />
-        <span class="${this.getTextStatusColor(this.statuses.certificateServices)}">Certficate services</span> <br />
-        <span class="${this.getTextStatusColor(this.statuses.dns)}">DNS</span>
-      `
+      let tooltip = ''
+      if (this.statuses.network) tooltip += `<span class="${this.getTextStatusColor(this.statuses.network)}">Network</span> <br />`
+      if (this.statuses.networkPolicy) tooltip += `<span class="${this.getTextStatusColor(this.statuses.networkPolicy)}">Network Policy</span> <br />`
+      if (this.statuses.clusterCreation) tooltip += `<span class="${this.getTextStatusColor(this.statuses.clusterCreation)}">Cluster creation</span> <br />`
+      if (this.statuses.certificateServices) tooltip += `<span class="${this.getTextStatusColor(this.statuses.certificateServices)}">Certificate services</span> <br />`
+      if (this.statuses.dns) tooltip += `<span class="${this.getTextStatusColor(this.statuses.dns)}">DNS</span> <br />`
+      return tooltip
     },
 
     statusPercentages() {

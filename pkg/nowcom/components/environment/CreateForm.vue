@@ -10,6 +10,7 @@
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
         </div>
+        <span v-if="errors.envName" class="text-danger">{{ errors.envName }}</span>
 
         <!-- <div class="mt-15 input-container">
           <label for="networkType">Namespace <span class="text-danger">*</span></label>
@@ -60,16 +61,26 @@
       <div class="right-form">
         <h1>Additional Information</h1>
         <div class="input-container mt-15">
-          <label for="orgName">Organization Name</label>
+          <label for="orgName">Organization Name <span class="text-danger">*</span></label>
           <input type="text" class="mt-10" name="orgName" v-model="selected.orgName" placeholder="Organization Name" required />
           <span class="info-icon" v-clean-tooltip="'Organization Name'">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
           </span>
         </div>
+        <span v-if="errors.orgName" class="text-danger">{{ errors.orgName }}</span>
+  
+        <div class="input-container mt-15">
+          <label for="orgName">Team Name <span class="text-danger">*</span></label>
+          <input type="text" class="mt-10" name="orgName" v-model="selected.teamName" placeholder="Team Name" required />
+          <span class="info-icon" v-clean-tooltip="'Team Name'">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </span>
+        </div>
+        <span v-if="errors.teamName" class="text-danger">{{ errors.teamName }}</span>
   
         <div class="team-header input-container mt-15">
           <div>
-            <h3>Team Access</h3>
+            <h1>Team Access</h1>
           </div>
           <div>
             <button type="button" class="btn role-primary btn-sm ml-auto" @click="addMember">Add</button>
@@ -121,7 +132,7 @@
       </div>
     </div>
 
-    <ModalStatus header-label="Create Status" :status="saving" :saving-modal-state="savingModalState" @onClose="closeEnv"/>
+    <ModalStatus v-if="savingModalState" header-label="Status" :environment-id="saving.envId" :saving-modal-state="savingModalState" @onClose="closeEnv"/>
     <ModalRoles :saving-modal-state="openModalRole" @onClose="openModalRole = false" :onAdd="onAddMember" />
   </div>
 </template>
@@ -136,6 +147,7 @@ import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { environmentService } from '../../services/api';
 import { NAMESPACE, CONFIG_MAP, MANAGEMENT } from '@shell/config/types';
+import { validateString } from '../../services/helpers/utils'
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
 const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API } = getConfig()
@@ -155,14 +167,9 @@ export default {
       savingModalState: false,
       openModalRole: false,
       saving: {
-        networks: false,
-        firewall: false,
-        git: false,
-        keyvaults: false,
-        cluster: false,
-        services: false,
-        certDNS: false
+        envId: ''
       },
+      errors: {},
       selected: {
         envName: '',
         size: 'Small',
@@ -263,11 +270,22 @@ export default {
     this.filterBindings()
   },
   methods: {
+    validateForm() {
+      this.errors = {}
+      if (!this.selected.envName) this.errors.envName = 'Environment Name is required'
+      if (this.selected.envName && !validateString(this.selected.envName)) this.errors.envName = 'Environment Name is not allowed. avoid space and other special characters'
+      if (!this.selected.orgName) this.errors.orgName = 'Organization Name required'
+      if (this.selected.orgName && !validateString(this.selected.orgName)) this.errors.orgName = 'Organization Name is not allowed. avoid space and other special characters'
+      if (!this.selected.teamName) this.errors.teamName = 'Team Name required'
+      if (this.selected.teamName && !validateString(this.selected.teamName)) this.errors.teamName = 'Team Name is not allowed. avoid space and other special characters'
+      return Object.keys(this.errors).length === 0
+    },
     filterBindings() {
       const bindings = [...this.bindings]
       this.selected.owners = bindings.filter((role) => role.roleTemplateId === 'cluster-owner').map((role) => role?.userPrincipalId || role?.groupPrincipalId)
       this.selected.members = bindings.filter((role) => role.roleTemplateId !== 'cluster-owner').map((role) => role?.userPrincipalId || role?.groupPrincipalId)
     },
+
     removeMember(index) {
       const userId = this.selected.members[index]
       const bindingIndex = this.bindings.findIndex((r) => r.roleTemplateId !== 'cluster-owner' && (r.userPrincipalId === userId || r.groupPrincipalId === userId))
@@ -276,6 +294,7 @@ export default {
       }
       this.filterBindings()
     },
+
     removeOwner(index) {
       const userId = this.selected.members[index]
       const bindingIndex = this.bindings.findIndex((r) => r.roleTemplateId === 'cluster-owner' && (r.userPrincipalId === userId || r.groupPrincipalId === userId))
@@ -285,6 +304,7 @@ export default {
       }
       this.filterBindings()
     },
+
     async addMember() {
       this.openModalRole = true
     },
@@ -295,17 +315,15 @@ export default {
       this.filterBindings()
     },
 
-    addSubnet (subnets) {
-      this.selected.subnets = subnets
-    },
     async createEnv () {
-      this.savingModalState = true
-
+      const isValid = this.validateForm()
+      if (!isValid) return
+      const clusterName = `${this.selected.envName}-${this.selected.teamName}`
       const payload = {
         apiVersion: `${VANGUARD_API}`,
         kind: "Stack",
         metadata: {
-          name: this.selected.envName,
+          name: clusterName,
           namespace: 'vanguard-system',
           annotations: {
             [`${BREACHER_API}/team`]: this.selected.teamName,
@@ -318,23 +336,20 @@ export default {
         spec: {
           clusterSize: this.selected.size.toLocaleLowerCase(),
           networkType: this.selected.networkType.toLocaleLowerCase(),
-          // networkPolicy: this.selected.networkType,
-          networkPolicy: 'standard-dev',
-          environmentName: this.selected.envName
+          networkPolicy: this.selected.networkPolicy,
+          environmentName: clusterName
         }
       };
 
       await environmentService.create(payload)
+
+      this.savingModalState = true
+      this.saving.envId = clusterName
       // await this.$store.dispatch('cluster/request', {
       //   url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
       //   method: 'post',
       //   data:   payload,
       // });
-
-      setTimeout(() => {
-        this.saving.cluster = true
-        this.saving.networks = true
-      }, 1500)
     },
     closeEnv() {
       this.$router.push({

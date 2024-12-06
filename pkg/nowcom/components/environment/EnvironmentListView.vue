@@ -13,52 +13,41 @@
     <template #col:status="{row}">
       <td>
         <span @click="checkStatus(row)">
-          <BadgeState
+          <!-- <BadgeState
           :label="row.status"
           :color="badgeColor(row.status)"
-          />
+          /> -->
+          <EnvironmentStatus :show-label="false" :statuses="row.statuses" />
         </span>
       </td>
     </template>
     <template #col:name="{ row }">
       <td>
         <div class="list-cluster-name">
-          <a href="#" @click.prevent="viewItem(row)">{{ row.name }}</a>
+          <a href="#" @click.prevent="viewItem(row)">{{ row.metadata?.name }}</a>
         </div>
       </td>
     </template>
-    <template #col:cpu="{ row }">
+    <template #col:size="{ row }">
       <td>
-        <tr>
-          <td align="left">
-            {{ row.sizeInfo.master.cpu }} / {{ row.sizeInfo.master.memory }}G
-          </td>
-        </tr>
-        <tr v-if="row.sizeInfo.worker">
-          <td  align="left">
-            {{ row.sizeInfo.worker.cpu }} / {{ row.sizeInfo.worker.memory }}G
-          </td>
-        </tr>
+        {{ row.spec?.clusterSize }}
       </td>
     </template>
-    <template #col:role="{ row }">
+    <template #col:networkPolicy="{ row }">
       <td>
-        <tr>
-          <td align="left">
-            {{ row.sizeInfo.master.role }}
-          </td>
-        </tr>
-        <tr v-if="row.sizeInfo.worker">
-          <td  align="left">
-            {{ row.sizeInfo.worker.role }}
-          </td>
-        </tr>
+        {{ row.spec?.networkPolicy }}
+      </td>
+    </template>
+    <template #col:networkType="{ row }">
+      <td>
+        {{ row.spec?.networkType }}
       </td>
     </template>
   </SortableTable>
 </template>
 
 <script>
+import EnvironmentStatus from '../environment/EnvironmentStatus.vue';
 import EnvironmentView from '../environment/EnvironmentView.vue';
 import SortableTable from '@shell/components/SortableTable';
 import { BadgeState } from '@components/BadgeState';
@@ -81,7 +70,8 @@ export default {
   },
   components: {
     SortableTable,
-    BadgeState
+    BadgeState,
+    EnvironmentStatus
   },
   methods: {
     badgeColor (status) {

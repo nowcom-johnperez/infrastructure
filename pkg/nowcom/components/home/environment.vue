@@ -66,6 +66,7 @@ export default {
 
   data() {
     return {
+      intervalId: null,
       statusModalState: false,
       selectedEnv: null,
       searchQuery: '',
@@ -108,32 +109,47 @@ export default {
     }
   },
 
-  async fetch() {
-    const envResponse = await environmentService.getAll()
-    // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
-    const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
-    this.environmentList = envResponse.map((e) => {
-      const randomNumber = Math.floor(Math.random() * 3);
-      const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
-      return {
-        ...e,
-        clusterId: clusters[randomNumber],
-        dns: '10.51.2.3',
-        sizeInfo,
-        statuses: {
-          network: this.getRandomStatus(),
-          networkPolicy: this.getRandomStatus(),
-          clusterCreation: this.getRandomStatus(),
-          certificateServices: this.getRandomStatus(),
-          dns: this.getRandomStatus()
-        }
-      }
-    })
-
-    console.log(`environment`, this.environmentList)
-  },
-
   methods: {
+    initIntervalFetch() {
+      if (!this.intervalId) {
+        this.intervalId = setInterval(this.fetchEnvironment, 8000); // Adjust interval time as needed
+      }
+    },
+    stopInterval() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId)
+        this.intervalId = null
+      }
+    },
+    async fetchEnvironment() {
+      const envResponse = await environmentService.getAll()
+      // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
+      const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
+      this.environmentList = envResponse.map((e) => {
+        const randomNumber = Math.floor(Math.random() * 3);
+        const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
+        return {
+          ...e,
+          clusterId: clusters[randomNumber],
+          dns: '10.51.2.3',
+          sizeInfo,
+          statuses: {
+            network: this.getStatus(e.status?.conditions, 'NetworkReady'),
+            networkPolicy: this.getStatus(e.status?.conditions, 'NetworkPolicyReady'),
+            clusterCreation: this.getStatus(e.status?.conditions, 'ClusterReady'),
+            // certificateServices: this.getRandomStatus(),
+            // dns: this.getRandomStatus()
+          }
+        }
+      })
+    },
+    getStatus(conditions, type) {
+      if (!type || !conditions) return 'inactive'
+      const condition = conditions.find((c) => c.type === type)
+      if (condition.status === "True") return 'active'
+      else if (condition.status === "Unknown") return 'warning'
+      return 'inactive'
+    },
     getRandomStatus() {
       const statuses = [
         { value: 'active', weight: 0.6 },  // 60% chance
@@ -162,10 +178,21 @@ export default {
     }
   },
   mounted() {
+    EventBus.$on('load-environment', (isStop) => {
+      if (isStop) {
+        this.stopInterval()
+      } else {
+        this.initIntervalFetch()
+      }
+    })
     EventBus.$on('env-modal-status', this.openModalStatus)
+    this.fetchEnvironment()
+    this.initIntervalFetch()
   },
   beforeDestroy() {
     EventBus.$off('env-modal-status')
+    EventBus.$off('load-environment')
+    this.stopInterval()
   }
 };
 

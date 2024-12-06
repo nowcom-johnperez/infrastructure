@@ -47,6 +47,7 @@ import LinkServicesView from './link-services/LinkServicesView.vue';
 import KeyvaultView from './keyvault/KeyvaultView.vue';
 import AppLauncherView from './app-launcher/AppLauncherView.vue';
 import BasicView from './basic/BasicView.vue';
+import { EventBus } from '../../config/event-bus';
 export default {
   name: 'EnvironmentView',
   props: {
@@ -73,5 +74,11 @@ export default {
       this.currentTabIndex = tabIndex
     },
   },
+  mounted() {
+    EventBus.$emit('load-environment', true) // stop fetching list
+  },
+  beforeDestroy() {
+    EventBus.$emit('load-environment', false) // stop fetching list
+  }
 }
 </script>

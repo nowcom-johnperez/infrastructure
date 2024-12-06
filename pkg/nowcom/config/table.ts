@@ -262,7 +262,6 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         label: 'Status',
         sort: ['status'],
         search: ['status'],
-        width: 100
     },
     {
         name: 'name',
@@ -277,28 +276,23 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         search: ['size'],
     },
     {
-        name: 'firewallPolicy',
-        label: 'Firewall Policy',
-        sort: ['firewallPolicy'],
-        search: ['firewallPolicy'],
+        name: 'networkType',
+        label: 'Network Type',
+        sort: ['networkType'],
+        search: ['networkType'],
     },
+    {
+        name: 'networkPolicy',
+        label: 'Network Policy',
+        sort: ['networkPolicy'],
+        search: ['networkPolicy'],
+    },
+    
     {
         name: 'dns',
         label: 'DNS',
         sort: ['dns'],
         search: ['dns'],
-    },
-    {
-        name: 'role',
-        label: 'Role',
-        sort: ['role'],
-        search: ['role'],
-    },
-    {
-        name: 'cpu',
-        label: 'CPU / Memory',
-        sort: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
-        search: ['sizeInfo.master.cpu', 'sizeInfo.worker.cpu', 'sizeInfo.master.memory', 'sizeInfo.worker.memory'],
     },
 ];
 

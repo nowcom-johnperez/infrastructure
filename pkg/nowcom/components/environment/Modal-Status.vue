@@ -11,29 +11,29 @@
             <i :class="status.networks ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
           </li>
           <li class="status-item">
-            <span>Creating Firewall Connections</span>
-            <i :class="status.firewall ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
+            <span>Creating Network Policy</span>
+            <i :class="status.networkPolicy ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
           </li>
-          <li class="status-item">
+          <!-- <li class="status-item">
             <span>Creating Git Repository on Github</span>
             <i :class="status.git ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
-          </li>
-          <li class="status-item">
+          </li> -->
+          <!-- <li class="status-item">
             <span>Creating Keyvaults and Service Accounts</span>
             <i :class="status.keyvaults ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
-          </li>
+          </li> -->
           <li class="status-item">
             <span>Creating K8s Cluster</span>
             <i :class="status.cluster ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
           </li>
-          <li class="status-item">
+          <!-- <li class="status-item">
             <span>Creating Keyvault Services</span>
             <i :class="status.services ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
           </li>
           <li class="status-item">
             <span>Creating Cert and DNS Services</span>
-            <i :class="status.certDNS ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
-          </li>
+            <i :class="status.dns ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
+          </li> -->
         </ul>
       </div>
     </template>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { environmentService } from '../../services/api';
 import Modal from '../common/Modal'
 export default {
   name: 'ModalStatus',
@@ -56,9 +57,8 @@ export default {
       type: Boolean,
       required: true
     },
-    status: {
-      type: Object,
-      default: () => {},
+    environmentId: {
+      type: String,
       required: true
     },
     headerLabel: {
@@ -66,10 +66,62 @@ export default {
       default: 'Create Status'
     }
   },
+  data() {
+    return {
+      status: {
+        networks: false,
+        firewall: false,
+        git: false,
+        keyvaults: false,
+        cluster: false,
+        services: false,
+        dns: false
+      },
+      intervalId: null,
+      item: null
+    }
+  },
   methods: {
+    async loadEnvironment() {
+      this.item = await environmentService.getById(this.environmentId)
+      this.status = {
+        networks: this.getStatus('NetworkReady'),
+        networkPolicy: this.getStatus('NetworkPolicyReady'),
+        // git: this.getStatus('NetworkReady'),
+        // keyvaults: this.getStatus('NetworkReady'),
+        cluster: this.getStatus('ClusterReady'),
+        // services: this.getStatus('NetworkReady'),
+        // dns: this.getStatus('NetworkReady')
+      }
+    },
+    getStatus(type) {
+      if (!type || !this.item) return false
+      const condition = this.item?.status?.conditions.find((c) => c.type === type)
+      if (condition.status === "True") return true
+      else if (condition.status === "Unknown") return false
+      return false
+    },
+    initInterval() {
+      if (!this.intervalId) {
+        this.intervalId = setInterval(this.loadEnvironment, 2000)
+      }
+    },
+    stopInterval() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId)
+        this.intervalId = null
+      }
+    },
     closeModalStatus () {
+      this.stopInterval()
       this.$emit('onClose')
     }
+  },
+  mounted() {
+    this.initInterval()
+  },
+  beforeDestroy() {
+    this.stopInterval()
   }
 }
 </script>
