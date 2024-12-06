@@ -9,6 +9,10 @@
         </div>
 
         <div class="row-detail">
+          <div class="row-label">Namespace</div>
+          <div class="row-val">{{ currentObj.metadata?.annotations?.[`${BREACHER_API}/namespace`] || '' }}</div>
+        </div>
+        <!-- <div class="row-detail">
           <div class="row-label">Kubernetes</div>
           <div class="row-val">rke2 version</div>
         </div>
@@ -21,7 +25,7 @@
         <div class="row-detail">
           <div class="row-label">OS</div>
           <div class="row-val">linux (ubuntu 22.04)</div>
-        </div>
+        </div> -->
 
         <div class="row-detail">
           <div class="row-label">Network Type</div>
@@ -29,14 +33,14 @@
         </div>
 
         <div class="row-detail">
-          <div class="row-label">Firewall Policy</div>
+          <div class="row-label">Network Policy</div>
           <div class="row-val">{{ currentObj.spec.networkPolicy }}</div>
         </div>
 
-        <div class="row-detail">
+        <!-- <div class="row-detail">
           <div class="row-label">DNS</div>
           <div class="row-val">{{ currentObj.dns }}</div>
-        </div>
+        </div> -->
 
         <div class="row-detail">
           <div class="row-label">Github</div>
@@ -71,12 +75,12 @@
         <h1 class="text-2xl mt-20 text-primary">Additional Information</h1>
         <div class="row-detail">
           <div class="row-label">Organization Name</div>
-          <div class="row-val">{{ currentObj.metadata?.annotations?.org }}</div>
+          <div class="row-val">{{ currentObj.metadata?.annotations?.[`${BREACHER_API}/org`] }}</div>
         </div>
 
         <div class="row-detail">
           <div class="row-label">Team Name</div>
-          <div class="row-val">{{ currentObj.metadata?.annotations?.team }}</div>
+          <div class="row-val">{{ currentObj.metadata?.annotations?.[`${BREACHER_API}/team`] }}</div>
         </div>
       </div>
     </div>
@@ -100,10 +104,12 @@
 </template>
 
 <script>
+import { getConfig } from '../../../config/api';
 import { getBadgeColor } from '../../../services/helpers/environment';
 import { ENVIRONMENT_SIZES } from '../../../config/constants';
 import { BadgeState } from '@components/BadgeState';
 import NodeInfo from '../NodeInfo.vue';
+const { BREACHER_API } = getConfig()
 export default {
   name: 'BasicView',
   props: {
@@ -115,7 +121,8 @@ export default {
   data() {
     const sizeList = ENVIRONMENT_SIZES
     return {
-      sizeList
+      sizeList,
+      BREACHER_API
     }
   },
   components: {

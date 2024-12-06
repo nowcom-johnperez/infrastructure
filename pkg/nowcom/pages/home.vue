@@ -11,7 +11,7 @@
       
       <div class="full-width">
         <Environments />
-        <SharedService />
+        <SharedService v-if="false" />
         <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
           <component v-if="currentComponent" :is="currentComponent" :current-obj="currentObj"></component>
         </SideBar>

@@ -287,13 +287,12 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         sort: ['networkPolicy'],
         search: ['networkPolicy'],
     },
-    
-    {
-        name: 'dns',
-        label: 'DNS',
-        sort: ['dns'],
-        search: ['dns'],
-    },
+    // {
+    //     name: 'dns',
+    //     label: 'DNS',
+    //     sort: ['dns'],
+    //     search: ['dns'],
+    // },
 ];
 
 const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [

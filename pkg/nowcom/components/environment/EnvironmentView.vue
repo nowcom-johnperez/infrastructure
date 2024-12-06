@@ -7,8 +7,7 @@
       </div>
     </div>
     
-
-    <Tabs :list="['Basic', 'Actions', 'KeyVault', 'App Launcher', 'Linked Services']" :current="currentTabIndex" @set-active="setTab"/>
+    <Tabs :list="tabList" :current="currentTabIndex" @set-active="setTab"/>
 
     <div class="tab-content-container mt-40">
       <!-- Basic Information Tab -->
@@ -66,7 +65,14 @@ export default {
   },
   data() {
     return {
-      currentTabIndex: 0
+      currentTabIndex: 0,
+      tabList: [
+        { label: 'Basic', disabled: false },
+        { label: 'Actions', disabled: true },
+        { label: 'KeyVault', disabled: true },
+        { label: 'App Launcher', disabled: false },
+        { label: 'Linked Services', disabled: true },
+      ]
     }
   },
   methods: {

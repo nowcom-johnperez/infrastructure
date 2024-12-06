@@ -118,6 +118,10 @@ background-color: #4caf50;
   border-bottom: 2px solid #297db4;
 }
 
+.tab.disabled {
+  text-decoration: line-through;
+}
+
 .tab-content-container {
   flex-grow: 1;
   max-height: calc(100vh - 240px);
