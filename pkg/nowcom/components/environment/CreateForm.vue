@@ -79,7 +79,7 @@
         </div>
         <span v-if="errors.teamName" class="text-danger">{{ errors.teamName }}</span>
   
-        <div class="team-header input-container mt-15">
+        <div class="team-header input-container mt-30">
           <div>
             <h1>Team Access</h1>
           </div>
