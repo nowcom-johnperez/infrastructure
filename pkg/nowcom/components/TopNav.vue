@@ -61,7 +61,7 @@ export default {
       return {
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
         params: {
-          cluster: ENVIRONMENT_CLUSTER
+          cluster: BLANK_CLUSTER
         }
       }
     },

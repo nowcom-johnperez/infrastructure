@@ -31,7 +31,7 @@ import CardImgSelect from '../common/CardImgSelection.vue';
 import ElasticSearchForm from './ElasticSearchForm.vue';
 import RedisForm from './RedisForm.vue';
 import DatabaseForm from './DatabaseForm.vue';
-import { HOME, PRODUCT_NAME, SHARED_SERVICES_LISTING, ENVIRONMENT_DATA } from '../../config/constants';
+import { HOME, PRODUCT_NAME, SHARED_SERVICES_LISTING, ENVIRONMENT_DATA, BLANK_CLUSTER } from '../../config/constants';
 export default {
   name: 'SharedServicesCreateForm',
   components: {
@@ -93,6 +93,9 @@ export default {
     closeEnv() {
       this.$router.push({
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+        params: {
+          cluster: BLANK_CLUSTER
+        }
       })
     },
     submitForm() {

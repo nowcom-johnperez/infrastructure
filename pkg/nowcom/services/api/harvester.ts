@@ -13,5 +13,9 @@ export const harvesterService = {
     getConfigMaps: async () => {
       const res: any = await BASE_URL_HOST.get(`/k8s/clusters/${CLUSTER}/v1/configmaps`)
       return res.data
-    }
+    },
+    getNamespaces: async () => {
+      const res: any = await BASE_URL_HOST.get(`/k8s/clusters/${CLUSTER}/v1/harvester/namespaces`)
+      return res.data.data
+    },
 }

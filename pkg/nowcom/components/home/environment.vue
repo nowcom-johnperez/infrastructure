@@ -88,7 +88,7 @@ export default {
         name:   `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
         params: {
           product:  PRODUCT_NAME,
-          cluster:  ENVIRONMENT_CLUSTER,
+          cluster:  BLANK_CLUSTER,
         },
       };
     },

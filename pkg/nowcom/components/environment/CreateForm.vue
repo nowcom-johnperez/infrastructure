@@ -12,10 +12,11 @@
         </div>
         <span v-if="errors.envName" class="text-danger">{{ errors.envName }}</span>
 
-        <!-- <div class="mt-15 input-container">
+        <div class="mt-15 input-container">
           <label for="networkType">Namespace <span class="text-danger">*</span></label>
           <Select :options="namespaceList" v-model="selected.namespace" class="mt-5"/>
-        </div> -->
+        </div>
+        <span v-if="errors.namespace" class="text-danger">{{ errors.namespace }}</span>
   
         <div class="mt-15 input-container">
           <label for="size">Size <span class="text-danger">*</span></label>
@@ -143,10 +144,10 @@ import CardSelect from '../common/CardSelection.vue';
 import ModalStatus from '../environment/Modal-Status.vue';
 import ModalRoles from '../environment/Modal-Roles.vue';
 import SelectPrincipal from '@shell/components/auth/SelectPrincipal';
-import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES } from '../../config/constants';
+import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES, BLANK_CLUSTER } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
-import { environmentService } from '../../services/api';
-import { NAMESPACE, CONFIG_MAP, MANAGEMENT } from '@shell/config/types';
+import { environmentService, harvesterService } from '../../services/api';
+import { CONFIG_MAP } from '@shell/config/types';
 import { validateString } from '../../services/helpers/utils'
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
@@ -212,58 +213,53 @@ export default {
       return this.$store.getters['auth/v3User']
     },
   },
-  watch: {
-    'selected.size' (newSize) {
-      if (newSize === 'Small') {
-        this.selected.node = 1
-      } else if (newSize === 'Medium') {
-        this.selected.node = 2
-      } else {
-        this.selected.node = 6
-      }
-    }
-  },
   async fetch() {
-    if (this.$store.getters['management/schemaFor'](NAMESPACE)) {
-      const namespace = await this.$store.dispatch('management/findAll', { type: NAMESPACE })
-      // console.log(`namespace`, namespace.map((n) => n.metadata?.name))
-      this.namespaceList = namespace.map((n) => n.metadata?.name)
+
+    try {
+      const namespaces = await harvesterService.getNamespaces()
+      const excludePrefixes = ['cattle-', 'kube-', 'longhorn-', 'fleet-', 'harvester-', 'local'];
+      this.namespaceList = namespaces
+        .filter(n => !excludePrefixes.some(prefix => n.metadata?.name.includes(prefix)))
+        .map(n => n.metadata?.name);
+    } catch (error) {
+      this.namespaceList = []
     }
 
-    if (this.$store.getters['cluster/schemaFor'](CONFIG_MAP)) {
-      // const configMaps = await harvesterService.getConfigMaps()
-      const configMaps = await this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP })
-      const userDataOptions = [];
-      const networkDataOptions = [];
+    try {
+      // page must be attached to a cluster
+      if (this.$store.getters['cluster/schemaFor'](CONFIG_MAP)) {
+        // const configMaps = await harvesterService.getConfigMaps()
+        const configMaps = await this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP })
+        const userDataOptions = [];
+        const networkDataOptions = [];
 
-      (configMaps.data || []).map((O) => {
-        const cloudTemplate =
-          O.metadata?.labels?.[HCI_ANNOTATIONS.CLOUD_INIT];
+        (configMaps.data || []).map((O) => {
+          const cloudTemplate =
+            O.metadata?.labels?.[HCI_ANNOTATIONS.CLOUD_INIT];
 
-        if (cloudTemplate === 'user') {
-          userDataOptions.push({
-            label: O.metadata.name,
-            value: O.data.cloudInit
-          });
-        }
+          if (cloudTemplate === 'user') {
+            userDataOptions.push({
+              label: O.metadata.name,
+              value: O.data.cloudInit
+            });
+          }
 
-        if (cloudTemplate === 'network') {
-          networkDataOptions.push({
-            label: O.metadata.name,
-            value: O.data.cloudInit
-          });
-        }
-      });
+          if (cloudTemplate === 'network') {
+            networkDataOptions.push({
+              label: O.metadata.name,
+              value: O.data.cloudInit
+            });
+          }
+        });
 
-      if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
+        if (userDataOptions.length > 0) this.selected.userDataTemplate = userDataOptions[0].label
+      }
+    } catch (error) {
+      this.selected.userDataTemplate = null
     }
 
-    // const envResponse = await this.$store.dispatch('cluster/findAll', { type: 'stacks' })
-    // console.log(`envResponse`, envResponse)
-    // await this.$store.dispatch('management/findAll', { type: MANAGEMENT.USER })
     this.bindings.push({
       roleTemplateId: 'cluster-owner',
-      // userPrincipalId: this.user.principalIds[this.user.principalIds.length - 1]
       userPrincipalId: this.user.principalIds[0]
     })
 
@@ -274,10 +270,11 @@ export default {
       this.errors = {}
       if (!this.selected.envName) this.errors.envName = 'Environment Name is required'
       if (this.selected.envName && !validateString(this.selected.envName)) this.errors.envName = 'Environment Name is not allowed. avoid space and other special characters'
-      if (!this.selected.orgName) this.errors.orgName = 'Organization Name required'
+      if (!this.selected.orgName) this.errors.orgName = 'Organization Name is required'
       if (this.selected.orgName && !validateString(this.selected.orgName)) this.errors.orgName = 'Organization Name is not allowed. avoid space and other special characters'
-      if (!this.selected.teamName) this.errors.teamName = 'Team Name required'
+      if (!this.selected.teamName) this.errors.teamName = 'Team Name is required'
       if (this.selected.teamName && !validateString(this.selected.teamName)) this.errors.teamName = 'Team Name is not allowed. avoid space and other special characters'
+      if (!this.selected.namespace) this.errors.namespace = 'Namespace is required'
       return Object.keys(this.errors).length === 0
     },
     filterBindings() {
@@ -316,46 +313,49 @@ export default {
     },
 
     async createEnv () {
-      const isValid = this.validateForm()
-      if (!isValid) return
-      const clusterName = `${this.selected.envName}-${this.selected.teamName}`
-      const payload = {
-        apiVersion: `${VANGUARD_API}`,
-        kind: "Stack",
-        metadata: {
-          name: clusterName,
-          namespace: 'vanguard-system',
-          annotations: {
-            [`${BREACHER_API}/team`]: this.selected.teamName,
-            [`${BREACHER_API}/org`]: this.selected.orgName,
-            [`${BREACHER_API}/rancher-uid`]: this.user.id,
-            [`${BREACHER_API}/owners`]: JSON.stringify(this.selected.owners),
-            [`${BREACHER_API}/members`]: JSON.stringify(this.selected.members),
+      try {
+        const isValid = this.validateForm()
+        if (!isValid) return
+        const clusterName = `${this.selected.envName}-${this.selected.teamName}`
+        const payload = {
+          apiVersion: `${VANGUARD_API}`,
+          kind: "Stack",
+          metadata: {
+            name: clusterName,
+            namespace: 'vanguard-system',
+            annotations: {
+              [`${BREACHER_API}/team`]: this.selected.teamName,
+              [`${BREACHER_API}/org`]: this.selected.orgName,
+              [`${BREACHER_API}/rancher-uid`]: this.user.id,
+              [`${BREACHER_API}/owners`]: JSON.stringify(this.selected.owners),
+              [`${BREACHER_API}/members`]: JSON.stringify(this.selected.members),
+              [`${BREACHER_API}/namespace`]: this.selected.namespace,
+            },
           },
-        },
-        spec: {
-          clusterSize: this.selected.size.toLocaleLowerCase(),
-          networkType: this.selected.networkType.toLocaleLowerCase(),
-          networkPolicy: this.selected.networkPolicy,
-          environmentName: clusterName
-        }
-      };
+          spec: {
+            clusterSize: this.selected.size.toLocaleLowerCase(),
+            networkType: this.selected.networkType.toLocaleLowerCase(),
+            networkPolicy: this.selected.networkPolicy,
+            environmentName: clusterName
+          }
+        };
 
-      await environmentService.create(payload)
+        await environmentService.create(payload)
 
-      this.savingModalState = true
-      this.saving.envId = clusterName
-      // await this.$store.dispatch('cluster/request', {
-      //   url:    `/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/${STACK}`,
-      //   method: 'post',
-      //   data:   payload,
-      // });
+        this.savingModalState = true
+        this.saving.envId = clusterName
+      } catch (error) {
+        this.$store.dispatch('growl/error', {
+          title: 'Error',
+          message: 'Something went wrong! Please contact your administrator.',
+        }, { root: true })
+      }
     },
     closeEnv() {
       this.$router.push({
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
         params: {
-          cluster: ENVIRONMENT_CLUSTER
+          cluster: BLANK_CLUSTER
         }
       })
     }
