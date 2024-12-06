@@ -24,7 +24,7 @@ export function init($plugin: any, store: any) {
     //   name: `${PRODUCT_NAME}-c-cluster-landing`,
     //   params: {
     //     product: PRODUCT_NAME,
-    //     cluster: '_',
+    //     cluster: BLANK_CLUSTER,
     //     resource: NODE
     //   }
     // }
@@ -32,7 +32,8 @@ export function init($plugin: any, store: any) {
       name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
       params: {
         product: PRODUCT_NAME,
-        cluster: ENVIRONMENT_CLUSTER,
+        cluster: BLANK_CLUSTER,
+        // cluster: ENVIRONMENT_CLUSTER,
         resource: NODE
       }
     }
