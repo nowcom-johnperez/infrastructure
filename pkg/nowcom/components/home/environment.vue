@@ -28,7 +28,7 @@
               
               <EnvironmentListView v-if="viewState === 'list'" :list="filteredEnvironment" />
               <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" :loading="$fetchState.pending" />
-              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :status="selectedEnv?.state" @onClose="closeModalState" />
+              <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :environment-id="selectedEnv.spec?.environmentName" @onClose="closeModalState" />
             </div>
           </div>
         </div>
