@@ -36,14 +36,14 @@ const routes = [
       product: PRODUCT_NAME,
     },
     children: [
-      {
-        name: `${PRODUCT_NAME}-c-cluster-landing`,
-        path: `landing`,
-        component: LandingPage,
-        meta: {
-          product: PRODUCT_NAME,
-        },
-      },
+      // {
+      //   name: `${PRODUCT_NAME}-c-cluster-landing`,
+      //   path: `landing`,
+      //   component: LandingPage,
+      //   meta: {
+      //     product: PRODUCT_NAME,
+      //   },
+      // },
       {
         name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
         path: `${HOME}`,

@@ -21,5 +21,20 @@ export const environmentService = {
     create: async (payload: any) => {
         const res: any =  await BASE_URL_HOST.post(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/namespaces/vanguard-system/stacks`, payload)
         return res.data
+    },
+
+    getClusterRoleBinding: async (clusterId: string) => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/clusterroletemplatebindings?clusterId=${encodeURIComponent(clusterId)}`)
+        return res.data
+    },
+
+    getClustersRoleBindings: async () => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/clusterroletemplatebindings`)
+        return res.data
+    },
+
+    getUser: async (principalId: string) => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/principals/${encodeURIComponent(principalId)}`)
+        return res.data
     }
 }
