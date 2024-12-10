@@ -11,8 +11,9 @@
 import {
   parseSi, formatSi, exponentNeeded, UNITS, createMemoryValues
 } from '@shell/utils/units';
-import { MANAGEMENT } from '@shell/config/types';
+import { MANAGEMENT, USER } from '@shell/config/types';
 import { environmentService } from '../services/api';
+import { roleTemplateRules } from '@shell/utils/validators/role-template';
 
 const PARSE_RULES = {
   memory: {
@@ -45,23 +46,32 @@ export default {
 
     async fetchClusters() {
       const clusters = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER });
+      const users = await environmentService.getAllUsers()
       const bindings = await environmentService.getClustersRoleBindings()
       this.clusters = await Promise.all(
         clusters.map(async (cluster) => {
-          return this.processCluster(cluster, bindings.data);
+          return this.processCluster(cluster, bindings.data, users.data);
         })
       );
     },
 
-    async processCluster(cluster, bindings) {
-      const formattedMemory = this.createMemoryUnits(cluster.status?.capacity?.memory);
-
-      // const roles = await environmentService.getClusterRoleBinding(cluster.id);
-      
+    async processCluster(cluster, bindings, users) {
+      const formattedMemory = this.createMemoryUnits(cluster.status?.capacity?.memory);      
       const roles = bindings.filter((b) => b.clusterId === cluster.id)
-      const users = await this.processRoles(roles);
+      const clusterUsers = roles.map((r) => {
+        const user = users.find((u) => {
+          if (r.userPrincipalId) {
+            return u.principalIds.includes(r.userPrincipalId)
+          }
+        })
 
-      console.log(`roles: ${cluster.id}`, roles, users);
+        return user ? {
+          name: user?.name || '',
+          id: user?.id || '',
+          userPrincipalId: user.principalIds[0],
+          roleTemplateId: r.roleTemplateId
+        } : r
+      })
 
       return {
         id: cluster.id,
@@ -73,7 +83,7 @@ export default {
           cpu: cluster.status?.capacity?.cpu,
           memory: formatSi(parseSi(cluster.status?.capacity?.memory), formattedMemory),
         },
-        users: users.map((user) => {
+        users: clusterUsers.map((user) => {
           return {
             name: user?.name || '',
             id: user?.id || '',

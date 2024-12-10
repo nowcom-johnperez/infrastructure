@@ -44,14 +44,14 @@ const routes = [
       //     product: PRODUCT_NAME,
       //   },
       // },
-      {
-        name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
-        path: `${HOME}`,
-        component: HomePage,
-        meta: {
-          product: PRODUCT_NAME,
-        },
-      },
+      // {
+      //   name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+      //   path: `${HOME}`,
+      //   component: HomePage,
+      //   meta: {
+      //     product: PRODUCT_NAME,
+      //   },
+      // },
       {
         name: `${PRODUCT_NAME}-c-cluster-${ENVIRONMENT}-create`,
         path: `${ENVIRONMENT}/create`,
@@ -155,7 +155,7 @@ const routes = [
   {
     path:      `/home`,
     component: HomePage,
-    name:      `homepage`,
+    name:      `home`,
   },
   // the following routes cover the "resource page"
   // registering routes for list/edit/create views

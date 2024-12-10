@@ -1,31 +1,38 @@
 <template>
-  <div>
-    <div class="rebranded">
-      <div class="row mb-20 full-width logo-handler">
-        <div class="col image-handler">
-          <img src="../assets/img/trident.gif" alt="NOWCOM">
+  <div class="indented-panel pt-20">
+    <TopNav v-show="showTopNav" />
+
+    <div class="pt-10">
+      <div class="rebranded">
+        <div class="row mb-20 full-width logo-handler">
+          <div class="col image-handler">
+            <img src="../assets/img/trident.gif" alt="NOWCOM">
+          </div>
         </div>
-      </div>
 
-      <WhatsNewBanner />
-      
-      <div class="full-width">
-        <Environments />
-        <SharedService v-if="false" />
-        <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
-          <component v-if="currentComponent" :is="currentComponent" :current-obj="currentObj"></component>
-        </SideBar>
-      </div>
+        <WhatsNewBanner />
+        
+        <div class="full-width">
+          <Environments />
+          <SharedService v-if="false" />
+          <SideBar type="main" :sidebar-visible="sidebarVisible" @close="closeSidebar">
+            <component v-if="currentComponent" :is="currentComponent" :current-obj="currentObj"></component>
+          </SideBar>
+        </div>
 
-      <MakeAWishBanner />
+        <MakeAWishBanner />
+      </div>
     </div>
   </div>
   
 </template>
 
 <script>
+import TopNav from '../components/TopNav'
 import Environments from '../components/home/environment'
 import SharedService from '../components/home/shared-service'
+import { mapGetters } from 'vuex'
+import { PRODUCT_STORE } from '../config/constants';
 import { getVendor } from '@shell/config/private-label';
 import WhatsNewBanner from '../components/banners/WhatsNewBanner.vue';
 import MakeAWishBanner from '../components/banners/MakeAWishBanner.vue';
@@ -38,7 +45,8 @@ export default {
     Environments,
     SharedService,
     WhatsNewBanner,
-    MakeAWishBanner
+    MakeAWishBanner,
+    TopNav
   },
   data() {
     return {
@@ -47,6 +55,11 @@ export default {
       currentComponent: null,
       sidebarVisible: false,
     }
+  },
+  computed: {
+    ...mapGetters(PRODUCT_STORE, {
+      showTopNav: 'getTopNav',
+    })
   },
   methods: {
     openSidebar(d) {

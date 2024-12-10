@@ -92,10 +92,11 @@ export default {
     },
     closeEnv() {
       this.$router.push({
-        name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
-        params: {
-          cluster: BLANK_CLUSTER
-        }
+        // name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
+        // params: {
+        //   cluster: BLANK_CLUSTER
+        // }
+        name: 'home'
       })
     },
     submitForm() {

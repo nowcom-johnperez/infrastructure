@@ -25,6 +25,8 @@ export const getConfig = () => {
       config.CLUSTER = 'c-m-wvplbwls'
       config.API = 'packetlifter.io'
     } else {
+      // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
+      // config.RANCHER_BEARERTOKEN = 'token-gz2gq:2j67frvc7bt8p4ztm7vz52t44j6rqhkpls7lg44s7n7vjhkjnd98cq'
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
       config.CLUSTER = 'c-m-hx52gvl6'

@@ -41,7 +41,7 @@
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
-import { CAPI } from '@shell/config/types';
+import { CAPI, MANAGEMENT, HCI } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { PRODUCT_NAME, ENVIRONMENT, ENVIRONMENT_SIZES } from '../../config/constants';
 import { mapState } from 'vuex';
@@ -78,9 +78,12 @@ export default {
   computed: {
     ...mapState(['managementReady']),
 
+    user() {
+      return this.$store.getters['auth/v3User']
+    },
+
     canCreateCluster() {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
-
       return !!schema?.collectionMethods.find((x) => x.toLowerCase() === 'post');
     },
 
@@ -126,7 +129,13 @@ export default {
       const envResponse = await environmentService.getAll()
       // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
       const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
-      this.environmentList = envResponse.map((e) => {
+      this.environmentList = envResponse.filter((e) => {
+        const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
+        const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
+
+        const allIds = [...owners, ...members];
+        return allIds.includes(this.user.id) || allIds.includes(this.user.principalIds[0]);
+      }).map((e) => {
         const randomNumber = Math.floor(Math.random() * 3);
         const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
         return {

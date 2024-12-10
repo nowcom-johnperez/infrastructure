@@ -59,10 +59,10 @@ export default {
   computed: {
     homeLocation() {
       return {
-        name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
-        params: {
-          cluster: BLANK_CLUSTER
-        }
+        name: `home`,
+        // params: {
+        //   cluster: BLANK_CLUSTER
+        // }
       }
     },
     tridentLocation() {

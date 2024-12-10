@@ -41,7 +41,7 @@ export default {
   computed: {
     statusTooltip() {
       let tooltip = ''
-      if (this.statuses.network) tooltip += `<span class="${this.getTextStatusColor(this.statuses.network)}">Network</span> <br />`
+      if (this.statuses.network) tooltip += `<span class="${this.getTextStatusColor(this.statuses.network)}">Vnet Creation</span> <br />`
       if (this.statuses.networkPolicy) tooltip += `<span class="${this.getTextStatusColor(this.statuses.networkPolicy)}">Network Policy</span> <br />`
       if (this.statuses.clusterCreation) tooltip += `<span class="${this.getTextStatusColor(this.statuses.clusterCreation)}">Cluster creation</span> <br />`
       if (this.statuses.certificateServices) tooltip += `<span class="${this.getTextStatusColor(this.statuses.certificateServices)}">Certificate services</span> <br />`

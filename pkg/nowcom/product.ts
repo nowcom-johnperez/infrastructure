@@ -29,13 +29,13 @@ export function init($plugin: any, store: any) {
     //   }
     // }
     to: {
-      name: `${PRODUCT_NAME}-c-cluster-${HOME}`,
-      params: {
-        product: PRODUCT_NAME,
-        cluster: BLANK_CLUSTER,
-        // cluster: ENVIRONMENT_CLUSTER,
-        resource: NODE
-      }
+      name: `home`,
+      // params: {
+      //   product: PRODUCT_NAME,
+      //   cluster: BLANK_CLUSTER,
+      //   // cluster: ENVIRONMENT_CLUSTER,
+      //   resource: NODE
+      // }
     }
   });
 

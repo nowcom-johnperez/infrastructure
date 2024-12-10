@@ -36,5 +36,15 @@ export const environmentService = {
     getUser: async (principalId: string) => {
         const res: any =  await BASE_URL_HOST.get(`/v3/principals/${encodeURIComponent(principalId)}`)
         return res.data
+    },
+
+    getAllUsers: async () => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/users`)
+        return res.data
+    },
+
+    getAllGroups: async () => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/groups`)
+        return res.data
     }
 }
