@@ -7,7 +7,7 @@
       <div>
         <ul class="status-list">
           <li class="status-item">
-            <span>Creating Networks</span>
+            <span>Creating Virtual Network</span>
             <i :class="status.networks ? 'fa fa-check success-state' : 'fa fa-spinner fa-spin processing-state'"></i>
           </li>
           <li class="status-item">
