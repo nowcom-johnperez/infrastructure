@@ -198,6 +198,7 @@ export default {
     EventBus.$on('env-modal-status', this.openModalStatus)
     this.fetchEnvironment()
     this.initIntervalFetch()
+    console.log(`user`, this.user)
   },
   beforeDestroy() {
     EventBus.$off('env-modal-status')
