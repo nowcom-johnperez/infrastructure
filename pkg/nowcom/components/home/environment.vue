@@ -41,7 +41,7 @@
 <script>
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
-import { CAPI, MANAGEMENT, HCI } from '@shell/config/types';
+import { CAPI, MANAGEMENT, HCI, NORMAN } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { PRODUCT_NAME, ENVIRONMENT, ENVIRONMENT_SIZES } from '../../config/constants';
 import { mapState } from 'vuex';
@@ -187,7 +187,12 @@ export default {
       this.statusModalState = true
     }
   },
-  mounted() {
+  async mounted() {
+    const test = await this.$store.dispatch('management/findAll', {
+        type: NORMAN.SPOOFED.GROUP_PRINCIPAL,
+        opt:  { force: true }
+      }, { root: true });
+    console.log(`test`, test)
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {
         this.stopInterval()
