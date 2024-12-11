@@ -13,7 +13,13 @@ export const getConfig = () => {
     TRIDENT_API: 'trident.nowcom.io',
     VANGUARD_API: 'vanguard.tridentcloud.dev/v1alpha1',
     BREACHER_API: 'breacher.tridentcloud.dev',
-    STACK: 'stacks'
+    STACK: 'stacks',
+    GITLAB_URL: 'https://gitlab.com/api/v4/',
+    GITLAB_SOURCE_URL: 'https://gitlab.com/groups/nowcom/trident/-/wikis/',
+    GITLAB_GROUP_ID: '90144365',
+    GITLAB_IMAGES_PROJECT_ID: '60607760',
+    GITLAB_PROJECT_TOKEN: 'glpat-5t8tWuTYdHTnhSszGZyp',
+    GITLAB_TOKEN: 'glpat-3fpYpWvshVzaSjxUyyzt',
   };
 
   if (typeof window !== 'undefined') {

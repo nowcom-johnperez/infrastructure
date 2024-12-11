@@ -6,5 +6,6 @@ import { vNetService } from "./vnet";
 import { wishService } from "./wish";
 import { environmentService } from "./environment";
 import { harvesterService } from "./harvester";
+import { wikiService } from "./wiki";
 
-export { dhcpService, expressService, firewallService, natService, vNetService, wishService, environmentService, harvesterService }
+export { dhcpService, expressService, firewallService, natService, vNetService, wishService, environmentService, harvesterService, wikiService }

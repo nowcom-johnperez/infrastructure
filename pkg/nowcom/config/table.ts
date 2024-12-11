@@ -12,6 +12,7 @@ interface SortableHeaderType {
     sort: string|string[];
     search: string|string[];
     width?: number;
+    default?: string;
     formatter?: string;
 }
 
@@ -295,6 +296,39 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
     // },
 ];
 
+const PROJECT_NAMESPACE_HEADERS: SortableHeaderType[] = [
+    {
+      name: 'state',
+      label: 'State',
+      sort: ['state'],
+      search: ['state'],
+      width: 100,
+      default:   'unknown',
+      formatter: 'BadgeStateFormatter',
+    },
+    {
+        name: 'name',
+        label: 'Name',
+        sort: ['name'],
+        search: ['name'],
+        width: 10,
+    },
+    {
+        name: 'cpu',
+        label: 'CPU',
+        sort: ['cpu'],
+        search: ['cpu'],
+        width: 10
+    },
+    {
+        name: 'memory',
+        label: 'Memory',
+        sort: ['memory'],
+        search: ['memory'],
+        width: 10
+    },
+  ];
+
 const SHARED_SERVICES_HEADERS: SortableHeaderType[] = [
     {
         name: 'status',
@@ -352,5 +386,6 @@ export {
     RULES_SUBNET_TRANSLATIONS,
     ENVIRONMENT_HEADERS,
     SHARED_SERVICES_HEADERS,
-    KEYVAULT_HEADER
+    KEYVAULT_HEADER,
+    PROJECT_NAMESPACE_HEADERS
 }

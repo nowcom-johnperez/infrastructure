@@ -2,10 +2,9 @@
   <nav class="navbar">
     <ul class="nav-list">
       <li><router-link :to="homeLocation">Home</router-link></li>
-      <li v-if="isTridentAppInstalled" class="dropdown">
+      <li class="dropdown">
         <a href="#">Trident</a>
         <ul class="dropdown-menu">
-          <li><router-link :to="tridentLocation.app">App Launcher</router-link></li>
           <li><router-link :to="tridentLocation.wiki">Wiki</router-link></li>
           <li><router-link :to="tridentLocation.harvester">Resource Management</router-link></li>
         </ul>
@@ -29,33 +28,10 @@
 <script>
 import { CATALOG } from '@shell/config/types';
 import { getConfig } from '../config/api';
-import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, TRIDENT, BLANK_CLUSTER } from '../config/constants';
+import { PRODUCT_NAME, HOME, LIST_NETWORK, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WIKI_PAGE, BLANK_CLUSTER, RESOURCE_MANAGEMENT } from '../config/constants';
 const { CLUSTER, ENVIRONMENT_CLUSTER } = getConfig()
 export default {
   name: 'TopNav',
-  data() {
-    return {
-      isTridentAppInstalled: false
-    }
-  },
-  async fetch() {
-    let installedApps;
-
-    // needed to check if operator is installed
-    if (this.$store.getters['management/canList'](CATALOG.APP)) {
-      installedApps = await this.$store.dispatch('management/findAll', { type: CATALOG.APP });
-    }
-
-    // we need to check for the length of the response
-    // due to some issue with a standard-user, which can list apps
-    // but the list comes up empty []
-    const isTridentAppInstalled = installedApps?.length && installedApps?.find(item => item.spec?.chart?.metadata?.name === 'trident');
-
-    // check if operator is installed
-    if (isTridentAppInstalled) {
-      this.isTridentAppInstalled = true;
-    }
-  },
   computed: {
     homeLocation() {
       return {
@@ -67,20 +43,14 @@ export default {
     },
     tridentLocation() {
       return {
-        app: {
-          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.LOCAL_TESTING}`,
-          params: {
-            cluster: BLANK_CLUSTER
-          }
-        },
         wiki: {
-          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.WIKI}`,
+          name: `${PRODUCT_NAME}-c-cluster-${WIKI_PAGE}`,
           params: {
             cluster: BLANK_CLUSTER
           }
         },
         harvester: {
-          name: `${TRIDENT.PRODUCT_NAME}-c-cluster-${TRIDENT.RESOURCE_MANAGEMENT}`,
+          name: `${PRODUCT_NAME}-c-cluster-${RESOURCE_MANAGEMENT}`,
           params: {
             cluster: CLUSTER
           }

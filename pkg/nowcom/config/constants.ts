@@ -30,6 +30,8 @@ export const CUSTOM_K8S_RESOURCE_NAME = 'vnetExtensionFactory';
 
 export const SAMPLE_HARVESTER = 'harvester.sample';
 
+export const RESOURCE_MANAGEMENT = 'resource-management';
+
 export const TRIDENT = {
   PRODUCT_NAME: 'trident',
   LOCAL_TESTING: 'local-testing',

@@ -1168,11 +1168,11 @@
   integrity sha512-4Dx3eRTrUHLxhFdLJL8zdNGzVsJfAxtxPYYGmIddUkO2Gj3WA1TGjdfG4XN/ClI6e1XonCHafQX3UYO/mgnH3g==
 
 "@aws-sdk/types@^3.1.0":
-  version "3.696.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.696.0.tgz#559c3df74dc389b6f40ba6ec6daffeab155330cd"
-  integrity sha512-9rTvUJIAj5d3//U5FDPWGJ1nFJLuWb30vugGOrWk7aNZ6y9tuA3PI7Cc9dP8WEXKVyK1vuuk8rSFP2iqXnlgrw==
+  version "3.709.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.709.0.tgz#f8d7ab07e253d3ed0e3b360e09fc67c7430a73b9"
+  integrity sha512-ArtLTMxgjf13Kfu3gWH3Ez9Q5TkDdcRZUofpKH3pMGB/C6KAbeSCtIIDKfoRTUABzyGlPyCrZdnFjKyH+ypIpg==
   dependencies:
-    "@smithy/types" "^3.7.1"
+    "@smithy/types" "^3.7.2"
     tslib "^2.6.2"
 
 "@aws-sdk/url-parser-browser@3.1.0":
@@ -3629,7 +3629,7 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.3.tgz#282046f03e886e352b2d5f5da5eb755e01457f3f"
   integrity sha512-DE427ROAphMQzU4ENbliGYrBSYPXF+TtLg9S8vzeA+OF4ZKzoDdzfL8sxuMUGS/lgRhM6j1URSk9ghf7Xo1tyA==
 
-"@smithy/types@^3.7.1":
+"@smithy/types@^3.7.2":
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/@smithy/types/-/types-3.7.2.tgz#05cb14840ada6f966de1bf9a9c7dd86027343e10"
   integrity sha512-bNwBYYmN8Eh9RyjS1p2gW6MIhSO2rl7X9QeLM8iTdcGRP+eDiIWDt66c9IysCc22gefKszZv+ubV9qZc7hdESg==
@@ -9732,6 +9732,11 @@ git-url-parse@^13.1.1:
   dependencies:
     git-up "^7.0.0"
 
+github-markdown-css@^5.6.1:
+  version "5.8.1"
+  resolved "https://registry.yarnpkg.com/github-markdown-css/-/github-markdown-css-5.8.1.tgz#2a53cf17f0c9bde5ff9e83710a3310a02f5278a7"
+  integrity sha512-8G+PFvqigBQSWLQjyzgpa2ThD9bo7+kDsriUIidGcRhXgmcaAWUIpCZf8DavJgc+xifjbCG+GvMyWr0XMXmc7g==
+
 glob-parent@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-3.1.0.tgz#9e6af6299d8d3bd2bd40430832bd113df906c5ae"
@@ -12351,6 +12356,11 @@ markdown-it@^12.0.0:
     linkify-it "^3.0.1"
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
+
+marked@4.0.12:
+  version "4.0.12"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.0.12.tgz#2262a4e6fd1afd2f13557726238b69a48b982f7d"
+  integrity sha512-hgibXWrEDNBWgGiK18j/4lkS6ihTe9sxtV4Q1OQppb/0zzyPSzoFANBa5MfsG/zgsWklmNnhm0XACZOH/0HBiQ==
 
 marked@4.0.17:
   version "4.0.17"

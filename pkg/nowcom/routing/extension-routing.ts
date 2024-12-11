@@ -15,9 +15,11 @@ import ListDNS from '../pages/list-dns.vue';
 import ListFirewall from '../pages/list-firewall.vue';
 import ListK8s from '../pages/list-k8s.vue';
 import WishPage from '../pages/wish-page.vue';
-import HarvesterPage from '../pages/sample-harvester.vue';
+import ResourceManager from '../pages/ResourceManager.vue';
+import ResourceCreate from '../pages/ResourceCreate.vue';
 import EnvironmentCreatePage from '../pages/environment/create-page.vue';
 import SharedServicesCreatePage from '../pages/environment/create-shared-service.vue';
+import WikiPage from '../pages/Wiki2Page.vue';
 // import WikiPage from '../pages/deprecated/wiki.vue';
 // import ListNatGateway from '../pages/list-natgateway.vue';
 // import CreateNatGateway from '../pages/deprecated/create-natgateway.vue';
@@ -25,8 +27,9 @@ import SharedServicesCreatePage from '../pages/environment/create-shared-service
 // import RouteTable from '../pages/deprecated/routetables.vue';
 // import Forms from '../pages/deprecated/forms.vue';
 
-import { PRODUCT_NAME, HOME, LIST_NETWORK, CREATE_NETWORK, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, ENVIRONMENT, SHARED_SERVICES, SAMPLE_HARVESTER } from '../config/constants';
-
+import { PRODUCT_NAME, HOME, LIST_NETWORK, CREATE_NETWORK, BLANK_CLUSTER, LIST_K8, LIST_FIREWALL, LIST_DNS, LIST_DHCP, ROAD_MAP, WISH_PAGE, ENVIRONMENT, SHARED_SERVICES, RESOURCE_MANAGEMENT, WIKI_PAGE } from '../config/constants';
+import { getConfig } from '../config/api';
+const { CLUSTER } = getConfig()
 const routes = [
   {
     path: `/${PRODUCT_NAME}/c/:cluster`,
@@ -142,13 +145,34 @@ const routes = [
         },
       },
       {
-        name: `${PRODUCT_NAME}-c-cluster-${SAMPLE_HARVESTER}`,
-        path: `${SAMPLE_HARVESTER}`,
-        component: HarvesterPage,
+        name: `${PRODUCT_NAME}-c-cluster-${RESOURCE_MANAGEMENT}`,
+        path: `${RESOURCE_MANAGEMENT}`,
+        component: ResourceManager,
         meta: {
           product: PRODUCT_NAME,
-          cluster: BLANK_CLUSTER
+          cluster: CLUSTER,
+          pkg: PRODUCT_NAME
         },
+      },
+      {
+        name: `${PRODUCT_NAME}-c-cluster-${RESOURCE_MANAGEMENT}-create`,
+        path: `:resource/create`,
+        component: ResourceCreate,
+        meta: {
+          product: PRODUCT_NAME,
+          cluster: CLUSTER,
+          pkg: PRODUCT_NAME,
+        },
+      },
+      {
+        name: `${PRODUCT_NAME}-c-cluster-${WIKI_PAGE}`,
+        path: `${WIKI_PAGE}`,
+        component: WikiPage,
+        meta: {
+          product: PRODUCT_NAME,
+          cluster: BLANK_CLUSTER,
+          pkg: PRODUCT_NAME
+        }
       },
     ]
   },
