@@ -1,7 +1,7 @@
-export const PRODUCT_NAME = 'Infrastructure';
-export const PRODUCT_STORE = 'infrastructure';
-export const PAGE_NAME = 'Home';
-export const NETWORK_HOME = 'infrastructure';
+export const PRODUCT_NAME = 'trident';
+export const PRODUCT_STORE = 'trident';
+export const PAGE_NAME = 'home';
+export const NETWORK_HOME = 'trident';
 
 export const LIST_NETWORK = 'network';
 export const LIST_K8 = 'kubernetes';

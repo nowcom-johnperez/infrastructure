@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     returnToPreviousRoute () {
-      if (this.previousRoute.fullPath.includes('Infrastructure')) {
+      if (this.previousRoute.fullPath.includes(PRODUCT_NAME)) {
         this.$router.go(-1);
       } else {
         this.$router.push({ name: `${PRODUCT_NAME}-c-cluster-${LIST_NETWORK}`})
