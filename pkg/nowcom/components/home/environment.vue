@@ -133,7 +133,10 @@ export default {
         const roles = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE });
         const globalRoleBindings = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE_BINDING });
         globalRoleBindings
-          .filter((binding) => binding.userName === this.user.id)
+          .filter((binding) => {
+            console.log(`filter test`, binding.userName, this.user.id)
+            return binding.userName === this.user.id
+          })
           .forEach((binding) => {
             const globalRole = roles.find((r) => r.id === binding.globalRoleName);
 
