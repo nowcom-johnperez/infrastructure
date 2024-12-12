@@ -12,11 +12,11 @@
         </div>
         <span v-if="errors.envName" class="text-danger">{{ errors.envName }}</span>
 
-        <div class="mt-15 input-container">
+        <!-- <div class="mt-15 input-container">
           <label for="networkType">Namespace <span class="text-danger">*</span></label>
           <Select :options="namespaceList" v-model="selected.namespace" class="mt-5"/>
         </div>
-        <span v-if="errors.namespace" class="text-danger">{{ errors.namespace }}</span>
+        <span v-if="errors.namespace" class="text-danger">{{ errors.namespace }}</span> -->
   
         <div class="mt-15 input-container">
           <label for="size">Size <span class="text-danger">*</span></label>
@@ -215,15 +215,15 @@ export default {
   },
   async fetch() {
 
-    try {
-      const namespaces = await harvesterService.getNamespaces()
-      const excludePrefixes = ['cattle-', 'kube-', 'longhorn-', 'fleet-', 'harvester-', 'local'];
-      this.namespaceList = namespaces
-        .filter(n => !excludePrefixes.some(prefix => n.metadata?.name.includes(prefix)))
-        .map(n => n.metadata?.name);
-    } catch (error) {
-      this.namespaceList = []
-    }
+    // try {
+    //   const namespaces = await harvesterService.getNamespaces()
+    //   const excludePrefixes = ['cattle-', 'kube-', 'longhorn-', 'fleet-', 'harvester-', 'local'];
+    //   this.namespaceList = namespaces
+    //     .filter(n => !excludePrefixes.some(prefix => n.metadata?.name.includes(prefix)))
+    //     .map(n => n.metadata?.name);
+    // } catch (error) {
+    //   this.namespaceList = []
+    // }
 
     try {
       // page must be attached to a cluster
@@ -274,7 +274,7 @@ export default {
       if (this.selected.orgName && !validateString(this.selected.orgName)) this.errors.orgName = 'Organization Name is not allowed. avoid space and other special characters'
       if (!this.selected.teamName) this.errors.teamName = 'Team Name is required'
       if (this.selected.teamName && !validateString(this.selected.teamName)) this.errors.teamName = 'Team Name is not allowed. avoid space and other special characters'
-      if (!this.selected.namespace) this.errors.namespace = 'Namespace is required'
+      // if (!this.selected.namespace) this.errors.namespace = 'Namespace is required'
       return Object.keys(this.errors).length === 0
     },
     filterBindings() {

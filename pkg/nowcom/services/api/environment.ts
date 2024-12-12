@@ -38,6 +38,11 @@ export const environmentService = {
         return res.data
     },
 
+    getUserGroup: async (principalId: string) => {
+        const res: any =  await BASE_URL_HOST.get(`/v3/principals?provider=azuread_group`)
+        return res.data
+    },
+
     getAllUsers: async () => {
         const res: any =  await BASE_URL_HOST.get(`/v3/users`)
         return res.data

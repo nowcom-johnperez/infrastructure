@@ -7,5 +7,6 @@ import { wishService } from "./wish";
 import { environmentService } from "./environment";
 import { harvesterService } from "./harvester";
 import { wikiService } from "./wiki";
+import { azureService } from "./azure";
 
-export { dhcpService, expressService, firewallService, natService, vNetService, wishService, environmentService, harvesterService, wikiService }
+export { dhcpService, expressService, firewallService, natService, vNetService, wishService, environmentService, harvesterService, wikiService, azureService }

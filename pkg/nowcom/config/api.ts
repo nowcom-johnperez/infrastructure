@@ -20,6 +20,9 @@ export const getConfig = () => {
     GITLAB_IMAGES_PROJECT_ID: '60607760',
     GITLAB_PROJECT_TOKEN: 'glpat-5t8tWuTYdHTnhSszGZyp',
     GITLAB_TOKEN: 'glpat-3fpYpWvshVzaSjxUyyzt',
+    AZURE_CLIENT_ID: '07db3ce2-fec0-4f49-b387-9f5bfe44ab69',
+    AZURE_CLIENT_VALUE: 'Tm58Q~gQgY-3CkC7zaTN.q8TT0wE8QxG_78yuabn',
+    AZURE_TENANT_ID: '6dadecb4-3d69-41eb-98a0-cd3c988f5bd4'
   };
 
   if (typeof window !== 'undefined') {

@@ -15,7 +15,8 @@ export interface Vnets {
   translatedAddress: string;
 }
 
-export interface vnetVariables {
+export interface tridentVariables {
   items: Vnets[],
-  topNav: boolean
+  topNav: boolean,
+  azureToken: string
 }

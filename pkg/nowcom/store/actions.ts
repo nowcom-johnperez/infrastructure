@@ -1,4 +1,4 @@
-import { vNetService } from '../services/api/vnet'
+import { vNetService, azureService } from '../services/api'
 import { stripStrings, findTranslatedAddress } from '../services/helpers/utils'
 export default {
   async findAll({ commit }: any) {
@@ -34,32 +34,36 @@ export default {
     commit('setItems', parsedData)
   },
   async getSubnets({ commit }: any, networkName: string) {
-      const res: any = await vNetService.getSubnetByName(networkName);
-      return res.data?.spec?.subnets.map((subnet: any) => {
-          return {
-              address:    subnet.address,
-              formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
-              name:       stripStrings(networkName, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
-              longName:   subnet.name,
-              prefix_len: subnet.prefixLength,
-              dhcpEnabled: subnet.dhcpEnabled,
-              translatedAddress: subnet.addressTranslation?.outside
-          }
-      })
+    const res: any = await vNetService.getSubnetByName(networkName);
+    return res.data?.spec?.subnets.map((subnet: any) => {
+        return {
+          address:    subnet.address,
+          formattedAddress:    `${subnet.address}/${subnet.prefixLength}`,
+          name:       stripStrings(networkName, subnet.name, `${subnet.address}-${subnet.prefixLength}`),
+          longName:   subnet.name,
+          prefix_len: subnet.prefixLength,
+          dhcpEnabled: subnet.dhcpEnabled,
+          translatedAddress: subnet.addressTranslation?.outside
+        }
+    })
   },
   async create({ commit }: any, data: any) {
-      return await vNetService.createNetwork(data);
+    return await vNetService.createNetwork(data);
   },
   async deleteNetwork({ commit}: any, itemName: string) {
-      return await vNetService.deleteNetwork(itemName);
+    return await vNetService.deleteNetwork(itemName);
   },
   async deleteSubnet({ commit }: any, data: { vnetName: string, vnetData: any}) {
-      return await vNetService.patchSubnet(data.vnetName, data.vnetData);
+    return await vNetService.patchSubnet(data.vnetName, data.vnetData);
   },
   reset({ commit }: any) {
-      commit('setItems', [])
+    commit('setItems', [])
   },
   setTopNavStatus({commit}: any, status: boolean) {
     commit('setTopNavState', status)
+  },
+  async setAzureToken({ commit }: any) {
+    const token = await azureService.fetchToken()
+    commit('setAzureToken', token)
   }
 }

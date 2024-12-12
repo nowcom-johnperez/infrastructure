@@ -50,7 +50,8 @@ import ModalStatus from '../environment/Modal-Status.vue';
 import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
-import { environmentService } from '../../services/api';
+import { environmentService, azureService } from '../../services/api';
+import { PRODUCT_STORE } from '../../config/constants';
 import { getConfig } from '../../config/api';
 const { ENVIRONMENT_CLUSTER, STACK, BREACHER_API } = getConfig()
 export default {
@@ -80,6 +81,10 @@ export default {
 
     user() {
       return this.$store.getters['auth/v3User']
+    },
+
+    azureToken() {
+      return this.$store.getters[`${PRODUCT_STORE}/getAzureToken`]
     },
 
     canCreateCluster() {
@@ -185,14 +190,25 @@ export default {
     openModalStatus(env) {
       this.selectedEnv = env
       this.statusModalState = true
+    },
+    async fetchAssociatedGroups () {
+      // dont fetch associated groups if the user is a local account
+      const principalId = this.user.principalIds[0] // assuming the first id is azure id
+      if (!principalId.includes('azuread_user://')) return
+      if (!this.azureToken) await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
+
+      try {
+        const userId = principalId.replace("azuread_user://", "")
+        console.log(`userId of azure: `, userId)
+        const groups = await azureService.fetchUserMemberOf(userId, this.azureToken)
+        console.log(`groups`, groups)
+      } catch (err) {
+        this.fetchAssociatedGroups()
+      }
     }
   },
   async mounted() {
-    const test = await this.$store.dispatch('management/findAll', {
-        type: NORMAN.SPOOFED.GROUP_PRINCIPAL,
-        opt:  { force: true }
-      }, { root: true });
-    console.log(`test`, test)
+    this.fetchAssociatedGroups()
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {
         this.stopInterval()
@@ -203,7 +219,6 @@ export default {
     EventBus.$on('env-modal-status', this.openModalStatus)
     this.fetchEnvironment()
     this.initIntervalFetch()
-    console.log(`user`, this.user)
   },
   beforeDestroy() {
     EventBus.$off('env-modal-status')

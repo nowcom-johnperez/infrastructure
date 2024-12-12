@@ -3,19 +3,21 @@ import { PRODUCT_STORE } from '../config/constants';
 import actions from './actions'
 import mutations from './mutations'
 
-import { vnetVariables } from '../config/store';
+import { tridentVariables } from '../config/store';
 
 const vnetExtensionFactory = (): CoreStoreSpecifics => {
     return {
         state() {
             return {
                 items: [],
-                topNav: true
+                topNav: true,
+                azureToken: ''
             }
         },
         getters: {
-            items: (state: vnetVariables) => state.items,
-            getTopNav: (state: vnetVariables) => state.topNav
+            items: (state: tridentVariables) => state.items,
+            getTopNav: (state: tridentVariables) => state.topNav,
+            getAzureToken: (state: tridentVariables) => state.azureToken
         },
         mutations: {
             ...mutations

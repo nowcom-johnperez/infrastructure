@@ -3,6 +3,7 @@ import axios from "axios";
 import { getConfig } from './api';
 const { BEARERTOKEN, NETWORK_URL_V2, NETWORK_URL_V3, BEARERTOKEN_V3, RANCHER_DIRECT_URL, RANCHER_BEARERTOKEN, GITLAB_URL, GITLAB_TOKEN, GITLAB_PROJECT_TOKEN } = getConfig();
 
+export const axiosClient = axios;
 export const INSTANCE_V2 = axios.create({
     baseURL:    NETWORK_URL_V2,
     httpsAgent: new https.Agent({ rejectUnauthorized: false }), // Bypass certificate validation
@@ -35,3 +36,4 @@ export const GITLAB_PROJECT_API = axios.create({
         'PRIVATE-TOKEN': GITLAB_PROJECT_TOKEN,
     },
 })
+
