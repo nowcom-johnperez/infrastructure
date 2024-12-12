@@ -139,12 +139,7 @@ export default {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
         const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
-        console.log(`groupIds`, groupIds)
         const allIds = [...owners, ...members];
-        console.log(`condition`, allIds.some(id => 
-          id === this.user.id || 
-          id === this.user.principalIds[0] || 
-          groupIds.includes(id)), e.metadata.name)
         return allIds.some(id => 
           id === this.user.id || 
           id === this.user.principalIds[0] || 
@@ -162,8 +157,6 @@ export default {
             network: this.getStatus(e.status?.conditions, 'NetworkReady'),
             networkPolicy: this.getStatus(e.status?.conditions, 'NetworkPolicyReady'),
             clusterCreation: this.getStatus(e.status?.conditions, 'ClusterReady'),
-            // certificateServices: this.getRandomStatus(),
-            // dns: this.getRandomStatus()
           }
         }
       })
