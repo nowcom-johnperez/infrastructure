@@ -34,7 +34,7 @@ export const getConfig = () => {
       config.RANCHER_BEARERTOKEN = 'token-56npt:5r6kjl4c56k65m6jjjbvkzcjvhd9kjkgk79lsbsqcnbjt8gwtfx76w'
       config.CLUSTER = 'c-m-wvplbwls'
       config.API = 'packetlifter.io'
-      config.ENVIRONMENT_CLUSTER = 'c-m-wvplbwls'
+      config.ENVIRONMENT_CLUSTER = 'c-m-96blcn4m'
       config.isDev = false
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'

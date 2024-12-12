@@ -8,7 +8,7 @@ spec:
   plugin:
     name: {{ include "extension-server.fullname" . }}
     version: {{ (semver (default .Chart.AppVersion .Values.plugin.versionOverride)).Original }}
-    endpoint: https://raw.githubusercontent.com/nowcom-johnperez/infrastructure/dev/extensions/nowcom/0.3.2
+    endpoint: https://raw.githubusercontent.com/nowcom-johnperez/infrastructure/main/extensions/nowcom/0.3.2
     noCache: {{ .Values.plugin.noCache }}
     noAuth: {{ .Values.plugin.noAuth }}
     metadata: {{ include "extension-server.pluginMetadata" . | indent 6 }}
