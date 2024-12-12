@@ -17,11 +17,11 @@
           <span class="detail-label">FW Policy:</span>
           <span class="detail-value">{{ service.spec.networkPolicy }}</span>
         </div>
-        <!-- <div class="detail-item">
+        <div class="detail-item">
           <i class="fa fa-globe detail-icon"></i>
           <span class="detail-label">DNS:</span>
           <span class="detail-value">{{ service.dns }}</span>
-        </div> -->
+        </div>
       </div>
       <div class="node-info">
         <EnvironmentStatus :statuses="service.statuses" />

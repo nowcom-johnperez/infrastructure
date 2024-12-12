@@ -11,7 +11,7 @@
             <div
               class="col span-12"
             >
-              <ListingActions :is-grid-view="true" :search-query="searchQuery" @update:search-query="(query) => searchQuery = query" @set-view="(view) => viewState = view"  :can-create="canCreateCluster" :create-location="createEnvironmentLocation">
+              <ListingActions :is-grid-view="true" :search-query="searchQuery" @update:search-query="updateSeachQuery" @set-view="(view) => viewState = view"  :can-create="canCreateCluster" :create-location="createEnvironmentLocation">
                 <template #header>
                   <div class="row table-heading">
                     <h2 class="mb-0">
@@ -27,7 +27,7 @@
               </ListingActions>
               
               <EnvironmentListView v-if="viewState === 'list'" :list="filteredEnvironment" />
-              <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" :loading="$fetchState.pending" />
+              <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" :loading="$fetchState.pending" @onUpdatePage="(page) => currentPage = page" :current-page="currentPage" />
               <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :environment-id="selectedEnv.spec?.environmentName" @onClose="closeModalState" />
             </div>
           </div>
@@ -73,7 +73,9 @@ export default {
       searchQuery: '',
       viewState: 'grid',
       environmentList: [],
-      groupsByUser: []
+      groupsByUser: [],
+      isAdmin: false,
+      currentPage: 1
     }
   },
 
@@ -112,6 +114,7 @@ export default {
           return (app.spec.environmentName.toLowerCase().includes(searchTerm) ||
             app.spec.clusterSize.toLowerCase().includes(searchTerm) ||
             app.spec.networkType.toLowerCase().includes(searchTerm) ||
+            app.dns.includes(searchTerm) ||
             app.metadata?.annotations?.[`${BREACHER_API}/org`].toLowerCase().includes(searchTerm) ||
             app.metadata?.annotations?.[`${BREACHER_API}/team`].toLowerCase().includes(searchTerm))
         });
@@ -120,9 +123,30 @@ export default {
   },
 
   methods: {
+    updateSeachQuery(query) {
+      this.currentPage = 1
+      this.searchQuery = query
+    },
+    async fetchGlobalRoleBindings() {
+      const globalRoleSchema = await this.$store.getters['management/schemaFor'](MANAGEMENT.GLOBAL_ROLE_BINDING)
+      if (globalRoleSchema) {
+        const roles = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE });
+        const globalRoleBindings = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE_BINDING });
+        globalRoleBindings
+          .filter((binding) => binding.userName === this.user.id)
+          .forEach((binding) => {
+            const globalRole = roles.find((r) => r.id === binding.globalRoleName);
+
+            if (globalRole.id === 'admin') {
+              this.isAdmin = true;
+            }
+          })
+      }
+      
+    },
     initIntervalFetch() {
       if (!this.intervalId) {
-        this.intervalId = setInterval(this.fetchEnvironment, 8000); // Adjust interval time as needed
+        this.intervalId = setInterval(this.fetchEnvironment, 10000); // 10s interval
       }
     },
     stopInterval() {
@@ -134,7 +158,6 @@ export default {
     async fetchEnvironment() {
       const envResponse = await environmentService.getAll()
       // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
-      const clusters = ['c-m-2n5nv4ns', 'c-m-7zjjktjj', 'c-m-7qlxzcn4'];
       this.environmentList = envResponse.filter((e) => {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
@@ -143,15 +166,17 @@ export default {
         return allIds.some(id => 
           id === this.user.id || 
           id === this.user.principalIds[0] || 
-          groupIds.includes(id)
+          groupIds.includes(id) || 
+          this.isAdmin
         );
       }).map((e) => {
-        const randomNumber = Math.floor(Math.random() * 3);
+        const clusterId = e.status?.clusterRef?.clusterID
         const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
+        const ingress = this.fetchIngress(clusterId)
         return {
           ...e,
-          clusterId: clusters[randomNumber],
-          dns: '10.51.2.3',
+          clusterId,
+          dns: ingress?.dns || '',
           sizeInfo,
           statuses: {
             network: this.getStatus(e.status?.conditions, 'NetworkReady'),
@@ -160,6 +185,21 @@ export default {
           }
         }
       })
+    },
+    async fetchIngress(clusterId) {
+      try {
+        const ingresses = (
+          await this.$store.dispatch('cluster/request', {
+            url: `/k8s/clusters/${clusterId}/v1/networking.k8s.io.ingresses`,
+          })
+        ).data;
+        return ingresses.map(ingress => ({
+          ...ingress,
+          dns: ingress.status?.loadBalancer?.ingress?.map(node => node.ip) || [],
+        }))[0] || null;
+      } catch (error) {
+        console.error(`Error fetching ingresses for cluster ${clusterId}:`, error);
+      }
     },
     getStatus(conditions, type) {
       if (!type || !conditions) return 'inactive'
@@ -219,6 +259,7 @@ export default {
     }
   },
   async mounted() {
+    this.fetchGlobalRoleBindings()
     this.fetchAssociatedGroups()
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {

@@ -13,11 +13,22 @@ export default {
     totalPages: {
       type: Number,
       required: true
+    },
+    page: {
+      type: Number,
+      default: 1,
     }
   },
   data() {
     return {
       currentPage: 1,
+    }
+  },
+  watch: {
+    page(value) {
+      if (value !== this.currentPage) {
+        this.currentPage = value
+      }
     }
   },
   methods: {

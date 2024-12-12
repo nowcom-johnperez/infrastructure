@@ -3,10 +3,10 @@
     <div v-if="!loading">
       <template v-if="list.length > 0">
         <div class="environment-grid">
-          <EnvironmentCard v-for="service in list" :key="service.name" :service="service" @view-click="viewItem" />
+          <EnvironmentCard v-for="service in paginatedList" :key="service.name" :service="service" @view-click="viewItem" />
         </div>
 
-        <GridPagination :total-pages="totalPages" @page-update="(page) => currentPage = page" />
+        <GridPagination :total-pages="totalPages" @page-update="updatePage" :page="currentPage" />
       </template>
       <template v-else>
         <Banner
@@ -40,6 +40,10 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    currentPage: {
+      type: Number,
+      default: 1,
     }
   },
   components: {
@@ -49,27 +53,41 @@ export default {
   },
   data() {
     return {
-      currentPage: 1,
+      page: 1,
       pageSize: 6
     }
   },
+  watch: {
+    currentPage(value) {
+      if (value !== this.page) {
+        this.page = value
+      }
+    },
+  },
   computed: {
     paginatedList() {
-      const start = (this.currentPage - 1) * this.pageSize;
+      const start = (this.page - 1) * this.pageSize;
       const end = this.currentPage * this.pageSize;
       return this.list.slice(start, end);
     },
     totalPages() {
       return Math.ceil(this.list.length / this.pageSize);
-    }
+    },
   },
   methods: {
+    updatePage(p) {
+      this.page = p
+      this.$emit('onUpdatePage', this.page)
+    },
     viewItem(item) {
       EventBus.$emit('component-view', {
         item,
         component: EnvironmentView
       })
     },
+  },
+  mounted() {
+    this.page = this.currentPage
   }
 }
 </script>

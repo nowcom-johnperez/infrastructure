@@ -68,6 +68,11 @@ export default {
 
     gradientStyle() {
       const { active, warning, inactive } = this.statusPercentages;
+      const totalStatuses = this.totalStatusCount;
+      if (this.statusPercentages.counts.active === totalStatuses) {
+        return 'var(--success)'; // Green if all are active
+      }
+
       return `linear-gradient(to right, 
         var(--primary) 0%,
         var(--primary) ${active}%,

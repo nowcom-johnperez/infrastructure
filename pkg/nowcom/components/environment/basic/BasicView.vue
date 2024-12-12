@@ -8,10 +8,10 @@
           <div class="row-val">{{ currentObj.spec.environmentName }}</div>
         </div>
 
-        <div class="row-detail">
+        <!-- <div class="row-detail">
           <div class="row-label">Namespace</div>
           <div class="row-val">{{ currentObj.metadata?.annotations?.[`${BREACHER_API}/namespace`] || '' }}</div>
-        </div>
+        </div> -->
         <!-- <div class="row-detail">
           <div class="row-label">Kubernetes</div>
           <div class="row-val">rke2 version</div>
