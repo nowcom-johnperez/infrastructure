@@ -72,7 +72,8 @@ export default {
       selectedEnv: null,
       searchQuery: '',
       viewState: 'grid',
-      environmentList: []
+      environmentList: [],
+      groupsByUser: []
     }
   },
 
@@ -137,9 +138,14 @@ export default {
       this.environmentList = envResponse.filter((e) => {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
-
+        const groupIds = this.groupsByUser.map((group) => group.id)
         const allIds = [...owners, ...members];
-        return allIds.includes(this.user.id) || allIds.includes(this.user.principalIds[0]);
+
+        return allIds.some(id => 
+          id === this.user.id || 
+          id === this.user.principalIds[0] || 
+          groupIds.includes(id)
+        );
       }).map((e) => {
         const randomNumber = Math.floor(Math.random() * 3);
         const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
@@ -194,14 +200,21 @@ export default {
     async fetchAssociatedGroups () {
       // dont fetch associated groups if the user is a local account
       const principalId = this.user.principalIds[0] // assuming the first id is azure id
-      if (!principalId.includes('azuread_user://')) return
+      if (!principalId.includes('azuread_user://')) {
+        console.log(`principal id doesn't include azureread_user`)
+        return
+      }
       if (!this.azureToken) await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
 
       try {
         const userId = principalId.replace("azuread_user://", "")
-        console.log(`userId of azure: `, userId)
         const groups = await azureService.fetchUserMemberOf(userId, this.azureToken)
-        console.log(`groups`, groups)
+        this.groupsByUser = groups?.value?.map((group) => {
+          return {
+            id: group.id,
+            name: group.displayName
+          }
+        })
       } catch (err) {
         this.fetchAssociatedGroups()
       }
