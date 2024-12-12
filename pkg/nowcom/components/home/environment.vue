@@ -213,6 +213,7 @@ export default {
           }
         })
       } catch (err) {
+        await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
         this.fetchAssociatedGroups()
       }
     }
