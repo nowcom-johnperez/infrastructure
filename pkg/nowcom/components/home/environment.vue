@@ -53,7 +53,7 @@ import EnvironmentListView from '../environment/EnvironmentListView.vue';
 import { environmentService, azureService } from '../../services/api';
 import { PRODUCT_STORE } from '../../config/constants';
 import { getConfig } from '../../config/api';
-const { ENVIRONMENT_CLUSTER, STACK, BREACHER_API } = getConfig()
+const { BREACHER_API } = getConfig()
 export default {
   name:       'Environments',
   components: {
@@ -138,9 +138,13 @@ export default {
       this.environmentList = envResponse.filter((e) => {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
-        const groupIds = this.groupsByUser.map((group) => group.id)
+        const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
+        console.log(`groupIds`, groupIds)
         const allIds = [...owners, ...members];
-
+        console.log(`condition`, allIds.some(id => 
+          id === this.user.id || 
+          id === this.user.principalIds[0] || 
+          groupIds.includes(id)), e.metadata.name)
         return allIds.some(id => 
           id === this.user.id || 
           id === this.user.principalIds[0] || 
