@@ -2,9 +2,9 @@
   <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="name" defaultSortBy="priority" defaultSortOrder="asc">
     <template #header-left>
       <div class="row table-heading" style="justify-items: center;">
-        <cButton class="cbtn btn-light block mr-10 ml-10" @click="onCreateClick">
+        <button type="button" :disabled="!isDev" class="btn role-secondary btn-sm block mr-10 ml-10" @click="onCreateClick">
           <span class="fa fa-plus fa-lg mr-5"></span> Create
-        </cButton>
+        </button>
       </div>
     </template>
     <template #cell:name="{row}">
@@ -39,20 +39,22 @@
       </span>
     </template>
     <template #row-actions="{row}">
-      <cButton class="cbtn btn-primary" :disabled="row.priority > 999" @click="onDeleteClick(row)">
+      <button type="button" class="btn role-primary btn-sm" :disabled="row.priority > 999 || !isDev" @click="onDeleteClick(row)">
         <span class="fa fa-trash fa-lg mr-5"></span>
         <span v-if="row.priority > 999" v-clean-tooltip="unavailableTooltipButton">Delete</span>
         <span v-else>Delete</span>
-      </cButton>
+      </button>
     </template>
   </SortableTable>
 </template>
 
 <script>
 import { RULES_HEADERS } from '../../config/table'
+import { getConfig } from '../../config/api'
 import SortableTable from '@shell/components/ResourceTable.vue'
 import SideBar from '../Sidebar'
 import cButton from '../common/Button'
+const { isDev } = getConfig()
 export default {
   name: 'RulesTable',
   props: {
@@ -72,7 +74,8 @@ export default {
   },
   data() {
     return {
-      headers: []
+      headers: [],
+      isDev
     }
   },
   computed: {

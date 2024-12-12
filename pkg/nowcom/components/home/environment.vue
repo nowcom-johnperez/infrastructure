@@ -256,11 +256,15 @@ export default {
         await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
         this.fetchAssociatedGroups()
       }
+    },
+    async init() {
+      await this.fetchGlobalRoleBindings()
+      await this.fetchAssociatedGroups()
+      await this.fetchEnvironment()
     }
   },
   async mounted() {
-    this.fetchGlobalRoleBindings()
-    this.fetchAssociatedGroups()
+    this.init()
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {
         this.stopInterval()
@@ -269,7 +273,6 @@ export default {
       }
     })
     EventBus.$on('env-modal-status', this.openModalStatus)
-    this.fetchEnvironment()
     this.initIntervalFetch()
   },
   beforeDestroy() {

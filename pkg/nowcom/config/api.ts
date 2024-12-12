@@ -22,7 +22,8 @@ export const getConfig = () => {
     GITLAB_TOKEN: 'glpat-3fpYpWvshVzaSjxUyyzt',
     AZURE_CLIENT_ID: '07db3ce2-fec0-4f49-b387-9f5bfe44ab69',
     AZURE_CLIENT_VALUE: 'Tm58Q~gQgY-3CkC7zaTN.q8TT0wE8QxG_78yuabn',
-    AZURE_TENANT_ID: '6dadecb4-3d69-41eb-98a0-cd3c988f5bd4'
+    AZURE_TENANT_ID: '6dadecb4-3d69-41eb-98a0-cd3c988f5bd4',
+    isDev: false
   };
 
   if (typeof window !== 'undefined') {
@@ -34,6 +35,7 @@ export const getConfig = () => {
       config.CLUSTER = 'c-m-wvplbwls'
       config.API = 'packetlifter.io'
       config.ENVIRONMENT_CLUSTER = 'c-m-wvplbwls'
+      config.isDev = false
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
       // config.RANCHER_BEARERTOKEN = 'token-gz2gq:2j67frvc7bt8p4ztm7vz52t44j6rqhkpls7lg44s7n7vjhkjnd98cq'

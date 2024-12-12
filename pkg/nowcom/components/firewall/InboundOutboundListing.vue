@@ -3,7 +3,7 @@
     <h2 class="text-label">{{ vnet.name }}</h2>
     <GroupButtons class="w-100" :list="firewallButtons" @action="actionHandler"/>
     <div class="mt-10">
-      <Tabs :list="['Inbound Security Rules', 'Outbound Security Rules', 'Translations']" :current="currentTabIndex" @set-active="setTab"/>
+      <Tabs :list="tabList" :current="currentTabIndex" @set-active="setTab"/>
 
       <div class="tab-content-container mt-40">
         <div class="tab-content" :class="{ 'show': currentTabIndex === 0 }">
@@ -73,9 +73,15 @@ export default {
     Modal
   },
   data() {
+    const firewallButtons = FIREWALL_BUTTONS
     return {
+      tabList: [
+        { label: 'Inbound Security Rules', disabled: false },
+        { label: 'Outbound Security Rules', disabled: false },
+        { label: 'Translations', disabled: false },
+      ],
       loading: false,
-      firewallButtons: [],
+      firewallButtons,
       headers: [],
       currentTabIndex: 0,
       sidebar: {
@@ -163,7 +169,6 @@ export default {
     },
   },
   async mounted() {
-    this.firewallButtons = FIREWALL_BUTTONS
     await this.fetchData();
   }
 }

@@ -54,11 +54,11 @@
           </template>
           <template #header-right>
             <div class="row">
-              <button class="btn role-secondary mr-10 ml-10" @click="actionHandler('create')" :disabled="loading || disabledUpdate">
+              <button class="btn role-secondary btn-sm mr-10 ml-10" @click="actionHandler('create')" :disabled="loading || !isDev">
                 <span class="fa fa-plus fa-lg mr-5"></span> Create
               </button>
 
-              <button class="btn role-primary block" @click="initBulkDelete" :disabled="loading || disabledUpdate">
+              <button class="btn role-primary btn-sm block" @click="initBulkDelete" :disabled="loading || !isDev">
                 <span class="fa fa-trash fa-lg mr-5"></span> Bulk Delete
               </button>      
             </div>
@@ -67,7 +67,7 @@
             <a href="#" @click.prevent="openSidebar(row)">{{ row.name }}</a>
           </template>
           <template #row-actions="row">
-            <button class="btn role-primary" @click="openModal(row.row)" :disabled="loading || disabledUpdate">
+            <button class="btn role-primary btn-sm" @click="openModal(row.row)" :disabled="loading || !isDev">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
             </button>
           </template>
@@ -79,7 +79,7 @@
       <h2 class="text-label">{{ selectedNetwork ? selectedNetwork.name : 'No Network Selected' }}</h2>
         <div class="form-row">
           <div class="form-column" align="left">
-            <button class="btn role-secondary" @click="addSubnetSidebar" :disabled="disabledUpdate">
+            <button class="btn role-secondary btn-sm" @click="addSubnetSidebar" :disabled="!isDev">
               <i class="fa fa-plus fa-lg mr-5"></i> Add Subnet
             </button> 
           </div>
@@ -98,7 +98,7 @@
             />
           </template>
           <template #row-actions="row">
-            <button class="btn role-primary" @click="openModalAction(row.row)" :disabled="loading">
+            <button class="btn role-primary btn-sm" @click="openModalAction(row.row)" :disabled="loading || !isDev">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
             </button>
           </template>  
@@ -170,7 +170,7 @@ import { PRODUCT_STORE, PRODUCT_NAME, CREATE_NETWORK, BLANK_CLUSTER } from '../c
 import { expressService } from '../services/api/express'
 import { stripErrorMessage } from '../services/helpers/utils'
 import { getConfig } from '../config/api';
-const { API_VERSION, API } = getConfig()
+const { API_VERSION, API, isDev } = getConfig()
 
 export default {
   name: 'ListNetwork',
@@ -187,6 +187,7 @@ export default {
   // layout: 'home',
   data() {
     return {
+      isDev,
       selectedName:            '', // Dropdown for network name
       selectedVnetName:        '',
       selectedSubnetName:      '',
@@ -222,7 +223,6 @@ export default {
         nextAvailableSub: {},
         selectedSub: {}
       },
-      disabledUpdate: true
     };
   },
   computed: {
