@@ -50,7 +50,7 @@ import ModalStatus from '../environment/Modal-Status.vue';
 import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
-import { environmentService, azureService } from '../../services/api';
+import { environmentService } from '../../services/api';
 import { PRODUCT_STORE } from '../../config/constants';
 import { getConfig } from '../../config/api';
 const { BREACHER_API } = getConfig()
@@ -73,7 +73,6 @@ export default {
       searchQuery: '',
       viewState: 'grid',
       environmentList: [],
-      groupsByUser: [],
       clustersByUser: [],
       isAdmin: false,
       currentPage: 1
@@ -156,57 +155,65 @@ export default {
         this.intervalId = null
       }
     },
+
     async fetchEnvironment() {
-      const envResponse = await environmentService.getAll()
-      // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
-      console.log(`isAdmin`, this.isAdmin)
-      this.environmentList = envResponse.filter((e) => {
-        const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
-        const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
-        // const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
-        const clusterId = e.status?.clusterRef?.clusterID
+      const envResponse = await environmentService.getAll();
+      
+      const filteredEnvironments = envResponse.filter((e) => {
+        const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] 
+          ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) 
+          : [];
+        const members = e.metadata?.annotations[`${BREACHER_API}/members`] 
+          ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) 
+          : [];
+        const clusterId = e.status?.clusterRef?.clusterID;
         const allIds = [...owners, ...members];
-        return allIds.some(id => {
-          console.log(`cluster checker`, clusterId, this.clustersByUser.includes(clusterId))
+
+        return allIds.some((id) => {
           return (
             id === this.user.id || 
             id === this.user.principalIds[0] || 
-            // groupIds.includes(id) || 
             this.clustersByUser.includes(clusterId) ||
             this.isAdmin
-          )
-        }
+          );
+        });
+      });
+
+      this.environmentList = await Promise.all(filteredEnvironments.map(async (e) => {
+        const clusterId = e.status?.clusterRef?.clusterID;
+        const sizeInfo = ENVIRONMENT_SIZES.find(
+          (s) => s.size.toLowerCase() === e.spec.clusterSize
         );
-      }).map((e) => {
-        const clusterId = e.status?.clusterRef?.clusterID
-        const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize)
-        const ingress = this.fetchIngress(clusterId)
+        const service = await this.fetchService(clusterId);
+        const rawDns = service.metadata?.annotations['kube-vip.io/loadbalancerIPs']
+        const dns = typeof rawDns === 'string' ? [rawDns] : rawDns
         return {
           ...e,
           clusterId,
-          dns: ingress?.dns || '',
+          dns: dns || [], // Adjust as needed
           sizeInfo,
           statuses: {
             network: this.getStatus(e.status?.conditions, 'NetworkReady'),
             networkPolicy: this.getStatus(e.status?.conditions, 'NetworkPolicyReady'),
             clusterCreation: this.getStatus(e.status?.conditions, 'ClusterReady'),
-          }
-        }
-      })
+          },
+        };
+      }));
     },
-    async fetchIngress(clusterId) {
+
+    async fetchService(clusterId) {
       try {
-        const ingresses = (
+        const services = (
           await this.$store.dispatch('cluster/request', {
-            url: `/k8s/clusters/${clusterId}/v1/networking.k8s.io.ingresses`,
+            url: `/k8s/clusters/${clusterId}/v1/services`,
           })
         ).data;
-        return ingresses.map(ingress => ({
-          ...ingress,
-          dns: ingress.status?.loadBalancer?.ingress?.map(node => node.ip) || [],
-        }))[0] || null;
+
+        // bind-svc is a fixed name
+        // @TODO for future check if needed to be a constants
+        return services.find((service) => service.metadata.name === 'bind-svc')
       } catch (error) {
-        console.error(`Error fetching ingresses for cluster ${clusterId}:`, error);
+        console.error(`Error fetching services for cluster ${clusterId}:`, error);
       }
     },
     getStatus(conditions, type) {
@@ -242,36 +249,12 @@ export default {
       this.selectedEnv = env
       this.statusModalState = true
     },
-    async fetchAssociatedGroups () {
-      // dont fetch associated groups if the user is a local account
-      const principalId = this.user.principalIds[0] // assuming the first id is azure id
-      if (!principalId.includes('azuread_user://')) {
-        console.log(`principal id doesn't include azureread_user`)
-        return
-      }
-      if (!this.azureToken) await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
-
-      try {
-        const userId = principalId.replace("azuread_user://", "")
-        const groups = await azureService.fetchUserMemberOf(userId, this.azureToken)
-        this.groupsByUser = groups?.value?.map((group) => {
-          return {
-            id: group.id,
-            name: group.displayName
-          }
-        })
-      } catch (err) {
-        await this.$store.dispatch(`${PRODUCT_STORE}/setAzureToken`)
-        this.fetchAssociatedGroups()
-      }
-    },
     async fetchClusters() {
       const clusters = await this.$store.dispatch(`management/findAll`, { type: CAPI.RANCHER_CLUSTER })
       this.clustersByUser = clusters.map((cluster) => cluster.status?.clusterName)
     },
     async init() {
       await this.fetchGlobalRoleBindings()
-      // await this.fetchAssociatedGroups()
       await this.fetchClusters()
       await this.fetchEnvironment()
     }

@@ -21,7 +21,10 @@
           <i class="fa fa-globe detail-icon"></i>
           <span class="detail-label">DNS:</span>
           <span class="detail-value">
-            <CopyToClipboardText v-if="service.dns" :text="service.dns" />
+            <template v-if="service.dns.length > 0">
+              <CopyToClipboardText v-for="dns in service.dns" :key="`${dns}-${service.spec.environmentName}`" :text="dns" class="mr-5" />
+            </template>
+            
             <span v-else>not available</span>
           </span>
         </div>

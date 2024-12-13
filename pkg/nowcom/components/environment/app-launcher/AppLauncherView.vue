@@ -24,12 +24,6 @@
       </div>
     </div>
     <div class="row-detail">
-      <div class="row-label">Namespace</div>
-      <div class="row-val">
-        <span class="ml-10">{{ ingress?.metadata?.namespace || 'Not available' }}</span>
-      </div>
-    </div>
-    <div class="row-detail">
       <div class="row-label">Node IP</div>
       <div class="row-val">
         <template v-if="ingress">
@@ -52,9 +46,9 @@
       </div>
     </div>
     <div class="row-detail">
-      <div class="row-label">Github Repository</div>
+      <div class="row-label">Github Repository Path</div>
       <div class="row-val">
-        <span v-if="githubLinks.length === 0" class="ml-10">Not available</span>
+        <span v-if="githubLinks.length === 0" class="ml-10">non assigned</span>
         <a
           v-for="link in githubLinks"
           :key="link"
