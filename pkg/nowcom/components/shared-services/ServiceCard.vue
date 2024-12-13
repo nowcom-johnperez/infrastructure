@@ -27,7 +27,7 @@
     </template>
     <template #actions>
       <button type="button" class="btn role-primary btn-sm" @click="viewItem">
-        View
+        {{ btnLabel }}
       </button>
     </template>
   </Card>
@@ -47,6 +47,10 @@ export default {
       type: Object,
       default: null,
     },
+    btnLabel: {
+      type: String,
+      default: 'View'
+    }
   },
   name: 'ServiceCard',
   methods: {

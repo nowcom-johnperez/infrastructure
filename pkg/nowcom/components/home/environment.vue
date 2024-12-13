@@ -159,18 +159,23 @@ export default {
     async fetchEnvironment() {
       const envResponse = await environmentService.getAll()
       // const envResponse = await this.$store.dispatch('cluster/findAll', { type: STACK })
+      console.log(`isAdmin`, this.isAdmin)
       this.environmentList = envResponse.filter((e) => {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
         // const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
         const clusterId = e.status?.clusterRef?.clusterID
         const allIds = [...owners, ...members];
-        return allIds.some(id => 
-          id === this.user.id || 
-          id === this.user.principalIds[0] || 
-          // groupIds.includes(id) || 
-          this.clustersByUser.includes(clusterId) ||
-          this.isAdmin
+        return allIds.some(id => {
+          console.log(`cluster checker`, clusterId, this.clustersByUser.includes(clusterId))
+          return (
+            id === this.user.id || 
+            id === this.user.principalIds[0] || 
+            // groupIds.includes(id) || 
+            this.clustersByUser.includes(clusterId) ||
+            this.isAdmin
+          )
+        }
         );
       }).map((e) => {
         const clusterId = e.status?.clusterRef?.clusterID

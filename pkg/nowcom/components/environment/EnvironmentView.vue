@@ -33,7 +33,6 @@
             Coming soon!
           </div>
         </div>
-        
       </div>
 
       <!-- App Launcher -->
@@ -43,7 +42,13 @@
 
       <!-- Link Services -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 4 }">
-        <LinkServicesView />
+        <div class="watermark">
+          <LinkServicesView />
+          <div class="coming-soon-text">
+            Coming soon!
+          </div>
+        </div>
+       
       </div>
 
     </div>
