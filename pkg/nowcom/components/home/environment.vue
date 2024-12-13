@@ -160,12 +160,9 @@ export default {
       const envResponse = await environmentService.getAll();
       
       const filteredEnvironments = envResponse.filter((e) => {
-        const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] 
-          ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) 
-          : [];
-        const members = e.metadata?.annotations[`${BREACHER_API}/members`] 
-          ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) 
-          : [];
+        const owners = this.parseAnnotation(this.annotationGetter(e, 'owners'))
+        const members = this.parseAnnotation(this.annotationGetter(e, 'members'))
+
         const clusterId = e.status?.clusterRef?.clusterID;
         const allIds = [...owners, ...members];
 
@@ -199,6 +196,29 @@ export default {
           },
         };
       }));
+    },
+
+    annotationGetter(environment, annotation) {
+      return environment?.metadata?.annotations[`${BREACHER_API}/${annotation}`] || null
+    },
+
+    parseAnnotation(annotationData) {
+      try {
+        const parsed = JSON.parse(annotationData);
+
+        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+          return parsed;
+        } else {
+          throw new Error('Parsed data is not a valid array of strings');
+        }
+      } catch (error) {
+
+        if (typeof annotationData === 'string') {
+          return [annotationData];
+        }
+
+        return [];
+      }
     },
 
     async fetchService(clusterId) {
