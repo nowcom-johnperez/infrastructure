@@ -34,6 +34,7 @@ export default {
     commit('setItems', parsedData)
   },
   async getSubnets({ commit }: any, networkName: string) {
+    console.log(`networkName`, networkName)
     const res: any = await vNetService.getSubnetByName(networkName);
     return res.data?.spec?.subnets.map((subnet: any) => {
         return {

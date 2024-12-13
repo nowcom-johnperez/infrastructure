@@ -74,6 +74,7 @@ export default {
       viewState: 'grid',
       environmentList: [],
       groupsByUser: [],
+      clustersByUser: [],
       isAdmin: false,
       currentPage: 1
     }
@@ -133,10 +134,7 @@ export default {
         const roles = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE });
         const globalRoleBindings = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE_BINDING });
         globalRoleBindings
-          .filter((binding) => {
-            console.log(`filter test`, binding.userName, this.user.id)
-            return binding.userName === this.user.id
-          })
+          .filter((binding) => binding.userName === this.user.id)
           .forEach((binding) => {
             const globalRole = roles.find((r) => r.id === binding.globalRoleName);
 
@@ -164,12 +162,14 @@ export default {
       this.environmentList = envResponse.filter((e) => {
         const owners = e.metadata?.annotations[`${BREACHER_API}/owners`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/owners`]) : []
         const members = e.metadata?.annotations[`${BREACHER_API}/members`] ? JSON.parse(e.metadata?.annotations[`${BREACHER_API}/members`]) : []
-        const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
+        // const groupIds = this.groupsByUser.map((group) => `azuread_group://${group.id}`)
+        const clusterId = e.status?.clusterRef?.clusterID
         const allIds = [...owners, ...members];
         return allIds.some(id => 
           id === this.user.id || 
           id === this.user.principalIds[0] || 
-          groupIds.includes(id) || 
+          // groupIds.includes(id) || 
+          this.clustersByUser.includes(clusterId) ||
           this.isAdmin
         );
       }).map((e) => {
@@ -260,9 +260,14 @@ export default {
         this.fetchAssociatedGroups()
       }
     },
+    async fetchClusters() {
+      const clusters = await this.$store.dispatch(`management/findAll`, { type: MANAGEMENT.CLUSTER })
+      this.clustersByUser = clusters.map((cluster) => cluster?.id)
+    },
     async init() {
       await this.fetchGlobalRoleBindings()
-      await this.fetchAssociatedGroups()
+      // await this.fetchAssociatedGroups()
+      await this.fetchClusters()
       await this.fetchEnvironment()
     }
   },

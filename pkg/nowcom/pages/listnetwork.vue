@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="form-row mt-10">
+    <div v-if="isDev" class="form-row mt-10">
       <div class="form-column">
         <SortableTable 
           :headers="networkHeader" 
@@ -359,10 +359,10 @@ export default {
       // console.log('fetching networks');
       try {
         this.loading = true
-        await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
+        // await this.$store.dispatch(`${PRODUCT_STORE}/findAll`)
         const res = await expressService.getAllNetworks()
-        this.express.networks = res.filter((item) => {
-          return item.spec.vrf === 'express'
+        this.express.networks = res.data.items.filter((item) => {
+          return item.spec.addressType === 'express'
         }).map((item) => {
           return {
             address: item.spec.address,
@@ -378,6 +378,7 @@ export default {
         })
         this.express.mainRow[0].subnetLength = this.activatedExpressSubnets.length
       } catch (error) {
+        console.log(`error`, error)
         this.apiResponse = 'error'
         this.apiResponseMessage = 'Fetching Virtual Network Data: Oops! Something went wrong!';
       } finally {

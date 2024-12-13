@@ -5,7 +5,7 @@
         <div class="row-detail">
           <div class="row-label">Change Env Size</div>
           <div class="row-val">
-            <button class="btn btn-sm role-secondary ml-10 clikable" type="button">
+            <button class="btn btn-sm role-secondary ml-10 clikable" type="button" :disabled="!isDev">
               {{ currentObj.spec.clusterSize }}
             </button>
           </div>
@@ -14,7 +14,7 @@
         <div class="row-detail">
           <div class="row-label">Azure SPN Secret</div>
           <div class="row-val">
-            <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button" @click="isModalClientSecret = true" :disabled="!isDev">
               Reset
             </button>
           </div>
@@ -23,7 +23,7 @@
         <div class="row-detail">
           <div class="row-label">Github Repo</div>
           <div class="row-val">
-            <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button" :disabled="!isDev">
               Enable
             </button>
           </div>
@@ -32,7 +32,7 @@
         <div class="row-detail">
           <div class="row-label">Azure Keyvault</div>
           <div class="row-val">
-            <button class="btn role-secondary btn-sm ml-10 clikable" type="button">
+            <button class="btn role-secondary btn-sm ml-10 clikable" type="button" :disabled="!isDev">
               Enable
             </button>
           </div>
@@ -72,7 +72,9 @@
 </template>
 
 <script>
+import { getConfig } from '../../../config/api';
 import Modal from '../../common/Modal.vue';
+const { isDev } = getConfig()
 export default {
   name: 'EnvironmentViewActions',
   props: {
@@ -86,6 +88,7 @@ export default {
   },
   data() {
     return {
+      isDev,
       isModalClientSecret: false,
     }
   }

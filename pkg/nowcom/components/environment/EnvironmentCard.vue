@@ -20,7 +20,10 @@
         <div class="detail-item">
           <i class="fa fa-globe detail-icon"></i>
           <span class="detail-label">DNS:</span>
-          <span class="detail-value">{{ service.dns }}</span>
+          <span class="detail-value">
+            <CopyToClipboardText v-if="service.dns" :text="service.dns" />
+            <span v-else>not available</span>
+          </span>
         </div>
       </div>
       <div class="node-info">
@@ -46,12 +49,14 @@ import { ENVIRONMENT_SIZES } from '../../config/constants';
 import { BadgeState } from '@components/BadgeState';
 import { EventBus } from '../../config/event-bus';
 import { getBadgeColor } from '../../services/helpers/environment'
+import CopyToClipboardText from '@shell/components/CopyToClipboardText.vue'
 export default {
   name: 'EnvironmentCard',
   components: {
     Card,
     BadgeState,
-    EnvironmentStatus
+    EnvironmentStatus,
+    CopyToClipboardText
   },
   props: {
     service: {
