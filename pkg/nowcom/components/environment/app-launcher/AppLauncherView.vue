@@ -26,23 +26,29 @@
     <div class="row-detail">
       <div class="row-label">Namespace</div>
       <div class="row-val">
-        <span class="ml-10">{{ ingress?.metadata?.namespace || '-' }}</span>
+        <span class="ml-10">{{ ingress?.metadata?.namespace || 'Not available' }}</span>
       </div>
     </div>
     <div class="row-detail">
       <div class="row-label">Node IP</div>
-      <div v-if="ingress" class="row-val">
-        <button class="btn btn-sm role-secondary ml-10 clikable mr-3" type="button" v-for="ip in ingress.nodeIP.slice(0, 3)" :key="`${ip}-node-${ingress.metadata.namespace}`">
-          <CopyToClipboardText :text="ip" />
-        </button>
+      <div class="row-val">
+        <template v-if="ingress">
+          <button class="btn btn-sm role-secondary ml-10 clikable mr-3" type="button" v-for="ip in ingress.nodeIP.slice(0, 3)" :key="`${ip}-node-${ingress.metadata.namespace}`">
+            <CopyToClipboardText :text="ip" />
+          </button>
+        </template>
+        <span v-else>Not available</span>
       </div>
     </div>
     <div class="row-detail">
       <div class="row-label">Load Balancer IP</div>
       <div class="row-val">
-        <button class="btn btn-sm role-secondary ml-10 clikable" type="button" v-for="ip in loadBalancerIP" :key="`${ip}-lb-${ingress.metadata.namespace}`">
-          <CopyToClipboardText :text="ip" />
-        </button>
+        <template v-if="loadBalancerIP.length > 0" >
+          <button class="btn btn-sm role-secondary ml-10 clikable" type="button" v-for="ip in loadBalancerIP" :key="`${ip}-lb-${ingress.metadata.namespace}`">
+            <CopyToClipboardText :text="ip" />
+          </button>
+        </template>
+        <span v-else>Not available</span>
       </div>
     </div>
     <div class="row-detail">

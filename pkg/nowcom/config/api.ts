@@ -1,15 +1,13 @@
 export const getConfig = () => {
   let config = {
     NETWORK_URL_V2: 'https://packetlifter.hankeyinvestments.com/',
-    NETWORK_URL_V3: 'https://tridentbe-dev.hankeyinvestments.com/',
     RANCHER_DIRECT_URL: 'https://forge.tridentcloud.dev/',
     BEARERTOKEN: 'eyJhbGciOiJSUzI1NiIsImtpZCI6InpyWEF3LUJhZnRvOEtURmVQNkF0Q292NVBFX2VDeGFFMVdVeWoyRlphT3MifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjgwYmI5NzVjLWY2ZTUtNDVjMi05MjlmLTlkOGJiYTRiOTljYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.k2f4uOUR-jIZbyKKcFfFsZGjwk6BnQGylgUnBbp-FcjNFKyXWe1zUggBWPCqB8w7J-jddNFdQAOIRYg62lmKtsLfp_Ig-HdvRS5R0MzMwFFrtC9c3-WtGdHsSY61ZW4OyaHTS5y_JULPhdXh3Hb9Qc9mhy2WSqWUFNvR9mKmJNEd1n-z5szzqNOhF333GvAsPMTl4hmp6pN2LRounc6tFkzXRNDVEetPKe-lykNeCflNDfPBI_bYP3aSVLLzCi8wtOaVnz3VbSy7r80t1_sr037HzW6r95lh0WsAnrBEyzfnv7RwD7UtN6hpFEoSHxV2H-XUZaqcJr3bQabXbgrNLw',
-    BEARERTOKEN_V3: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Im1MeUp2T2lfdHptTi1pN1JkbEdSUGw5RnR2YnQxbVROeTJVUmY3TE9oR0UifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InBhY2tldGxpZnRlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwYWNrZXRsaWZ0ZXItYWNjb3VudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImVjZDY1NTFiLWM3NTUtNDM1ZS1iMjYyLTRlYzcyYTA0MTk1MSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OnBhY2tldGxpZnRlci1hY2NvdW50In0.LPUPR_O2opQwa6pd73dDu5CxIvoaSAESFoEvVe7h7mpVUGzbZrfKkCRCA4C40vblzBB5MgHzU_DHWf3-GIlCiteUiyGVm8uf9nNoXZeL45Hl1i5rDMrzTdMnMrdMQwiLHH_rxj8Now2qK0eLrfwPZAMdMnwjp-mjzBnsdO1XPNyHXfBkdg1hirYYZXFuVpPrF3wHyjWtdYYQ-gDTzzOUKV8oka4Wly9MzD5FwZEPdDvkyDETqSxaKRT0TwG6PMnhmfjieHXGU6mroDrraWv6K8a79HypHHrqXRKm5kCXqMAdjEk_lCkn3bhjra88l49hf8x4rxV4s5giANIS7nCoPw',
     RANCHER_BEARERTOKEN: 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm',
     CLUSTER: 'c-m-sdtmhjdg',
     ENVIRONMENT_CLUSTER: 'c-m-mw54xzmw',
     API_VERSION: 'v1',
-    API: 'packetlifter.dev',
+    API: 'packetlifter.tridentcloud.dev',
     TRIDENT_API: 'trident.nowcom.io',
     VANGUARD_API: 'vanguard.tridentcloud.dev/v1alpha1',
     BREACHER_API: 'breacher.tridentcloud.dev',
@@ -20,9 +18,9 @@ export const getConfig = () => {
     GITLAB_IMAGES_PROJECT_ID: '60607760',
     GITLAB_PROJECT_TOKEN: 'glpat-5t8tWuTYdHTnhSszGZyp',
     GITLAB_TOKEN: 'glpat-3fpYpWvshVzaSjxUyyzt',
-    AZURE_CLIENT_ID: '07db3ce2-fec0-4f49-b387-9f5bfe44ab69',
-    AZURE_CLIENT_VALUE: 'Tm58Q~gQgY-3CkC7zaTN.q8TT0wE8QxG_78yuabn',
-    AZURE_TENANT_ID: '6dadecb4-3d69-41eb-98a0-cd3c988f5bd4',
+    AZURE_CLIENT_ID: '',
+    AZURE_CLIENT_VALUE: '',
+    AZURE_TENANT_ID: '',
     isDev: false
   };
 
@@ -33,7 +31,6 @@ export const getConfig = () => {
       config.RANCHER_DIRECT_URL = 'https://surge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-56npt:5r6kjl4c56k65m6jjjbvkzcjvhd9kjkgk79lsbsqcnbjt8gwtfx76w'
       config.CLUSTER = 'c-m-wvplbwls'
-      config.API = 'packetlifter.io'
       config.ENVIRONMENT_CLUSTER = 'c-m-96blcn4m'
       config.isDev = false
     } else {

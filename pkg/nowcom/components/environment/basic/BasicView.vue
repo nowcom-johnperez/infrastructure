@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-    <hr>
+    <!-- <hr>
 
     <h1 class="text-2xl mt-10 text-primary">Features</h1>
     <div class="basic-grid">
@@ -99,7 +99,7 @@
           <div class="row-val">Enabled</div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

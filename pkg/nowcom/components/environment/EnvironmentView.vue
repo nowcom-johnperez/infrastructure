@@ -17,12 +17,22 @@
 
       <!-- Actions Tab -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 1 }">
-        <ActionsTab :current-obj="currentObj" />
+        <div class="watermark">
+          <ActionsTab :current-obj="currentObj" />
+          <div class="coming-soon-text">
+            Coming soon!
+          </div>
+        </div>
       </div>
 
       <!-- KeyVault -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 2 }">
-        <KeyvaultView :current-obj="currentObj" />
+        <div class="watermark">
+          <KeyvaultView :current-obj="currentObj" />
+          <div class="coming-soon-text">
+            Coming soon!
+          </div>
+        </div>
       </div>
 
       <!-- App Launcher -->
@@ -32,7 +42,13 @@
 
       <!-- Link Services -->
       <div class="tab-content" :class="{ 'show': currentTabIndex === 4 }">
-        <LinkServicesView />
+        <div class="watermark">
+          <LinkServicesView />
+          <div class="coming-soon-text">
+            Coming soon!
+          </div>
+        </div>
+       
       </div>
 
     </div>
@@ -68,10 +84,10 @@ export default {
       currentTabIndex: 0,
       tabList: [
         { label: 'Basic', disabled: false },
-        { label: 'Actions', disabled: true },
-        { label: 'KeyVault', disabled: true },
+        { label: 'Actions', disabled: false },
+        { label: 'KeyVault', disabled: false },
         { label: 'App Launcher', disabled: false },
-        { label: 'Linked Services', disabled: true },
+        { label: 'Linked Services', disabled: false },
       ]
     }
   },

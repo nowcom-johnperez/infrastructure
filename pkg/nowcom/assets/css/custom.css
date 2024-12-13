@@ -502,6 +502,28 @@ background-color: #4caf50;
   width: 100%;
 }
 
+.watermark {
+  position: relative;
+  background: url('../img/under-development.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.5;
+  z-index: 0;
+  min-height: 300px;
+}
+
+.coming-soon-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
 
 /* pagination (always make sure this is at the bottom) */
 .smart-pagination {
