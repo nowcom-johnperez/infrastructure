@@ -1,9 +1,8 @@
 <template>
   <div>
     landing
-    <pre>
-      {{clusters}}
-    </pre>
+
+    <code>{{ response }}</code>
   </div>
 </template>
 
@@ -11,128 +10,31 @@
 import {
   parseSi, formatSi, exponentNeeded, UNITS, createMemoryValues
 } from '@shell/utils/units';
-import { MANAGEMENT, USER } from '@shell/config/types';
+import { MANAGEMENT, USER, FLEET } from '@shell/config/types';
 import { environmentService } from '../services/api';
-import { roleTemplateRules } from '@shell/utils/validators/role-template';
-
-const PARSE_RULES = {
-  memory: {
-    format: {
-      addSuffix:        true,
-      firstSuffix:      'B',
-      increment:        1024,
-      maxExponent:      99,
-      maxPrecision:     2,
-      minExponent:      0,
-      startingExponent: 0,
-      suffix:           'iB',
-    }
-  }
-};
+import CopyToClipboardText from '@shell/components/CopyToClipboardText.vue'
 
 export default {
   name: 'Landing',
   data() {
     return {
-      clusters: []
+      response: []
     }
   },
 
+  components: {
+    CopyToClipboardText
+  },
+
   fetch() {
-    this.fetchClusters()
+    this.initData()
   },
 
   methods: {
 
-    async fetchClusters() {
-      const clusters = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER });
-      const users = await environmentService.getAllUsers()
-      const bindings = await environmentService.getClustersRoleBindings()
-      this.clusters = await Promise.all(
-        clusters.map(async (cluster) => {
-          return this.processCluster(cluster, bindings.data, users.data);
-        })
-      );
-    },
-
-    async processCluster(cluster, bindings, users) {
-      const formattedMemory = this.createMemoryUnits(cluster.status?.capacity?.memory);      
-      const roles = bindings.filter((b) => b.clusterId === cluster.id)
-      const clusterUsers = roles.map((r) => {
-        const user = users.find((u) => {
-          if (r.userPrincipalId) {
-            return u.principalIds.includes(r.userPrincipalId)
-          }
-        })
-
-        return user ? {
-          name: user?.name || '',
-          id: user?.id || '',
-          userPrincipalId: user.principalIds[0],
-          roleTemplateId: r.roleTemplateId
-        } : r
-      })
-
-      return {
-        id: cluster.id,
-        creatorId: cluster.metadata?.annotations['field.cattle.io/creatorId'],
-        ownerNamespace: cluster.metadata?.annotations['objectset.rio.cattle.io/owner-namespace'],
-        displayName: cluster.spec?.displayName,
-        fleetWorkspaceName: cluster.spec?.fleetWorkspaceName,
-        capacity: {
-          cpu: cluster.status?.capacity?.cpu,
-          memory: formatSi(parseSi(cluster.status?.capacity?.memory), formattedMemory),
-        },
-        users: clusterUsers.map((user) => {
-          return {
-            name: user?.name || '',
-            id: user?.id || '',
-            azureUserId: user?.userPrincipalId || '',
-            groupUserId: user?.groupPrincipalId || '',
-            roleTemplateId: user?.roleTemplateId || ''
-          }
-        })
-      };
-    },
-
-    async processRoles(roles) {
-      return Promise.all(
-        roles.map(async (role) => {
-          try {
-            let result = {};
-            if (role.userPrincipalId) {
-              const user = await environmentService.getUser(role.userPrincipalId)
-              
-              result = { ...user }
-            } 
-            if (role.groupPrincipalId) {
-              const group = await environmentService.getUser(role.groupPrincipalId)
-
-              result = { ...group }
-            }
-            // Return empty object if neither is present
-            return {
-              ...result,
-              roleTemplateId: role.roleTemplateId,
-              groupPrincipalId: role.groupPrincipalId || '',
-              userPrincipalId: role.userPrincipalId || ''
-            };
-          } catch (error) {
-            console.error(`Error processing role: ${role}`, error);
-            return {
-              roleTemplateId: role.roleTemplateId,
-              groupPrincipalId: role.groupPrincipalId,
-              userPrincipalId: role.userPrincipalId
-            };
-          }
-        })
-      );
-    },
-
-    createMemoryUnits(n) {
-      const exponent = exponentNeeded(n, PARSE_RULES.memory.format.increment);
-
-      return `${ UNITS[exponent] }${ PARSE_RULES.memory.format.suffix }`;
+    async initData() {
+      const res = await this.$store.dispatch('management/findAll', { type: FLEET.GIT_REPO });
+      this.response = res
     },
   }
 }

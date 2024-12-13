@@ -31,7 +31,7 @@ export const getConfig = () => {
       config.RANCHER_DIRECT_URL = 'https://surge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-56npt:5r6kjl4c56k65m6jjjbvkzcjvhd9kjkgk79lsbsqcnbjt8gwtfx76w'
       config.CLUSTER = 'c-m-wvplbwls'
-      config.ENVIRONMENT_CLUSTER = 'c-m-96blcn4m'
+      config.ENVIRONMENT_CLUSTER = 'c-m-xsj4tkvq'
       config.isDev = false
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
