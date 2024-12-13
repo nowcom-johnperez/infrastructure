@@ -267,7 +267,7 @@ export default {
     },
     async fetchClusters() {
       const clusters = await this.$store.dispatch(`management/findAll`, { type: CAPI.RANCHER_CLUSTER })
-      this.clustersByUser = clusters.map((cluster) => cluster?.id)
+      this.clustersByUser = clusters.map((cluster) => cluster.status?.clusterName)
     },
     async init() {
       await this.fetchGlobalRoleBindings()
