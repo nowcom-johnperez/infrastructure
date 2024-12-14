@@ -182,7 +182,7 @@ export default {
           (s) => s.size.toLowerCase() === e.spec.clusterSize
         );
         const service = await this.fetchService(clusterId);
-        const rawDns = service.metadata?.annotations['kube-vip.io/loadbalancerIPs']
+        const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs']
         const dns = typeof rawDns === 'string' ? [rawDns] : rawDns
         return {
           ...e,
@@ -222,6 +222,7 @@ export default {
     },
 
     async fetchService(clusterId) {
+      if (clusterId === 'Pending' || !clusterId) return null
       try {
         const services = (
           await this.$store.dispatch('cluster/request', {
@@ -233,7 +234,9 @@ export default {
         // @TODO for future check if needed to be a constants
         return services.find((service) => service.metadata.name === 'bind-svc')
       } catch (error) {
+        console.log(`error`, error)
         console.error(`Error fetching services for cluster ${clusterId}:`, error);
+        return null
       }
     },
     getStatus(conditions, type) {
