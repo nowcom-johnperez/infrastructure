@@ -36,15 +36,10 @@ export const getConfig = () => {
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
       // config.RANCHER_BEARERTOKEN = 'token-gz2gq:2j67frvc7bt8p4ztm7vz52t44j6rqhkpls7lg44s7n7vjhkjnd98cq'
-      // config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
-      // config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
-      // config.CLUSTER = 'c-m-hx52gvl6'
-      // config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
-
-      config.RANCHER_DIRECT_URL = 'https://surge.tridentcloud.dev/'
-      config.RANCHER_BEARERTOKEN = 'token-56npt:5r6kjl4c56k65m6jjjbvkzcjvhd9kjkgk79lsbsqcnbjt8gwtfx76w'
-      config.CLUSTER = 'c-m-wvplbwls'
-      config.ENVIRONMENT_CLUSTER = 'c-m-xsj4tkvq'
+      config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
+      config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
+      config.CLUSTER = 'c-m-hx52gvl6'
+      config.ENVIRONMENT_CLUSTER = 'c-m-mw54xzmw'
     }
   }
 
