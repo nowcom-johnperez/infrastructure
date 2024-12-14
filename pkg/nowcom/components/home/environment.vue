@@ -234,6 +234,7 @@ export default {
         return services.find((service) => service.metadata.name === 'bind-svc')
       } catch (error) {
         console.error(`Error fetching services for cluster ${clusterId}:`, error);
+        return ''
       }
     },
     getStatus(conditions, type) {

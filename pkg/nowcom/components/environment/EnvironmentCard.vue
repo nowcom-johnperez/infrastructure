@@ -34,10 +34,10 @@
       </div>
     </template>
     <template #actions>
-      <a :href="`/c/${service.clusterId}/explorer#cluster-events`" @click.prevent="exploreCluster(service.clusterId)" class="btn role-secondary btn-sm mr-auto">
+      <a v-if="service?.clusterId !== 'Pending'" :href="`/c/${service.clusterId}/explorer#cluster-events`" @click.prevent="exploreCluster(service.clusterId)" class="btn role-secondary btn-sm">
         Explore
       </a>
-      <button type="button" @click="viewItem" class="btn role-secondary btn-sm">
+      <button type="button" @click="viewItem" class="btn role-secondary btn-sm ml-auto">
         Manage
       </button>
     </template>
