@@ -35,7 +35,7 @@ export const getConfig = () => {
       config.isDev = false
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
-      // config.RANCHER_BEARERTOKEN = 'token-gz2gq:2j67frvc7bt8p4ztm7vz52t44j6rqhkpls7lg44s7n7vjhkjnd98cq'
+      // config.RANCHER_BEARERTOKEN = 'token-5tmqn:mt7227kdsp9rq88gn5tqv46p56sqlddp5pz2rr587n49d725mrrcw9'
       config.RANCHER_DIRECT_URL = 'https://forge.tridentcloud.dev/'
       config.RANCHER_BEARERTOKEN = 'token-h4jxw:28pj8hqdcc77ldmbrn9sj79vzf2jmvrtndx5fwnsrm4g24t5s2h8dm' // no-scope - service account
       config.CLUSTER = 'c-m-hx52gvl6'

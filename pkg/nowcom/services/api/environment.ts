@@ -13,6 +13,11 @@ export const environmentService = {
         return res.data
     },
 
+    deleteById: async (envName: string) => {
+        const res: any =  await BASE_URL_HOST.delete(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/namespaces/vanguard-system/stacks/${envName}`)
+        return res
+    },
+
     create: async (payload: any) => {
         const res: any =  await BASE_URL_HOST.post(`/k8s/clusters/${ENVIRONMENT_CLUSTER}/apis/${VANGUARD_API}/namespaces/vanguard-system/stacks`, payload)
         return res.data
