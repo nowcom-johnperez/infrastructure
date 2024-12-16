@@ -2,8 +2,14 @@
   <Card class="environment-card" :show-highlight-border="false" :sticky="true" v-if="service">
     <template #title>
       <div class="title-container w-100">
-        <div class="title-text">{{ service.spec.environmentName }}</div>
+        <div class="title-text">
+          {{ service.spec.environmentName }}
+        </div>
+        <button v-if="canDelete" class="btn btn-sm btn-danger" @click="deleteItem">
+          <i class="icon icon-trash" />
+        </button>
       </div>
+      
     </template>
     <template #body>
       <div class="environment-details">
@@ -24,7 +30,6 @@
             <template v-if="service.dns.length > 0">
               <CopyToClipboardText v-for="dns in service.dns" :key="`${dns}-${service.spec.environmentName}`" :text="dns" class="mr-5" />
             </template>
-            
             <span v-else>not available</span>
           </span>
         </div>
@@ -48,6 +53,7 @@
 <script>
 import { Card } from '@components/Card';
 import EnvironmentStatus from './EnvironmentStatus.vue';
+import { CAPI } from '@shell/config/types';
 import { ENVIRONMENT_SIZES } from '../../config/constants';
 import { BadgeState } from '@components/BadgeState';
 import { EventBus } from '../../config/event-bus';
@@ -76,7 +82,11 @@ export default {
   computed: {
     serviceSize() {
       return this.sizes.find((d) => d.size.toLowerCase() === this.service.size.toLowerCase())
-    }
+    },
+    canDelete() {
+      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
+      return !!schema?.resourceMethods.find((x) => x.toLowerCase() === 'delete');
+    },
   },
   methods: {
     badgeColor(status) {
@@ -88,10 +98,13 @@ export default {
     viewItem() {
       this.$emit('view-click', this.service)
     },
+    deleteItem() {
+      EventBus.$emit('env-modal-delete', this.service)
+    },
     exploreCluster(clusterId) {
       this.$router.push(`/c/${clusterId}/explorer#cluster-events`)
     }
-  }
+  },
 };
 </script>
 
@@ -124,6 +137,14 @@ export default {
   .title-container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-danger {
+    margin-top: 0;
+    padding: 5px 8px;
+    display: flex;
     align-items: center;
   }
 
@@ -170,10 +191,6 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-
-  .btn {
-    margin-top: 15px;
   }
 }
 

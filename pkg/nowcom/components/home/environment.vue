@@ -29,6 +29,7 @@
               <EnvironmentListView v-if="viewState === 'list'" :list="filteredEnvironment" />
               <EnvironmentGridView v-if="viewState === 'grid'" :list="filteredEnvironment" :loading="$fetchState.pending" @onUpdatePage="(page) => currentPage = page" :current-page="currentPage" />
               <ModalStatus v-if="statusModalState" header-label="Status" :saving-modal-state="statusModalState" :environment-id="selectedEnv.spec?.environmentName" @onClose="closeModalState" />
+              <ModalDelete v-if="deleteModalState" header-label="Delete Environment" :modal-state="deleteModalState" :environment="selectedEnv" @onClose="closeDeleteModal" @deleteSuccess="fetchEnvironment" />
             </div>
           </div>
         </div>
@@ -39,19 +40,20 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'; // Install lodash if not already installed
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
-import { CAPI, MANAGEMENT, HCI, NORMAN } from '@shell/config/types';
+import { CAPI, MANAGEMENT } from '@shell/config/types';
 import { BLANK_CLUSTER } from '@shell/store/store-types.js';
 import { PRODUCT_NAME, ENVIRONMENT, ENVIRONMENT_SIZES } from '../../config/constants';
 import { mapState } from 'vuex';
 import { EventBus } from '../../config/event-bus';
 import ModalStatus from '../environment/Modal-Status.vue';
+import ModalDelete from '../environment/Modal-Delete.vue';
 import ListingActions from '../common/ListingActions.vue';
 import EnvironmentGridView from '../environment/EnvironmentGridView.vue';
 import EnvironmentListView from '../environment/EnvironmentListView.vue';
 import { environmentService } from '../../services/api';
-import { PRODUCT_STORE } from '../../config/constants';
 import { getConfig } from '../../config/api';
 const { BREACHER_API } = getConfig()
 export default {
@@ -60,6 +62,7 @@ export default {
     IndentedPanel,
     BadgeState,
     ModalStatus,
+    ModalDelete,
     ListingActions,
     EnvironmentGridView,
     EnvironmentListView
@@ -67,6 +70,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       intervalId: null,
       statusModalState: false,
       selectedEnv: null,
@@ -75,19 +79,17 @@ export default {
       environmentList: [],
       clustersByUser: [],
       isAdmin: false,
-      currentPage: 1
-    }
+      currentPage: 1,
+      dnsUpdateQueue: [],
+      deleteModalState: false
+    };
   },
 
   computed: {
     ...mapState(['managementReady']),
 
     user() {
-      return this.$store.getters['auth/v3User']
-    },
-
-    azureToken() {
-      return this.$store.getters[`${PRODUCT_STORE}/getAzureToken`]
+      return this.$store.getters['auth/v3User'];
     },
 
     canCreateCluster() {
@@ -110,13 +112,13 @@ export default {
         return this.environmentList;
       } else {
         const searchTerm = this.searchQuery.trim().toLowerCase();
-        return this.environmentList.filter(app => {
-          return (app.spec.environmentName.toLowerCase().includes(searchTerm) ||
+        return this.environmentList.filter((app) => {
+          return (
+            app.spec.environmentName.toLowerCase().includes(searchTerm) ||
             app.spec.clusterSize.toLowerCase().includes(searchTerm) ||
             app.spec.networkType.toLowerCase().includes(searchTerm) ||
-            app.dns.includes(searchTerm) ||
-            app.metadata?.annotations?.[`${BREACHER_API}/org`].toLowerCase().includes(searchTerm) ||
-            app.metadata?.annotations?.[`${BREACHER_API}/team`].toLowerCase().includes(searchTerm))
+            app.dns.includes(searchTerm)
+          );
         });
       }
     }
@@ -124,11 +126,12 @@ export default {
 
   methods: {
     updateSeachQuery(query) {
-      this.currentPage = 1
-      this.searchQuery = query
+      this.currentPage = 1;
+      this.searchQuery = query;
     },
+
     async fetchGlobalRoleBindings() {
-      const globalRoleSchema = await this.$store.getters['management/schemaFor'](MANAGEMENT.GLOBAL_ROLE_BINDING)
+      const globalRoleSchema = await this.$store.getters['management/schemaFor'](MANAGEMENT.GLOBAL_ROLE_BINDING);
       if (globalRoleSchema) {
         const roles = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE });
         const globalRoleBindings = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.GLOBAL_ROLE_BINDING });
@@ -140,54 +143,58 @@ export default {
             if (globalRole.id === 'admin') {
               this.isAdmin = true;
             }
-          })
+          });
       }
-      
     },
+
     initIntervalFetch() {
       if (!this.intervalId) {
         this.intervalId = setInterval(this.fetchEnvironment, 10000); // 10s interval
       }
     },
+
     stopInterval() {
       if (this.intervalId) {
-        clearInterval(this.intervalId)
-        this.intervalId = null
+        clearInterval(this.intervalId);
+        this.intervalId = null;
       }
     },
 
     async fetchEnvironment() {
       const envResponse = await environmentService.getAll();
-      
+
       const filteredEnvironments = envResponse.filter((e) => {
-        const owners = this.parseAnnotation(this.annotationGetter(e, 'owners'))
-        const members = this.parseAnnotation(this.annotationGetter(e, 'members'))
+        const owners = this.parseAnnotation(this.annotationGetter(e, 'owners'));
+        const members = this.parseAnnotation(this.annotationGetter(e, 'members'));
 
         const clusterId = e.status?.clusterRef?.clusterID;
         const allIds = [...owners, ...members];
 
         return allIds.some((id) => {
           return (
-            id === this.user.id || 
-            id === this.user.principalIds[0] || 
+            id === this.user.id ||
+            id === this.user.principalIds[0] ||
             this.clustersByUser.includes(clusterId) ||
             this.isAdmin
           );
         });
       });
 
-      this.environmentList = await Promise.all(filteredEnvironments.map(async (e) => {
+      this.updateEnvironmentList(filteredEnvironments);
+
+      // Parallel fetching for DNS details
+      await this.fetchDnsForEnvironments(filteredEnvironments);
+    },
+
+    updateEnvironmentList(environments) {
+      this.environmentList = environments.map((e) => {
         const clusterId = e.status?.clusterRef?.clusterID;
-        const sizeInfo = ENVIRONMENT_SIZES.find(
-          (s) => s.size.toLowerCase() === e.spec.clusterSize
-        );
-        const service = await this.fetchService(clusterId);
-        const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs']
-        const dns = typeof rawDns === 'string' ? [rawDns] : rawDns
+        const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize);
+
         return {
           ...e,
           clusterId,
-          dns: dns || [], // Adjust as needed
+          dns: [], // Placeholder for DNS details
           sizeInfo,
           statuses: {
             network: this.getStatus(e.status?.conditions, 'NetworkReady'),
@@ -195,34 +202,41 @@ export default {
             clusterCreation: this.getStatus(e.status?.conditions, 'ClusterReady'),
           },
         };
-      }));
+      });
     },
 
-    annotationGetter(environment, annotation) {
-      return environment?.metadata?.annotations[`${BREACHER_API}/${annotation}`] || null
+    async fetchDnsForEnvironments(environments) {
+      // Batch process DNS updates
+      const promises = environments.map(async (e, index) => {
+        const clusterId = e.status?.clusterRef?.clusterID;
+        const service = await this.fetchService(clusterId);
+        const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs'];
+        const dns = typeof rawDns === 'string' ? [rawDns] : rawDns;
+
+        return { index, dns: dns || [] };
+      });
+
+      const dnsUpdates = await Promise.all(promises);
+
+      // Debounced DNS updates
+      this.queueDnsUpdates(dnsUpdates);
     },
 
-    parseAnnotation(annotationData) {
-      try {
-        const parsed = JSON.parse(annotationData);
-
-        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
-          return parsed;
-        } else {
-          throw new Error('Parsed data is not a valid array of strings');
-        }
-      } catch (error) {
-
-        if (typeof annotationData === 'string') {
-          return [annotationData];
-        }
-
-        return [];
-      }
+    queueDnsUpdates(updates) {
+      this.dnsUpdateQueue.push(...updates);
+      this.debouncedApplyDnsUpdates();
     },
+
+    debouncedApplyDnsUpdates: debounce(function () {
+      this.dnsUpdateQueue.forEach(({ index, dns }) => {
+        this.$set(this.environmentList[index], 'dns', dns);
+      });
+
+      this.dnsUpdateQueue = [];
+    }, 500), // Apply updates after 500ms debounce
 
     async fetchService(clusterId) {
-      if (clusterId === 'Pending' || !clusterId) return null
+      if (clusterId === 'Pending' || !clusterId) return null;
       try {
         const services = (
           await this.$store.dispatch('cluster/request', {
@@ -230,38 +244,40 @@ export default {
           })
         ).data;
 
-        // bind-svc is a fixed name
-        // @TODO for future check if needed to be a constants
-        return services.find((service) => service.metadata.name === 'bind-svc')
+        return services.find((service) => service.metadata.name === 'bind-svc');
       } catch (error) {
-        console.log(`error`, error)
         console.error(`Error fetching services for cluster ${clusterId}:`, error);
-        return null
+        return null;
       }
     },
+
     getStatus(conditions, type) {
-      if (!type || !conditions) return 'inactive'
-      const condition = conditions.find((c) => c.type === type)
-      if (condition.status === "True") return 'active'
-      else if (condition.status === "Unknown") return 'warning'
-      return 'inactive'
+      if (!type || !conditions) return 'inactive';
+      const condition = conditions.find((c) => c.type === type);
+      if (condition.status === "True") return 'active';
+      else if (condition.status === "Unknown") return 'warning';
+      return 'inactive';
     },
-    getRandomStatus() {
-      const statuses = [
-        { value: 'active', weight: 0.6 },  // 60% chance
-        { value: 'warning', weight: 0.3 }, // 30% chance
-        { value: 'inactive', weight: 0.1 } // 10% chance
-      ];
 
-      const totalWeight = statuses.reduce((sum, status) => sum + status.weight, 0);
-      const random = Math.random() * totalWeight;
+    annotationGetter(environment, annotation) {
+      return environment?.metadata?.annotations[`${BREACHER_API}/${annotation}`] || null;
+    },
 
-      let cumulativeWeight = 0;
-      for (const status of statuses) {
-        cumulativeWeight += status.weight;
-        if (random < cumulativeWeight) {
-          return status.value;
+    parseAnnotation(annotationData) {
+      try {
+        const parsed = JSON.parse(annotationData);
+
+        if (Array.isArray(parsed) && parsed.every((item) => typeof item === 'string')) {
+          return parsed;
+        } else {
+          throw new Error('Parsed data is not a valid array of strings');
         }
+      } catch (error) {
+        if (typeof annotationData === 'string') {
+          return [annotationData];
+        }
+
+        return [];
       }
     },
     closeModalState() {
@@ -272,36 +288,50 @@ export default {
       this.selectedEnv = env
       this.statusModalState = true
     },
+    closeDeleteModal() {
+      this.deleteModalState = false
+      this.selectedEnv = null
+    },
+    openDeleteModal(env) {
+      this.selectedEnv = env
+      this.deleteModalState = true
+    },
     async fetchClusters() {
-      const clusters = await this.$store.dispatch(`management/findAll`, { type: CAPI.RANCHER_CLUSTER })
+      const clusters = await this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER })
       this.clustersByUser = clusters.map((cluster) => cluster.status?.clusterName)
     },
     async init() {
+      this.loading = true
       await this.fetchGlobalRoleBindings()
       await this.fetchClusters()
       await this.fetchEnvironment()
+      this.loading = false
     }
   },
+
   async mounted() {
-    this.init()
+    await this.init();
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {
-        this.stopInterval()
+        this.stopInterval();
       } else {
-        this.initIntervalFetch()
+        this.initIntervalFetch();
       }
-    })
-    EventBus.$on('env-modal-status', this.openModalStatus)
-    this.initIntervalFetch()
+    });
+    EventBus.$on('env-modal-status', this.openModalStatus);
+    EventBus.$on('env-modal-delete', this.openDeleteModal);
+    this.initIntervalFetch();
   },
-  beforeDestroy() {
-    EventBus.$off('env-modal-status')
-    EventBus.$off('load-environment')
-    this.stopInterval()
-  }
-};
 
+  beforeDestroy() {
+    EventBus.$off('env-modal-status');
+    EventBus.$off('env-modal-delete');
+    EventBus.$off('load-environment');
+    this.stopInterval();
+  },
+};
 </script>
+
 
 <style lang='scss' scoped>
   .home-panels {
