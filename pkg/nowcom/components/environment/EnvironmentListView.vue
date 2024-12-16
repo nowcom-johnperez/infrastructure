@@ -48,6 +48,10 @@
         <a v-if="row?.clusterId !== 'Pending'" :href="`/c/${row.clusterId}/explorer#cluster-events`" @click.prevent="exploreCluster(row.clusterId)" class="btn role-secondary btn-sm">
           Explore
         </a>
+
+        <button v-if="canDelete" class="btn btn-sm btn-danger ml-5" @click="deleteItem(row)">
+          <i class="icon icon-trash" />
+        </button>
       </td>
     </template>
   </SortableTable>
@@ -61,6 +65,7 @@ import { BadgeState } from '@components/BadgeState';
 import { ENVIRONMENT_HEADERS } from '../../config/table'
 import { getBadgeColor } from '../../services/helpers/environment'
 import { EventBus } from '../../config/event-bus';
+import { CAPI } from '@shell/config/types';
 export default {
   name: 'EnvironmentListView',
   props: {
@@ -80,6 +85,12 @@ export default {
     BadgeState,
     EnvironmentStatus
   },
+  computed: {
+    canDelete() {
+      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
+      return !!schema?.resourceMethods.find((x) => x.toLowerCase() === 'delete');
+    },
+  },
   methods: {
     badgeColor (status) {
       return getBadgeColor(status)
@@ -92,6 +103,9 @@ export default {
         item,
         component: EnvironmentView
       })
+    },
+    deleteItem(env) {
+      EventBus.$emit('env-modal-delete', env)
     },
     exploreCluster(clusterId) {
       this.$router.push(`/c/${clusterId}/explorer#cluster-events`)

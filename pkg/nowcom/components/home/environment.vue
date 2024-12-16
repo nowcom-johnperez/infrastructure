@@ -70,7 +70,6 @@ export default {
 
   data() {
     return {
-      loading: true,
       intervalId: null,
       statusModalState: false,
       selectedEnv: null,
@@ -122,6 +121,10 @@ export default {
         });
       }
     }
+  },
+
+  async fetch() {
+    await this.init();
   },
 
   methods: {
@@ -301,16 +304,13 @@ export default {
       this.clustersByUser = clusters.map((cluster) => cluster.status?.clusterName)
     },
     async init() {
-      this.loading = true
       await this.fetchGlobalRoleBindings()
       await this.fetchClusters()
       await this.fetchEnvironment()
-      this.loading = false
     }
   },
 
   async mounted() {
-    await this.init();
     EventBus.$on('load-environment', (isStop) => {
       if (isStop) {
         this.stopInterval();
