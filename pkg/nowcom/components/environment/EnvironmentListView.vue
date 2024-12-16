@@ -43,6 +43,13 @@
         {{ row.spec?.networkType }}
       </td>
     </template>
+    <template #col:explorer="{ row }">
+      <td>
+        <a v-if="row?.clusterId !== 'Pending'" :href="`/c/${row.clusterId}/explorer#cluster-events`" @click.prevent="exploreCluster(row.clusterId)" class="btn role-secondary btn-sm">
+          Explore
+        </a>
+      </td>
+    </template>
   </SortableTable>
 </template>
 
@@ -85,6 +92,9 @@ export default {
         item,
         component: EnvironmentView
       })
+    },
+    exploreCluster(clusterId) {
+      this.$router.push(`/c/${clusterId}/explorer#cluster-events`)
     }
   }
 }

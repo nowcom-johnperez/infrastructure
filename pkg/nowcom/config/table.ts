@@ -294,6 +294,12 @@ const ENVIRONMENT_HEADERS: SortableHeaderType[] = [
         sort: ['dns'],
         search: ['dns'],
     },
+    {
+        name: 'explorer',
+        label: 'Actions',
+        sort: ['explorer'],
+        search: ['explorer'],
+    },
 ];
 
 const PROJECT_NAMESPACE_HEADERS: SortableHeaderType[] = [
