@@ -61,6 +61,10 @@ export default {
   width: 50%;
 }
 
+.modal.sm {
+  width: 500px;
+}
+
 .button-container {
   display: flex;
   gap: 10px;

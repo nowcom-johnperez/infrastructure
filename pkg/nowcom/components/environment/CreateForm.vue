@@ -54,6 +54,12 @@
           </span>
         </div>
 
+        <div class="mt-15 input-container">
+          <label for="networkType">Project <span class="text-danger">*</span></label>
+          <Select :options="projectList" v-model="selected.project" class="mt-5"/>
+        </div>
+        <span v-if="errors.project" class="text-danger">{{ errors.project }}</span>
+
         <!-- <div class="mt-15">
           <SubnetCreate @onAdd="addSubnet" />
         </div> -->
@@ -147,11 +153,11 @@ import SelectPrincipal from '@shell/components/auth/SelectPrincipal';
 import { HOME, PRODUCT_NAME, ENVIRONMENT_SIZES, BLANK_CLUSTER } from '../../config/constants';
 import { HCI as HCI_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { environmentService, harvesterService } from '../../services/api';
-import { CONFIG_MAP } from '@shell/config/types';
+import { CONFIG_MAP, MANAGEMENT } from '@shell/config/types';
 import { validateString } from '../../services/helpers/utils'
 import NodeInfo from './NodeInfo.vue';
 import { getConfig } from '../../config/api';
-const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API } = getConfig()
+const { ENVIRONMENT_CLUSTER, STACK, VANGUARD_API, BREACHER_API, CLUSTER } = getConfig()
 export default {
   name: 'EnvironmentCreateForm',
   components: {
@@ -184,6 +190,7 @@ export default {
         userDataTemplate: null,
         // subnets: [],
         namespace: '',
+        project: '',
         owners: [],
         members: []
       },
@@ -196,6 +203,7 @@ export default {
         { label: 'Standard Dev', value: 'standard-dev', disabled: false },
       ],
       namespaceList: [],
+      projectList: [],
       bindings: [],
     }
   },
@@ -224,6 +232,21 @@ export default {
     // } catch (error) {
     //   this.namespaceList = []
     // }
+
+    try {
+      if (this.$store.getters['management/schemaFor'](MANAGEMENT.PROJECT)) {
+        const projects = this.$store.getters['management/all'](MANAGEMENT.PROJECT);
+        const excludePrefixes = ['system', 'default'];
+        this.projectList = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(CLUSTER)).map((project) => {
+          return {
+            value: project.id,
+            label: project.spec.displayName
+          }
+        })
+      }
+    } catch (error) {
+      this.projectList = []
+    }
 
     try {
       // page must be attached to a cluster
@@ -275,6 +298,7 @@ export default {
       if (!this.selected.teamName) this.errors.teamName = 'Team Name is required'
       if (this.selected.teamName && !validateString(this.selected.teamName)) this.errors.teamName = 'Team Name is not allowed. avoid space and other special characters'
       // if (!this.selected.namespace) this.errors.namespace = 'Namespace is required'
+      if (!this.selected.project) this.errors.project = 'Project is required'
       return Object.keys(this.errors).length === 0
     },
     filterBindings() {
@@ -317,6 +341,8 @@ export default {
         const isValid = this.validateForm()
         if (!isValid) return
         const clusterName = `${this.selected.envName}-${this.selected.teamName}`
+
+        const project = this.projectList.find((p) => p.value === this.selected.project)
         const payload = {
           apiVersion: `${VANGUARD_API}`,
           kind: "Stack",
@@ -329,7 +355,9 @@ export default {
               [`${BREACHER_API}/rancher-uid`]: this.user.id,
               [`${BREACHER_API}/owners`]: JSON.stringify(this.selected.owners),
               [`${BREACHER_API}/members`]: JSON.stringify(this.selected.members),
-              [`${BREACHER_API}/namespace`]: this.selected.namespace,
+              // [`${BREACHER_API}/namespace`]: this.selected.namespace,
+              [`${BREACHER_API}/rancher-project-name`]: project.label,
+              [`${BREACHER_API}/rancher-project-id`]: project.value,
             },
           },
           spec: {

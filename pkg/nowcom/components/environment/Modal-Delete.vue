@@ -1,5 +1,5 @@
 <template>
-  <Modal size="lg" v-if="modalState">
+  <Modal size="sm" v-if="modalState">
     <template #header>
       <h1 class="mb-0">{{ headerLabel }}</h1>
     </template>
@@ -47,14 +47,14 @@ export default {
       try {
         await environmentService.deleteById(this.environment.spec.environmentName)
         this.$store.dispatch('growl/success', {
-          title: 'Error',
+          title: 'Environment',
           message: `You have successfully deleted environment ${this.environment.spec.environmentName}`,
         }, { root: true })
         this.$emit('deleteSuccess')
         this.closeModal()
       } catch (error) {
         this.$store.dispatch('growl/error', {
-          title: 'Error',
+          title: 'Environment',
           message: 'Failed to delete environment. Please try again.',
         }, { root: true })
       }
