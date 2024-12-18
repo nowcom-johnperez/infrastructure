@@ -234,16 +234,14 @@ export default {
     // }
 
     try {
-      if (this.$store.getters['management/schemaFor'](MANAGEMENT.PROJECT)) {
-        const projects = this.$store.getters['management/all'](MANAGEMENT.PROJECT);
-        const excludePrefixes = ['system', 'default'];
-        this.projectList = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(CLUSTER)).map((project) => {
-          return {
-            value: project.id,
-            label: project.spec.displayName
-          }
-        })
-      }
+      const projects = this.$store.getters['management/all'](MANAGEMENT.PROJECT);
+      const excludePrefixes = ['system', 'default'];
+      this.projectList = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(CLUSTER)).map((project) => {
+        return {
+          value: project.id,
+          label: project.spec.displayName
+        }
+      })
     } catch (error) {
       this.projectList = []
     }
