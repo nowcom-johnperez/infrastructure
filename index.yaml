@@ -14,9 +14,9 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>= 2.0.1'
     apiVersion: v2
     appVersion: 0.3.2
-    created: "2024-12-18T08:12:51.201843+08:00"
+    created: "2024-12-18T08:20:00.724729+08:00"
     description: Nowcom Infrastructure Network Automation
-    digest: 8e3103b45b2d76a3a3cc5d022ea6c79101e4bfdf59e377939a9e92ca1335f914
+    digest: 0fc6a9ff2030400cd6f295be9999e93990610b6de2121f5abe461c01b3d509da
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
     name: nowcom
     type: application
@@ -34,7 +34,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.3.1
-    created: "2024-12-18T08:12:51.201707+08:00"
+    created: "2024-12-18T08:20:00.724587+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 0673e1459c34f6a44858b9552546ddf6db1d4e8df2349e3af9d8576102bdad8c
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -54,7 +54,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.3.0
-    created: "2024-12-18T08:12:51.201588+08:00"
+    created: "2024-12-18T08:20:00.724439+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 8ecdc8c51ddf2626a4dd2cdae0818890ba1a04c66c0f1799821b59d24e1900a7
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -74,7 +74,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.10
-    created: "2024-12-18T08:12:51.200788+08:00"
+    created: "2024-12-18T08:20:00.722863+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: e2b2897fc37043b35760259298cfc9b43b6f114ac045c101eee3b1ea3955b3d3
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -94,7 +94,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.9
-    created: "2024-12-18T08:12:51.201471+08:00"
+    created: "2024-12-18T08:20:00.723549+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: e5e8a2025bd789ee769acd6a9fdde2654bdec4b7eb4bb19b7a83c566310ef4fe
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -114,7 +114,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.8
-    created: "2024-12-18T08:12:51.201359+08:00"
+    created: "2024-12-18T08:20:00.723434+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 95880ab4aa5f333d2fe699352a22fc56d6ee3c0621651d5c84465aa7c2414a9a
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -134,7 +134,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.5
-    created: "2024-12-18T08:12:51.201248+08:00"
+    created: "2024-12-18T08:20:00.723321+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: d2f832cbca35b96bb002b13c6156b70b226a5501a6fe08abe9964b15a4158021
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -154,7 +154,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.4
-    created: "2024-12-18T08:12:51.201136+08:00"
+    created: "2024-12-18T08:20:00.723205+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: f215cb296a5575c983fce7f7b63b5a2129c10f8064c2d84b0cce9fbc9b639ce8
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -174,7 +174,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.3
-    created: "2024-12-18T08:12:51.201021+08:00"
+    created: "2024-12-18T08:20:00.723091+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 4d889d1895aac66f7067ddcea5c8274378eb6bb861dfc665b5fdd93525a417c5
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -194,7 +194,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.2
-    created: "2024-12-18T08:12:51.200908+08:00"
+    created: "2024-12-18T08:20:00.722979+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: fe3c57835380402414ce0c8f21485a06186205c51bcf9208c2b96d8f2c3a9824
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -214,7 +214,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.1
-    created: "2024-12-18T08:12:51.200655+08:00"
+    created: "2024-12-18T08:20:00.722709+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 058770ed5c6417a9b34d5cb27d367b43aa8a66467c0e4b4b1c5d366f4f5fef7b
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -234,7 +234,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.2.0
-    created: "2024-12-18T08:12:51.200533+08:00"
+    created: "2024-12-18T08:20:00.722587+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: 40961275f46a3dd863eb617177448012ae320234d52112962b44b740fc079b3b
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -254,7 +254,7 @@ entries:
       catalog.cattle.io/ui-component: plugins
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-12-18T08:12:51.200399+08:00"
+    created: "2024-12-18T08:20:00.72246+08:00"
     description: Nowcom Infrastructure Network Automation
     digest: da4c0e75f3fdccc9c3081843db9415c307962e797a399b4e940451cc785335f5
     icon: https://raw.githubusercontent.com/rancher/ui-plugin-examples/main/pkg/homepage/homepage.svg
@@ -263,4 +263,4 @@ entries:
     urls:
     - assets/nowcom/nowcom-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-18T08:12:51.199931+08:00"
+generated: "2024-12-18T08:20:00.722013+08:00"

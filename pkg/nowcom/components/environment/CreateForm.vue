@@ -234,7 +234,7 @@ export default {
     // }
 
     try {
-      const projects = this.$store.getters['management/all'](MANAGEMENT.PROJECT);
+      const projects = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.PROJECT })
       const excludePrefixes = ['system', 'default'];
       this.projectList = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(CLUSTER)).map((project) => {
         return {
