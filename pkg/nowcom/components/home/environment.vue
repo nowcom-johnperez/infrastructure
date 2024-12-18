@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'; // Install lodash if not already installed
 import IndentedPanel from '@shell/components/IndentedPanel';
 import { BadgeState } from '@components/BadgeState';
 import { CAPI, MANAGEMENT } from '@shell/config/types';
@@ -194,10 +193,13 @@ export default {
         const clusterId = e.status?.clusterRef?.clusterID;
         const sizeInfo = ENVIRONMENT_SIZES.find((s) => s.size.toLowerCase() === e.spec.clusterSize);
 
+        // Find the existing environment entry to preserve the `dns` value
+        const existingEnvironment = this.environmentList.find(env => env.metadata?.uid === e.metadata?.uid);
+
         return {
           ...e,
           clusterId,
-          dns: [], // Placeholder for DNS details
+          dns: existingEnvironment?.dns || [], // Preserve DNS details if they exist
           sizeInfo,
           statuses: {
             network: this.getStatus(e.status?.conditions, 'NetworkReady'),
@@ -209,34 +211,32 @@ export default {
     },
 
     async fetchDnsForEnvironments(environments) {
-      // Batch process DNS updates
-      const promises = environments.map(async (e, index) => {
+      const dnsUpdates = await Promise.all(environments.map(async (e) => {
         const clusterId = e.status?.clusterRef?.clusterID;
-        const service = await this.fetchService(clusterId);
-        const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs'];
-        const dns = typeof rawDns === 'string' ? [rawDns] : rawDns;
 
-        return { index, dns: dns || [] };
+        // Fetch DNS data if clusterId is valid
+        if (clusterId && clusterId !== 'Pending') {
+          try {
+            const service = await this.fetchService(clusterId);
+            const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs'];
+            const dns = Array.isArray(rawDns) ? rawDns : rawDns ? [rawDns] : [];
+
+            return { clusterId, dns };
+          } catch (error) {
+            console.error(`Error fetching DNS for cluster ${clusterId}:`, error);
+          }
+        }
+        return { clusterId, dns: [] };
+      }));
+
+      // Update the environment list once with DNS details
+      const updatedList = this.environmentList.map((env) => {
+        const update = dnsUpdates.find((d) => d.clusterId === env.clusterId);
+        return { ...env, dns: update ? update.dns : [] };
       });
 
-      const dnsUpdates = await Promise.all(promises);
-
-      // Debounced DNS updates
-      this.queueDnsUpdates(dnsUpdates);
+      this.environmentList = updatedList; // Single reactive update
     },
-
-    queueDnsUpdates(updates) {
-      this.dnsUpdateQueue.push(...updates);
-      this.debouncedApplyDnsUpdates();
-    },
-
-    debouncedApplyDnsUpdates: debounce(function () {
-      this.dnsUpdateQueue.forEach(({ index, dns }) => {
-        this.$set(this.environmentList[index], 'dns', dns);
-      });
-
-      this.dnsUpdateQueue = [];
-    }, 500), // Apply updates after 500ms debounce
 
     async fetchService(clusterId) {
       if (clusterId === 'Pending' || !clusterId) return null;
