@@ -87,16 +87,16 @@
         <div class="mt-10 mb-10" v-if="subnetResponse">
           <Alert :variant="subnetResponse" @close="subnetResponse = null">{{ subnetResponseMessage }}</Alert>
         </div>
-        <SortableTable v-if="selectedNetwork" :headers="selectedNetwork?.vrf === 'express' ? express.subHeader : subnetworkHeader" :rows="selectedNetwork.vrf && selectedNetwork.vrf === 'express' ? activatedExpressSubnets : subnetsListing" :paging="true" :rowActionsWidth="10" :rows-per-page="5" keyField="name" :loading="loading">
+        <SortableTable v-if="selectedNetwork" :headers="selectedNetwork?.vrf === 'express' ? express.subHeader : subnetworkHeader" :rows="selectedNetwork.vrf && selectedNetwork.vrf === 'express' ? activatedExpressSubnets : subnetsListing" :paging="true" :rowActionsWidth="10" :rows-per-page="15" keyField="name" :loading="loading">
           <template #cell:longName="{row}">
             <span>{{ row.displayName || row.longName }}</span>
           </template>
-          <template #cell:dhcpEnabled="{row}">
+          <!-- <template #cell:dhcpEnabled="{row}">
             <BadgeState
               :color="row.dhcpEnabled ? 'bg-success' : 'bg-info'"
               :label="row.dhcpEnabled ? 'ENABLED' : 'DISABLED'"
             />
-          </template>
+          </template> -->
           <template #row-actions="row">
             <button class="btn role-primary btn-sm" @click="openModalAction(row.row)" :disabled="loading || !isDev">
               <span class="fa fa-trash fa-lg mr-5"></span> Delete
@@ -230,7 +230,7 @@ export default {
       networks: 'items',
     }),
     activatedExpressSubnets() {
-      return this.express.networks.filter((item) => item.activated)
+      return this.express.networks
     },
     inactiveExpressSubnets() {
       return this.express.networks.filter((item) => !item.activated)
@@ -364,10 +364,11 @@ export default {
         this.express.networks = res.data.items.filter((item) => {
           return item.spec.addressType === 'express'
         }).map((item) => {
+          const realDisplayName = item.metadata?.labels['vanguard.tridentcloud.dev/owner-name']
           return {
             address: item.spec.address,
             formattedAddress: `${item.spec.address}/${item.spec.prefixLength}`,
-            displayName: item.metadata.labels?.displayName || '',
+            displayName:  realDisplayName || item.metadata.labels?.displayName || '',
             name: item.metadata.name,
             longName: item.metadata.name,
             prefix_len: item.spec.prefixLength,
