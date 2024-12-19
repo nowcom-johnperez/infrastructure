@@ -1,4 +1,4 @@
-import { BASE_URL_HOST } from "../../config/axios";
+import { axiosClient, BASE_URL_HOST } from "../../config/axios";
 import { getConfig } from "../../config/api";
 const { ENVIRONMENT_CLUSTER, VANGUARD_API } = getConfig();
 
@@ -51,5 +51,17 @@ export const environmentService = {
     getAllGroups: async () => {
         const res: any =  await BASE_URL_HOST.get(`/v3/groups`)
         return res.data
+    },
+
+    // account must be admin to do this
+    getClusterServices: async (clusterId: string) => {
+        const res: any = await BASE_URL_HOST.get(`/k8s/clusters/${clusterId}/v1/services`)
+        return res.data.data
+    },
+
+    // account must be admin to do this
+    getClusterIngresses: async (clusterId: string) => {
+        const res: any = await BASE_URL_HOST.get(`/k8s/clusters/${clusterId}/v1/networking.k8s.io.ingresses`)
+        return res.data.data
     }
 }

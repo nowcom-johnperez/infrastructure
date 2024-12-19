@@ -27,7 +27,7 @@
       <div class="row-label">Node IP</div>
       <div class="row-val">
         <template v-if="ingress">
-          <button class="btn btn-sm role-secondary ml-10 clikable mr-3" type="button" v-for="ip in ingress.nodeIP.slice(0, 3)" :key="`${ip}-node-${ingress.metadata.namespace}`">
+          <button class="btn btn-sm role-secondary ml-10 clikable mr-3" type="button" v-for="ip in ingress.nodeIP.slice(0, 3)" :key="`${ip}-node-${ingress?.metadata?.namespace}`">
             <CopyToClipboardText :text="ip" />
           </button>
         </template>
@@ -38,7 +38,7 @@
       <div class="row-label">Load Balancer IP</div>
       <div class="row-val">
         <template v-if="loadBalancerIP.length > 0" >
-          <button class="btn btn-sm role-secondary ml-10 clikable" type="button" v-for="ip in loadBalancerIP" :key="`${ip}-lb-${ingress.metadata.namespace}`">
+          <button class="btn btn-sm role-secondary ml-10 clikable" type="button" v-for="ip in loadBalancerIP" :key="`${ip}-lb-${ingress?.metadata?.namespace}`">
             <CopyToClipboardText :text="ip" />
           </button>
         </template>
@@ -81,6 +81,7 @@
 import { MANAGEMENT, FLEET } from '@shell/config/types';
 import { ingressFullPath } from '@shell/models/networking.k8s.io.ingress';
 import CopyToClipboardText from '@shell/components/CopyToClipboardText.vue'
+import { environmentService } from '../../../services/api';
 export default {
   name: 'EnvironmentAppLauncher',
   components: {
@@ -147,11 +148,12 @@ export default {
     },
     async fetchIngress() {
       try {
-        const ingresses = (
-          await this.$store.dispatch('cluster/request', {
-            url: `/k8s/clusters/${this.cluster.id}/v1/networking.k8s.io.ingresses`,
-          })
-        ).data;
+        // const ingresses = (
+        //   await this.$store.dispatch('cluster/request', {
+        //     url: `/k8s/clusters/${this.cluster.id}/v1/networking.k8s.io.ingresses`,
+        //   })
+        // ).data;
+        const ingresses = await environmentService.getClusterIngresses(this.cluster.id)
         this.ingress = ingresses.map(ingress => ({
           ...ingress,
           clusterId: this.cluster.id,
@@ -164,26 +166,30 @@ export default {
     },
     async fetchService() {
       try {
-        const services = (
-          await this.$store.dispatch('cluster/request', {
-            url: `/k8s/clusters/${this.cluster.id}/v1/services`,
-          })
-        ).data;
+        // const services = (
+        //   await this.$store.dispatch('cluster/request', {
+        //     url: `/k8s/clusters/${this.cluster.id}/v1/services`,
+        //   })
+        // ).data;
 
-        this.services = services
-          .filter(service => 
-            service.spec?.type === 'LoadBalancer' &&
-            service.metadata?.annotations?.['kube-vip.io/loadbalancerIPs']
-          )
-          .map(service => ({
-            ...service,
-            clusterId: this.cluster.id,
-            clusterName: this.cluster.spec.displayName,
-          })) || null;
+        const services = await environmentService.getClusterServices(this.cluster.id)
+        
+        const service = services.find((service) => service.metadata.name === 'bind-svc');
+        // this.services = services
+        //   .filter(service => 
+        //     service.spec?.type === 'LoadBalancer' &&
+        //     service.metadata?.annotations?.['kube-vip.io/loadbalancerIPs']
+        //   )
+        //   .map(service => ({
+        //     ...service,
+        //     clusterId: this.cluster.id,
+        //     clusterName: this.cluster.spec.displayName,
+        //   })) || null;
 
-        this.loadBalancerIP = this.services.map((service) => {
-          return service.metadata?.annotations?.['kube-vip.io/loadbalancerIPs']
-        })
+        const rawDns = service?.metadata?.annotations['kube-vip.io/loadbalancerIPs'];
+        const dns = Array.isArray(rawDns) ? rawDns : rawDns ? [rawDns] : [];
+
+        this.loadBalancerIP = dns
       } catch (error) {
         console.error(`Error fetching services for cluster ${this.cluster.id}:`, error);
       }

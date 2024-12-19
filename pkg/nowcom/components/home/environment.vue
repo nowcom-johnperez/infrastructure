@@ -241,11 +241,13 @@ export default {
     async fetchService(clusterId) {
       if (clusterId === 'Pending' || !clusterId) return null;
       try {
-        const services = (
-          await this.$store.dispatch('cluster/request', {
-            url: `/k8s/clusters/${clusterId}/v1/services`,
-          })
-        ).data;
+        // const services = (
+        //   await this.$store.dispatch('cluster/request', {
+        //     url: `/k8s/clusters/${clusterId}/v1/services`,
+        //   })
+        // ).data;
+
+        const services = await environmentService.getClusterServices(clusterId)
 
         return services.find((service) => service.metadata.name === 'bind-svc');
       } catch (error) {
