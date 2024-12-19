@@ -48,9 +48,12 @@ export default {
   },
   methods: {
     openSidebar(d) {
-      this.currentObj = d.item
-      this.currentComponent = d.component
-      this.sidebarVisible = true
+      if (this.sidebarVisible) this.closeSidebar()
+      this.$nextTick(() => {
+        this.currentObj = d.item
+        this.currentComponent = d.component
+        this.sidebarVisible = true
+      })
     },
     closeSidebar () {
       this.sidebarVisible = false

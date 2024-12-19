@@ -116,7 +116,7 @@ export default {
     const projects = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.PROJECT, opt: { force: true } });
     const excludePrefixes = ['system', 'default'];
     this.projects = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(this.currentCluster.id))
-    console.log(`projects`, this.projects)
+    // console.log(`projects`, this.projects)
     // this.harvesterNS = await harvesterService.getNamespaces()
     // this.nsResourceQuotas = await harvesterService.getNamespaceQuota()
   },

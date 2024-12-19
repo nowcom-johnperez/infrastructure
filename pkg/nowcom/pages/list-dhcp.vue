@@ -12,7 +12,7 @@
           :rows="table.items" 
           :paging="true" 
           :rowActionsWidth="10" 
-          :rows-per-page="5" 
+          :rows-per-page="15" 
           keyField="name" 
           :loading="table.loading"
           >
@@ -70,7 +70,7 @@ export default {
           return {
             name: d.metadata.name,
             subnet: d.spec.ipv4Config.cidr,
-            available: `${d.status.ipv4.used }/${d.status.ipv4.available}`,
+            available: `${d.status.ipv4.used}/${parseInt(d.status.ipv4.available) + parseInt(d.status.ipv4.used)}`,
             utilization: this.getUtilization(d.status.ipv4) + " %"
           }
         })

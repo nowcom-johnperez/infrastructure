@@ -109,7 +109,8 @@ export default {
       if (this.harvesterNS.length === 0) return []
 
       return this.harvesterNS.filter((ns) => {
-        return ns.metadata?.labels['field.cattle.io/projectId'] === this.currentObj?.metadata?.name
+        const projectId = this.currentObj.id.replace('/', ':')
+        return ns.metadata?.labels['field.cattle.io/projectId'] === this.currentObj?.metadata?.name || ns.metadata.annotations['field.cattle.io/projectId'] == projectId
       }).map((namespace) => {
         const resourceQuota = namespace.metadata?.annotations['field.cattle.io/resourceQuota'] ? JSON.parse(namespace.metadata?.annotations['field.cattle.io/resourceQuota']) : {}
         const state = namespace.metadata?.fields[1]
