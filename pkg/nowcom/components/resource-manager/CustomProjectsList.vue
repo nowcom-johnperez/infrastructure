@@ -31,6 +31,7 @@ import ResourceTable, { defaultTableSortGenerationFn } from '@shell/components/R
 import { STATE, AGE } from '@shell/config/table-headers';
 import { MANAGEMENT, NAMESPACE, VIRTUAL_TYPES } from '@shell/config/types';
 import { EventBus } from '../../config/event-bus';
+import { harvesterService } from '../../services/api';
 import ResourceFetch from '@shell/mixins/resource-fetch';
 import SortableTable from '@shell/components/SortableTable'
 import { PROJECT_NAMESPACE_HEADERS } from '../../config/table';
@@ -70,7 +71,9 @@ export default {
         },
       },
       PROJECT_NAMESPACE_HEADERS,
-      projects: []
+      projects: [],
+      harvesterNS: [],
+      nsResourceQuotas: []
     }
   },
 
@@ -116,7 +119,7 @@ export default {
     const projects = await this.$store.dispatch('management/findAll', { type: MANAGEMENT.PROJECT, opt: { force: true } });
     const excludePrefixes = ['system', 'default'];
     this.projects = projects.filter(n => !excludePrefixes.some(prefix => n.spec?.displayName.toLocaleLowerCase().includes(prefix)) && n.spec.clusterName.includes(this.currentCluster.id))
-    console.log(`projects`, this.projects)
+    // console.log(`projects`, this.projects)
     // this.harvesterNS = await harvesterService.getNamespaces()
     // this.nsResourceQuotas = await harvesterService.getNamespaceQuota()
   },
