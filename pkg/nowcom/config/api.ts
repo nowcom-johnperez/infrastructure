@@ -30,9 +30,9 @@ export const getConfig = () => {
     if (hostname.includes('surge')) {
       config.RANCHER_DIRECT_URL = 'https://lv-surge.tridentcloud.dev//'
       config.RANCHER_BEARERTOKEN = 'token-r6cjs:5rplqx95gphwvd29rrr62n7xfwhzvwk2f5ksxzgpbd9mvm65wdt4w6'
-      config.CLUSTER = 'c-m-g2png272'
+      config.CLUSTER = 'c-m-p4mmlqr6'
       // config.ENVIRONMENT_CLUSTER = 'c-m-xsj4tkvq'
-      config.ENVIRONMENT_CLUSTER = 'c-m-p4mmlqr6'
+      config.ENVIRONMENT_CLUSTER = 'c-m-g2png272'
       config.isDev = false
     } else {
       // config.RANCHER_DIRECT_URL = 'https://els-clouddev.hankeyinvestments.com/'
