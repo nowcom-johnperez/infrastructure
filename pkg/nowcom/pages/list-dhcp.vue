@@ -70,7 +70,7 @@ export default {
           return {
             name: d.metadata.name,
             subnet: d.spec.ipv4Config.cidr,
-            available: `${d.status.ipv4.used }/${parseInt(d.status.ipv4.available) + parseInt(d.status.ipv4.used)}`,
+            available: `${d.status.ipv4.used}/${parseInt(d.status.ipv4.available) + parseInt(d.status.ipv4.used)}`,
             utilization: this.getUtilization(d.status.ipv4) + " %"
           }
         })
