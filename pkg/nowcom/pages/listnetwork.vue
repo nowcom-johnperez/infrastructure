@@ -217,7 +217,7 @@ export default {
         show: false,
       },
       express: {
-        mainRow: [{ name: 'express', translatedAddress: '209.76.247.250/32', subnetLength: 0, vrf: 'express' }],
+        mainRow: [{ name: 'express', translatedAddress: '207.215.229.254/32', subnetLength: 0, vrf: 'express' }],
         networks: [],
         subHeader: null,
         nextAvailableSub: {},
