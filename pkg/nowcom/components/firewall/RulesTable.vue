@@ -1,5 +1,5 @@
 <template>
-  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="5" keyField="name" defaultSortBy="priority" defaultSortOrder="asc">
+  <SortableTable :headers="headers" :rows="items" :rowActionsWidth="10" :rows-per-page="15" keyField="name" defaultSortBy="priority" defaultSortOrder="asc">
     <template #header-left>
       <div class="row table-heading" style="justify-items: center;">
         <button type="button" :disabled="!isDev" class="btn role-secondary btn-sm block mr-10 ml-10" @click="onCreateClick">

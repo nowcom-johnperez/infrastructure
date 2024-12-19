@@ -93,13 +93,13 @@ const SORTABLE_SUB_NETWORK_EXPRESS_HEADERS: SortableHeaderType[] = [
         search: ['formattedAddress'],
         width: 30
     },
-    {
-        name: 'dhcpEnabled',
-        label: 'DHCP',
-        sort: ['dhcpEnabled'],
-        search: ['dhcpEnabled'],
-        width: 30
-    },
+    // {
+    //     name: 'dhcpEnabled',
+    //     label: 'DHCP',
+    //     sort: ['dhcpEnabled'],
+    //     search: ['dhcpEnabled'],
+    //     width: 30
+    // },
 ];
 
 const DHCP_HEADERS: SortableHeaderType[] = [
