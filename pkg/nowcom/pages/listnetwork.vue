@@ -230,7 +230,7 @@ export default {
       networks: 'items',
     }),
     activatedExpressSubnets() {
-      return this.express.networks
+      return this.express.networks.filter((item) => item.activated)
     },
     inactiveExpressSubnets() {
       return this.express.networks.filter((item) => !item.activated)
