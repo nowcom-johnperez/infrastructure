@@ -69,6 +69,7 @@ export default {
 
   data() {
     return {
+      intervalDns: null,
       intervalId: null,
       statusModalState: false,
       selectedEnv: null,
@@ -155,10 +156,23 @@ export default {
       }
     },
 
+    initDnsFetch() {
+      if (!this.intervalDns && this.environmentList.length > 0) {
+        this.intervalDns = setInterval(async () => {
+          await this.fetchDnsForEnvironments(this.environmentList)
+        }, 12000) // 12s interval
+      }
+    },
+
     stopInterval() {
       if (this.intervalId) {
         clearInterval(this.intervalId);
         this.intervalId = null;
+      }
+
+      if (this.intervalDns) {
+        clearInterval(this.intervalDns);
+        this.intervalDns = null;
       }
     },
 
@@ -184,8 +198,7 @@ export default {
 
       this.updateEnvironmentList(filteredEnvironments);
 
-      // Parallel fetching for DNS details
-      await this.fetchDnsForEnvironments(filteredEnvironments);
+      this.initDnsFetch()
     },
 
     updateEnvironmentList(environments) {
@@ -241,12 +254,6 @@ export default {
     async fetchService(clusterId) {
       if (clusterId === 'Pending' || !clusterId) return null;
       try {
-        // const services = (
-        //   await this.$store.dispatch('cluster/request', {
-        //     url: `/k8s/clusters/${clusterId}/v1/services`,
-        //   })
-        // ).data;
-
         const services = await environmentService.getClusterServices(clusterId)
 
         return services.find((service) => service.metadata.name === 'bind-svc');
