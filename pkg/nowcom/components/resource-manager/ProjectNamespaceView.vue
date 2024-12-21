@@ -105,8 +105,11 @@ export default {
   },
   computed: {
     ...mapGetters(['currentCluster', 'currentProduct']),
+    loading() {
+      return this.$fetchState.pending
+    },
     rows() {
-      if (this.harvesterNS.length === 0) return []
+      if (this.harvesterNS.length === 0 || this.nsResourceQuotas.length === 0) return []
 
       return this.harvesterNS.filter((ns) => {
         const projectId = this.currentObj.id.replace('/', ':')
@@ -118,11 +121,11 @@ export default {
         const display = stateDisplay(state);
         const quota = this.nsResourceQuotas.find((res) => res.metadata?.namespace === namespace.id) || {}
 
-        const cpuReserved = parseSi(quota?.status?.hard['limits.cpu'] || 0)
-        const cpuUsed = parseSi(quota?.status?.used['limits.cpu'] || 0)
+        const cpuReserved = quota?.status?.hard['limits.cpu'] ? parseSi(quota?.status?.hard['limits.cpu']) : quota?.status?.hard['requests.cpu'] ? parseSi(quota?.status?.hard['requests.cpu']) : parseSi(0)
+        const cpuUsed = quota?.status?.used['limits.cpu'] ? parseSi(quota?.status?.used['limits.cpu']) : quota?.status?.used['requests.cpu'] ? parseSi(quota?.status?.used['requests.cpu']) : parseSi(0)
 
-        const memoryReserved = parseSi(quota?.status?.hard['limits.memory'] || 0)
-        const memoryUsed = parseSi(quota?.status?.used['limits.memory'] || 0)
+        const memoryReserved = quota?.status?.hard['limits.memory'] ? parseSi(quota?.status?.hard['limits.memory']) : quota?.status?.hard['requests.memory'] ? parseSi(quota?.status?.hard['requests.memory']) : parseSi(0)
+        const memoryUsed = quota?.status?.used['limits.memory'] ? parseSi(quota?.status?.used['limits.memory']) : quota?.status?.used['requests.memory'] ? parseSi(quota?.status?.used['requests.memory']) : parseSi(0)
 
         const memory = createMemoryValues(memoryReserved, memoryUsed)
         const cpu = createMemoryValues(cpuReserved, cpuUsed)
